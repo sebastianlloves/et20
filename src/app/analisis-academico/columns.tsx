@@ -1,6 +1,9 @@
 'use client'
 
 import ColumnHead from '@/components/students-table/column-head'
+import ExpandButton from '@/components/students-table/expand-button'
+import ExpandableRow from '@/components/students-table/expandable-row'
+import RepitenciaContent from '@/components/students-table/repitencia-content'
 import { Badge } from '@/components/ui/badge'
 import { Student } from '@/lib/definitions'
 import { ColumnDef, RowData } from '@tanstack/react-table'
@@ -14,15 +17,40 @@ declare module '@tanstack/react-table' {
 
 export const columns: ColumnDef<Student>[] = [
   {
+    id: 'expand',
+    accessorFn: (row) => [...row.detalleTroncales, ...row.detalleGenerales, ...row.detalleEnProceso2020],
+    header: ({ table }) => (
+      <ExpandButton
+        handleClick={() => table.toggleAllRowsExpanded(!table.getIsSomeRowsExpanded())}
+        isOpen={table.getIsSomeRowsExpanded()}
+        className='text-foreground'
+      />
+    ),
+    cell: ({ row, getValue }) => (
+      <ExpandButton
+        handleClick={() => row.toggleExpanded()}
+        isOpen={row.getIsExpanded() && getValue<string[]>().length > 0}
+        disabled={getValue<string[]>().length === 0}
+        className='text-foreground/80 -mt-1.5'
+      />
+    ),
+    size: 35,
+    enableSorting: false,
+    meta: {
+      title: 'Expandir'
+    },
+    enableHiding: false
+  },
+  {
     id: 'curso',
     accessorFn: ({ anio, division }) => `${anio} ${division}`,
     header: ({ column }) => <ColumnHead column={column} />,
-    cell: ({ cell }) => <Badge variant='outline' className='text-nowrap px-3 py-1 rounded-md'>{cell.getValue<string>()}</Badge>,
+    cell: ({ getValue }) => <Badge variant='outline' className='text-nowrap px-3 py-1 rounded-md'>{getValue<string>()}</Badge>,
+    size: 100,
+    sortingFn: 'alphanumeric',
     meta: {
       title: 'Curso'
     },
-    size: 100,
-    sortingFn: 'alphanumeric',
     enableHiding: false
   },
   {
@@ -49,9 +77,52 @@ export const columns: ColumnDef<Student>[] = [
     id: 'dni',
     accessorKey: 'dni',
     header: ({ column }) => <ColumnHead column={column} />,
-    cell: ({ row }) => <p className='text-xs  text-muted-foreground px-0 mx-0'>{row.original.dni}</p>,
+    cell: ({ row }) => <p className='text-xs leading-relaxed text-muted-foreground'>{row.original.dni}</p>,
     meta: {
       title: 'DNI'
+    },
+    size: 70
+  },
+  {
+    id: 'troncales',
+    accessorFn: (row) => row.cantTroncales,
+    header: ({ column }) => <ColumnHead column={column} />,
+    cell: ({ row, table }) => <ExpandableRow subjects={row.original.detalleTroncales} open={table.getIsAllRowsExpanded() || row.getIsExpanded()}/>,
+    sortingFn: 'basic',
+    size: 190,
+    meta: {
+      title: 'Troncales'
+    }
+  },
+  {
+    id: 'generales',
+    accessorFn: (row) => row.cantGenerales,
+    header: ({ column }) => <ColumnHead column={column} />,
+    cell: ({ row, table }) => <ExpandableRow subjects={row.original.detalleGenerales} open={table.getIsAllRowsExpanded() || row.getIsExpanded()}/>,
+    sortingFn: 'basic',
+    size: 190,
+    meta: {
+      title: 'Generales'
+    }
+  },
+  {
+    id: 'enProceso2020',
+    accessorFn: (row) => row.cantEnProceso2020,
+    header: ({ column }) => <ColumnHead column={column} />,
+    cell: ({ row, table }) => <ExpandableRow subjects={row.original.detalleEnProceso2020} open={table.getIsAllRowsExpanded() || row.getIsExpanded()}/>,
+    sortingFn: 'basic',
+    size: 190,
+    meta: {
+      title: 'En Proceso (2020)'
+    }
+  },
+  {
+    id: 'repitencia',
+    accessorKey: 'repitencia',
+    header: ({ column }) => <ColumnHead column={column} />,
+    cell: ({ getValue }) => <RepitenciaContent repArray={getValue<string[]>()}/>,
+    meta: {
+      title: 'Repitencia'
     }
   }
 ]

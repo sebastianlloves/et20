@@ -12,7 +12,7 @@ function ColumnHead<TData, TValue> ({ column, className } : ColumnHeadProps<TDat
   return (
     <Button
       variant='link'
-      className={cn('font-medium text-foreground hover:no-underline px-0', className)}
+      className={cn('border font-medium text-foreground hover:no-underline px-0', className)}
       onClick={() => column.toggleSorting(undefined, true)}
     >
       {column.columnDef.meta?.title}

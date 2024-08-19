@@ -2,7 +2,7 @@
 
 import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 interface StudentsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
@@ -14,19 +14,29 @@ function StudentsTable<TData, TValue> ({ columns, data } : StudentsTableProps<TD
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel()
+    getSortedRowModel: getSortedRowModel(),
+    initialState: {
+    }
   })
 
   return (
-    <div className="h-[80vh] flex flex-col border shadow-sm rounded-lg">
+    <div className="h-[80vh] border shadow-sm rounded-lg">
       <ScrollArea className='h-full'>
-        <Table className='grid w-full'>
-          <TableHeader className='sticky top-0 w-full z-20'>
+        <Table className='flex flex-col w-full'>
+          <TableHeader className='sticky top-0 w-full bg-background shadow-sm shadow-primary/40'>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className='flex items-center py-3 px-2'>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      align={header.column.columnDef.meta?.align || 'left'}
+                      className='h-fit px-0 border'
+                      style={{
+                        width: `${header.column.getSize()}px`,
+                        marginInline: header.column.getIsPinned() ? '0px' : '10px'
+                      }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -39,16 +49,24 @@ function StudentsTable<TData, TValue> ({ columns, data } : StudentsTableProps<TD
               </TableRow>
             ))}
           </TableHeader>
-            <TableBody className='w-full border'>
+            <TableBody className='w-full'>
               {table.getRowModel().rows?.length
                 ? (
                     table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
+                    className='flex px-2'
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className='border px-0'
+                        style={{
+                          width: `${cell.column.getSize()}px`,
+                          marginInline: cell.column.getIsPinned() ? '0px' : '10px'
+                        }}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -64,6 +82,7 @@ function StudentsTable<TData, TValue> ({ columns, data } : StudentsTableProps<TD
                   )}
             </TableBody>
         </Table>
+        <ScrollBar orientation='horizontal' />
       </ScrollArea>
     </div>
   )

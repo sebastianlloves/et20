@@ -7,8 +7,10 @@ export default async function Home () {
   const data = await fetchStudentsData()
 
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
-      <StudentsTable columns={columns} data={data} />
-    </Suspense>
+    <div className='p-4'>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <StudentsTable columns={columns} data={data} />
+      </Suspense>
+    </div>
   )
 }
