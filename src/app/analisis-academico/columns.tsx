@@ -46,8 +46,10 @@ export const columns: ColumnDef<Student>[] = [
     enableHiding: false
   },
   {
+    id: 'dni',
     accessorKey: 'dni',
-    header: 'DNI',
+    header: ({ column }) => <ColumnHead column={column} />,
+    cell: ({ row }) => <p className='text-xs  text-muted-foreground px-0 mx-0'>{row.original.dni}</p>,
     meta: {
       title: 'DNI'
     }
