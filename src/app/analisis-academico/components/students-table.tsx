@@ -37,24 +37,24 @@ function StudentsTable<TData, TValue>({
   return (
     <div className="h-[80vh] rounded-lg border shadow-sm">
       <ScrollArea className="h-full">
-        <Table className="flex w-full flex-col">
-          <TableHeader className="sticky top-0 w-full bg-background shadow-sm shadow-primary/40">
+        <Table className="flex w-full flex-col bg-card">
+          <TableHeader className="sticky top-0 z-10 w-full border-b border-primary/70 shadow-sm shadow-primary/40">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="flex items-center px-2 py-3"
+                className="flex items-center bg-popover px-2 py-3 hover:bg-popover"
               >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
                       align={header.column.columnDef.meta?.align || 'left'}
-                      className="h-fit border px-0"
+                      className="h-fit px-0"
                       style={{
                         width: `${header.column.getSize()}px`,
                         marginInline: header.column.getIsPinned()
                           ? '0px'
-                          : '10px',
+                          : '15px',
                       }}
                     >
                       {header.isPlaceholder
@@ -80,12 +80,12 @@ function StudentsTable<TData, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="border px-0"
+                      className="px-0"
                       style={{
                         width: `${cell.column.getSize()}px`,
                         marginInline: cell.column.getIsPinned()
                           ? '0px'
-                          : '10px',
+                          : '15px',
                       }}
                     >
                       {flexRender(

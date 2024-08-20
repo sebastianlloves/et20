@@ -12,3 +12,5 @@ export type Student = {
   cantEnProceso2020: number | null,
   detalleEnProceso2020: string[],
 }
+
+

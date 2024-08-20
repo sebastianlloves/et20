@@ -1,5 +1,5 @@
 import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface ExpandButtonProps {
@@ -13,7 +13,7 @@ function ExpandButton({
   handleClick,
   isOpen,
   className,
-  disabled,
+  disabled = false,
 }: ExpandButtonProps) {
   return (
     <Button

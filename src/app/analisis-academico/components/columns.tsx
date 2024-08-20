@@ -1,9 +1,10 @@
 'use client'
 
-import ColumnHead from '@/components/students-table/column-head'
-import ExpandButton from '@/components/students-table/expand-button'
-import ExpandableRow from '@/components/students-table/expandable-row'
-import RepitenciaContent from '@/components/students-table/repitencia-content'
+import ColumnHead from './table-content/column-head'
+import ExpandButton from './table-content/expand-button'
+import ExpandableRow from './table-content/expandable-row'
+import PromocionContent from './table-content/promocion-content'
+import RepitenciaContent from './table-content/repitencia-content'
 import { Badge } from '@/components/ui/badge'
 import { Student } from '@/lib/definitions'
 import { ColumnDef, RowData } from '@tanstack/react-table'
@@ -52,12 +53,13 @@ export const columns: ColumnDef<Student>[] = [
     accessorFn: ({ anio, division }) => `${anio} ${division}`,
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ getValue }) => (
-      <Badge variant="outline" className="text-nowrap rounded-md px-3 py-1">
+      <Badge variant="outline" className="text-nowrap rounded-md px-3 py-1.5">
         {getValue<string>()}
       </Badge>
     ),
     size: 100,
     sortingFn: 'alphanumeric',
+    filterFn: 'arrIncludes',
     meta: {
       title: 'Curso',
     },
@@ -167,6 +169,11 @@ export const columns: ColumnDef<Student>[] = [
         : 'permanece'
     },
     header: ({ column }) => <ColumnHead column={column} />,
+    cell: ({ getValue }) => (
+      <PromocionContent
+        value={getValue<'faltan datos' | 'promociona' | 'permanece'>()}
+      />
+    ),
     size: 150,
     meta: {
       title: 'Promoción',
