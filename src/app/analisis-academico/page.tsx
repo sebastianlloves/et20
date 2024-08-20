@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import StudentsTable from './students-table'
 import { columns } from './columns'
 
-export default async function Home () {
+export default async function Home() {
   const data = await fetchStudentsData()
 
   return (

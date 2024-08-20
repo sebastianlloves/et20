@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { /* Inter,  */Open_Sans as OpenSans } from 'next/font/google'
+import { /* Inter,  */ Open_Sans as OpenSans } from 'next/font/google'
 import '../styles/globals.css'
 import React from 'react'
 import { cn } from '@/lib/utils'
@@ -11,17 +11,23 @@ const openSans = OpenSans({ subsets: ['latin'], variable: '--font-openSans' })
 
 export const metadata: Metadata = {
   title: 'ET N°20 - Carolina Muzilli',
-  description: 'Aplicación web para análisis académico de la Escuela Técnica n° 20 "Carolina Muzilli"'
+  description:
+    'Aplicación web para análisis académico de la Escuela Técnica n° 20 "Carolina Muzilli"',
 }
 
-export default function RootLayout ({
-  children
+export default function RootLayout({
+  children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
     <html lang='en'>
-      <body className={cn(/* inter.className,  */openSans.className, 'min-h-screen bg-background font-openSans antialiased')}>
+      <body
+        className={cn(
+          /* inter.className,  */ openSans.className,
+          'min-h-screen bg-background font-openSans antialiased',
+        )}
+      >
         <ThemeProvider
           attribute='class'
           defaultTheme='system'
@@ -29,11 +35,9 @@ export default function RootLayout ({
           disableTransitionOnChange
         >
           <header className='flex justify-end p-2'>
-            <ModeToggle/>
+            <ModeToggle />
           </header>
-          <main>
-            {children}
-          </main>
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
