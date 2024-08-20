@@ -1,13 +1,25 @@
-import { fetchStudentsData } from '@/lib/data'
 import StudentsTable from './components/students-table'
-import { columns } from './components/columns'
+import SkeletonStudentsTable from './components/skeleton/skeleton-students-table'
+import ToggleDB from './components/toggle-db'
+import { Suspense } from 'react'
 
-export default async function Home() {
-  const data = await fetchStudentsData()
+interface PageProps {
+  searchParams?: {
+    anio?: string
+  }
+}
+
+export default function Page({ searchParams }: PageProps) {
+  const anio = searchParams?.anio || '2024'
 
   return (
-    <div>
-      <StudentsTable columns={columns} data={data} />
+    <div className="grid w-full grid-cols-7 gap-x-8 gap-y-4 px-8">
+      <ToggleDB />
+      <div className="col-span-full col-start-2 flex items-center justify-between">
+        <Suspense key={anio} fallback={<SkeletonStudentsTable />}>
+          <StudentsTable anio={anio} />
+        </Suspense>
+      </div>
     </div>
   )
 }
