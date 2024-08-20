@@ -35,21 +35,21 @@ function StudentsTable<TData, TValue>({
   })
 
   return (
-    <div className='h-[80vh] rounded-lg border shadow-sm'>
-      <ScrollArea className='h-full'>
-        <Table className='flex w-full flex-col'>
-          <TableHeader className='sticky top-0 w-full bg-background shadow-sm shadow-primary/40'>
+    <div className="h-[80vh] rounded-lg border shadow-sm">
+      <ScrollArea className="h-full">
+        <Table className="flex w-full flex-col">
+          <TableHeader className="sticky top-0 w-full bg-background shadow-sm shadow-primary/40">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className='flex items-center px-2 py-3'
+                className="flex items-center px-2 py-3"
               >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
                       align={header.column.columnDef.meta?.align || 'left'}
-                      className='h-fit border px-0'
+                      className="h-fit border px-0"
                       style={{
                         width: `${header.column.getSize()}px`,
                         marginInline: header.column.getIsPinned()
@@ -69,18 +69,18 @@ function StudentsTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className='w-full'>
+          <TableBody className="w-full">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className='flex px-2'
+                  className="flex px-2"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className='border px-0'
+                      className="border px-0"
                       style={{
                         width: `${cell.column.getSize()}px`,
                         marginInline: cell.column.getIsPinned()
@@ -100,7 +100,7 @@ function StudentsTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className='h-24 text-center'
+                  className="h-24 text-center"
                 >
                   No results.
                 </TableCell>
@@ -108,7 +108,7 @@ function StudentsTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <ScrollBar orientation='horizontal' />
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>
   )

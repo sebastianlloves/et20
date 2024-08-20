@@ -29,7 +29,7 @@ export const columns: ColumnDef<Student>[] = [
           table.toggleAllRowsExpanded(!table.getIsSomeRowsExpanded())
         }
         isOpen={table.getIsSomeRowsExpanded()}
-        className='text-foreground'
+        className="text-foreground"
       />
     ),
     cell: ({ row, getValue }) => (
@@ -37,7 +37,7 @@ export const columns: ColumnDef<Student>[] = [
         handleClick={() => row.toggleExpanded()}
         isOpen={row.getIsExpanded() && getValue<string[]>().length > 0}
         disabled={getValue<string[]>().length === 0}
-        className='-mt-1.5 text-foreground/80'
+        className="-mt-1.5 text-foreground/80"
       />
     ),
     size: 35,
@@ -52,7 +52,7 @@ export const columns: ColumnDef<Student>[] = [
     accessorFn: ({ anio, division }) => `${anio} ${division}`,
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ getValue }) => (
-      <Badge variant='outline' className='text-nowrap rounded-md px-3 py-1'>
+      <Badge variant="outline" className="text-nowrap rounded-md px-3 py-1">
         {getValue<string>()}
       </Badge>
     ),
@@ -70,9 +70,9 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const { apellido, nombre } = row.original
       return (
-        <div className='h-full text-nowrap'>
-          <p className='font-medium'>{apellido}</p>
-          <p className='font-normal text-muted-foreground'>{nombre}</p>
+        <div className="h-full text-nowrap">
+          <p className="font-medium">{apellido}</p>
+          <p className="font-normal text-muted-foreground">{nombre}</p>
         </div>
       )
     },
@@ -88,7 +88,7 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: 'dni',
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ row }) => (
-      <p className='text-xs leading-relaxed text-muted-foreground'>
+      <p className="text-xs leading-relaxed text-muted-foreground">
         {row.original.dni}
       </p>
     ),
@@ -155,5 +155,22 @@ export const columns: ColumnDef<Student>[] = [
     meta: {
       title: 'Repitencia',
     },
+  },
+  {
+    id: 'promocion',
+    accessorFn: (row) => {
+      const { cantTroncales, cantGenerales } = row
+      if (cantTroncales === null || cantGenerales === null)
+        return 'faltan datos'
+      return cantTroncales <= 2 && cantTroncales + cantGenerales <= 4
+        ? 'promociona'
+        : 'permanece'
+    },
+    header: ({ column }) => <ColumnHead column={column} />,
+    size: 150,
+    meta: {
+      title: 'Promoción',
+    },
+    sortingFn: 'text',
   },
 ]

@@ -17,11 +17,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <body
         className={cn(
           /* inter.className,  */ openSans.className,
@@ -29,12 +27,12 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
+          attribute="class"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <header className='flex justify-end p-2'>
+          <header className="flex justify-end p-2">
             <ModeToggle />
           </header>
           <main>{children}</main>

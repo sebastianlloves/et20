@@ -1,6 +1,6 @@
 {
-  "extends": ["next/core-web-vitals", "prettier", "standard/.eslintrc"],
+  "extends": ["next/core-web-vitals", "standard/.eslintrc", "prettier"],
   "rules": {
-    "space-before-function-paren": "warn"
+    "space-before-function-paren": "off"
   }
 }
