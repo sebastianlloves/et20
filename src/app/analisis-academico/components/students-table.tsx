@@ -1,5 +1,5 @@
 import { fetchStudentsData } from '@/lib/data'
-import DataTable from './data-table'
+import DataTable from '../../../components/ui/data-table'
 import { columns } from './columns'
 
 interface StudentsTableProps {

@@ -1,7 +1,7 @@
 'use client'
 
 import { columns } from '../columns'
-import DataTable from '../data-table'
+import DataTable from '../../../../components/ui/data-table'
 import { Column } from '@tanstack/react-table'
 import { Student } from '@/lib/definitions'
 import { Skeleton } from '@/components/ui/skeleton'

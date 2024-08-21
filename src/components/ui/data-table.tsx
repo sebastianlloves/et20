@@ -31,7 +31,6 @@ function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    initialState: {},
   })
 
   return (
@@ -42,7 +41,7 @@ function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="flex items-center bg-popover px-2 py-3 hover:bg-popover"
+                className="flex items-center bg-popover p-2 hover:bg-popover"
               >
                 {headerGroup.headers.map((header) => {
                   return (
