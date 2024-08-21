@@ -1,5 +1,5 @@
 import { fetchStudentsData } from '@/lib/data'
-import DataTable from './table'
+import DataTable from './data-table'
 import { columns } from './columns'
 
 interface StudentsTableProps {

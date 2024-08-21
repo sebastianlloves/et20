@@ -35,7 +35,7 @@ function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="h-[80vh] rounded-lg border shadow-sm">
+    <div className="h-[80vh] w-full rounded-lg border shadow-sm">
       <ScrollArea className="h-full">
         <Table className="flex w-full flex-col bg-card">
           <TableHeader className="sticky top-0 z-10 w-full border-b border-primary/70 shadow-sm shadow-primary/40">
