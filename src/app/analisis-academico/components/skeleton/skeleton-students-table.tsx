@@ -15,7 +15,7 @@ function SkeletonStudentsTable() {
         <div
           className={`flex h-10 items-center ${column.columnDef.meta?.align === 'right' ? 'justify-end' : 'justify-start'}`}
         >
-          <Skeleton className="h-2 w-full rounded-full" />
+          <Skeleton className="h-2 w-full rounded-full bg-primary/30" />
         </div>
       ),
     }
