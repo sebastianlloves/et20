@@ -3,6 +3,7 @@ import { formatStudentsResponse } from './utils'
 
 export async function fetchStudentsData(anio: string) {
   const response = await fetch(DB[anio], {
+    cache: 'force-cache',
     next: { tags: ['db2023'] },
   })
   const textData = await response.text()
