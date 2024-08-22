@@ -35,7 +35,7 @@ function DataTable<TData, TValue>({
 
   return (
     <div className="h-[80vh] w-full rounded-lg border shadow-sm">
-      <ScrollArea className="h-full">
+      <ScrollArea className="h-full bg-card">
         <Table className="flex w-full flex-col bg-card">
           <TableHeader className="sticky top-0 z-10 w-full border-b border-primary/70 shadow-sm shadow-primary/40">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -96,18 +96,19 @@ function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className="flex items-center justify-center">
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 py-6 text-center italic text-muted-foreground"
                 >
-                  No results.
+                  No hay resultados para la búsqueda realizada
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
+        <ScrollBar className="p-0" orientation="vertical" />
+        <ScrollBar className="p-0" orientation="horizontal" />
       </ScrollArea>
     </div>
   )

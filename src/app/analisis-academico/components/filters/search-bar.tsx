@@ -10,13 +10,12 @@ function SearchBar() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { replace } = useRouter()
-  console.log(searchParams.get('query'))
 
   const handleChange = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams)
     term ? params.set('query', term) : params.delete('query')
     replace(`${pathname}?${params.toString()}`)
-  }, 300)
+  }, 500)
 
   const handleDeleteSearch = () => {
     const params = new URLSearchParams(searchParams)

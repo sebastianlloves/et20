@@ -23,7 +23,7 @@ export default function RootLayout({
       <body
         className={cn(
           /* inter.className,  */ openSans.className,
-          'min-h-screen bg-background font-openSans antialiased',
+          'min-h-screen bg-background-main font-openSans antialiased',
         )}
       >
         <ThemeProvider

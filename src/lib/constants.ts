@@ -1,3 +1,5 @@
+import { isCursosKey } from "./typeGuards"
+
 export const DB: { [key: string]: string } = {
   '2024':
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=0&single=true&output=tsv',
@@ -377,3 +379,15 @@ export const MATERIAS_POR_CURSO = {
     },
   ],
 }
+
+export const CURSOS_POR_ANIO = (() => {
+  return Object.fromEntries(
+    Object.keys(CURSOS)
+      .filter((key) => isCursosKey(key))
+      .map((anio) => [
+        anio,
+        CURSOS[anio].map((objCurso) => objCurso.curso),
+      ]),
+  )
+})()
+
