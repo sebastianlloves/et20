@@ -11,15 +11,16 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 function CursosContent() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const cursosParams = searchParams.get('cursos')
-  console.log(cursosParams)
+  const searchParams = new URLSearchParams(useSearchParams())
+  const cursosParams = searchParams.get('cursos')?.split(",") || []
   const { replace } = useRouter()
 
-  const handleCheck = (curso: string) => {
-    const params = new URLSearchParams(searchParams)
-    if( !cursosParams) params.set('cursos', [curso, 2, 3].toString())
-    replace(`${pathname}?${params.toString()}`)
+  const updateParams = (curso: string) => {
+    const newCursosState = cursosParams.includes(curso)
+      ? cursosParams.filter((prevParam) => prevParam !== curso)
+      : [...cursosParams, curso]
+    newCursosState.length === 0 ? searchParams.delete('cursos') : searchParams.set('cursos', newCursosState.join(','))
+    replace(`${pathname}?${searchParams.toString()}`)
   }
 
   return (
@@ -35,7 +36,8 @@ function CursosContent() {
                 key={curso}
                 className="cursor-pointer"
                 onSelect={(e) => e.preventDefault()}
-                onCheckedChange={() => handleCheck(curso)}
+                checked={cursosParams.includes(curso)}
+                onCheckedChange={() => updateParams(curso)}
               >
                 {curso}
               </DropdownMenuCheckboxItem>
