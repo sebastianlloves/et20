@@ -1,7 +1,7 @@
 import { DB } from './constants'
 import { formatStudentsResponse } from './utils'
 
-export async function fetchStudentsData(anio: string) {
+export async function fetchStudentsData(anio: string = '2024') {
   const response = await fetch(DB[anio], {
     cache: 'force-cache',
     next: { tags: ['db2023'] },

@@ -1,5 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ListFilter } from 'lucide-react'
+import { ListFilter, Users } from 'lucide-react'
 import DropdownFilter from './dropdown-filter'
 import CursosContent from './cursos-content'
 
@@ -13,7 +13,7 @@ function FiltersPanel() {
             Filtros
           </h4>
         </div>
-        <DropdownFilter title='Cursos' content={<CursosContent />} >a</DropdownFilter>
+        <DropdownFilter title='Cursos' content={<CursosContent />} icon={<Users size={15} strokeWidth={1.4} />} >a</DropdownFilter>
       </div>
     </ScrollArea>
   )

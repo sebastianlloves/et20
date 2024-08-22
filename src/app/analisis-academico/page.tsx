@@ -5,16 +5,21 @@ import { Suspense } from 'react'
 import SearchBar from './components/filters/search-bar'
 import FiltersPanel from './components/filters/filters-panel'
 
-interface PageProps {
+export type PageProps = {
   searchParams?: {
-    anio?: string,
+    anio?: string
     query?: string
+    cursos?: string
   }
 }
 
 export default function Page({ searchParams }: PageProps) {
-  const anio = searchParams?.anio || '2024'
-  const query = searchParams?.query
+  const filters = {
+    anio: searchParams?.anio,
+    query: searchParams?.query,
+    cursos: searchParams?.cursos?.split(','),
+  }
+  console.log(Object.entries(filters).toString())
 
   return (
     <div className="grid w-full grid-cols-7 gap-x-8 gap-y-4 px-8">
@@ -24,8 +29,11 @@ export default function Page({ searchParams }: PageProps) {
       </div>
       <FiltersPanel />
       <div className="col-span-full col-start-2">
-        <Suspense key={anio} fallback={<SkeletonStudentsTable />}>
-          <StudentsTable anio={anio} query={query} />
+        <Suspense
+          key={Object.entries(filters).toString()}
+          fallback={<SkeletonStudentsTable />}
+        >
+          <StudentsTable filters={filters} />
         </Suspense>
       </div>
     </div>
