@@ -13,6 +13,7 @@ function CursosContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const cursosParams = searchParams.get('cursos')
+  console.log(cursosParams)
   const { replace } = useRouter()
 
   const handleCheck = (curso: string) => {
