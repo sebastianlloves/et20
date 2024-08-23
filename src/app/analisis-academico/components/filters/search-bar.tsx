@@ -11,17 +11,11 @@ function SearchBar() {
   const searchParams = useSearchParams()
   const { replace } = useRouter()
 
-  const handleChange = useDebouncedCallback((term: string) => {
+  const updateUrlParams = useDebouncedCallback((term?: string) => {
     const params = new URLSearchParams(searchParams)
-    term ? params.set('query', term) : params.delete('query')
+    term ? params.set('search', term) : params.delete('search')
     replace(`${pathname}?${params.toString()}`)
   }, 500)
-
-  const handleDeleteSearch = () => {
-    const params = new URLSearchParams(searchParams)
-    params.delete('query')
-    replace(`${pathname}?${params.toString()}`)
-  }
 
   return (
     <div className="relative flex w-1/3">
@@ -34,18 +28,18 @@ function SearchBar() {
         className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/80"
       />
       <Input
-        key={searchParams.get('query')}
+        key={searchParams.get('search')}
         name="search"
         className="peer block bg-popover pl-12 pr-9"
         placeholder="Buscar estudiante por nombre o DNI"
-        defaultValue={searchParams.get('query')?.toString()}
-        onChange={(e) => handleChange(e.target.value)}
+        defaultValue={searchParams.get('search')?.toString()}
+        onChange={(e) => updateUrlParams(e.target.value)}
       />
       <Button
         variant="ghost"
-        disabled={!searchParams.get('query')}
+        disabled={!searchParams.get('search')}
         className="absolute right-3 top-1/2 -translate-y-1/2 p-0 text-muted-foreground hover:bg-inherit hover:text-foreground"
-        onClick={handleDeleteSearch}
+        onClick={() => updateUrlParams()}
       >
         <X size={16} />
       </Button>

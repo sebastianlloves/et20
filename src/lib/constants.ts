@@ -1,4 +1,5 @@
-import { isCursosKey } from "./typeGuards"
+import { Student, StudentsTableFilters } from './definitions'
+import { isCursosKey } from './typeGuards'
 
 export const DB: { [key: string]: string } = {
   '2024':
@@ -384,10 +385,45 @@ export const CURSOS_POR_ANIO = (() => {
   return Object.fromEntries(
     Object.keys(CURSOS)
       .filter((key) => isCursosKey(key))
-      .map((anio) => [
-        anio,
-        CURSOS[anio].map((objCurso) => objCurso.curso),
-      ]),
+      .map((anio) => [anio, CURSOS[anio].map((objCurso) => objCurso.curso)]),
   )
 })()
 
+export const FILTERS_FNS = {
+  search: {
+    formatFn: (searchString: string) =>
+      searchString.split(' ').map((string) =>
+        string
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, ''),
+      ),
+    filterFn: (
+      student: Student,
+      filterValue: StudentsTableFilters['search'],
+    ) => {
+      if (filterValue === undefined) return true
+      const { apellido, nombre, dni } = student
+      return filterValue.every(
+        (string: string) =>
+          apellido?.toLowerCase().includes(string) ||
+          nombre?.toLowerCase().includes(string) ||
+          `${dni}`.includes(string),
+      )
+    },
+  },
+  cursos: {
+    formatFn: (cursos: string) => cursos.split(',').sort(),
+    filterFn: (
+      student: Student,
+      filterValue: StudentsTableFilters['cursos'],
+    ) => {
+      return filterValue === undefined
+        ? true
+        : filterValue.includes(
+            `${student.anio?.[0]}° ${student.division?.[0]}°`,
+          )
+    },
+  },
+}

@@ -12,14 +12,15 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 function CursosContent() {
   const pathname = usePathname()
   const searchParams = new URLSearchParams(useSearchParams())
-  const cursosParams = searchParams.get('cursos')?.split(",") || []
+  const cursosParams = searchParams.get('cursos')?.split(',') || []
   const { replace } = useRouter()
-
   const updateParams = (curso: string) => {
     const newCursosState = cursosParams.includes(curso)
       ? cursosParams.filter((prevParam) => prevParam !== curso)
       : [...cursosParams, curso]
-    newCursosState.length === 0 ? searchParams.delete('cursos') : searchParams.set('cursos', newCursosState.join(','))
+    newCursosState.length === 0
+      ? searchParams.delete('cursos')
+      : searchParams.set('cursos', newCursosState.join(','))
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
