@@ -24,9 +24,8 @@ function FiltersPanel({ filters }: FiltersPanelProps) {
           title="Cursos"
           content={<CursosContent />}
           icon={<Users size={15} strokeWidth={1.4} />}
-        >
-          <p>{JSON.stringify(cursosParams)}</p>
-        </DropdownFilter>
+          filterValues={cursosParams}
+        />
       </div>
     </ScrollArea>
   )

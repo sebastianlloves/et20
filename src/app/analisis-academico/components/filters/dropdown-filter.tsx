@@ -6,15 +6,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
+import TagsBox from './tags-box'
 
 interface FilterBoxProps {
-  children: ReactNode | ReactNode[]
   content?: ReactNode | ReactNode[]
   title: string
   icon?: ReactNode
+  filterValues?: string[]
 }
 
-function DropdownFilter({ children, title, content, icon }: FilterBoxProps) {
+function DropdownFilter({ title, content, icon, filterValues }: FilterBoxProps) {
   return (
     <div className="w-full rounded-md border">
       <DropdownMenu>
@@ -39,9 +40,8 @@ function DropdownFilter({ children, title, content, icon }: FilterBoxProps) {
           {content}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {children}
       
+      <TagsBox tags={filterValues} />      
     </div>
   )
 }
