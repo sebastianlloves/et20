@@ -426,4 +426,4 @@ export const FILTERS_FNS = {
           )
     },
   },
-}
+} as const
