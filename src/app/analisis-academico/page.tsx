@@ -6,15 +6,13 @@ import SearchBar from './components/filters/search-bar'
 import FiltersPanel from './components/filters/filters-panel'
 import { getFiltersFromParams } from '@/lib/utils'
 
-export interface PageProps {
-  searchParams?: {
-    anio?: string
-    search?: string
-    cursos?: string
-  }
+export interface SearchParams {
+  anio?: string
+  search?: string
+  cursos?: string
 }
 
-export default function Page({ searchParams }: PageProps) {
+export default function Page({ searchParams }: { searchParams: SearchParams }) {
   const filters = getFiltersFromParams(searchParams)
 
   return (

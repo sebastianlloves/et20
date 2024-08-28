@@ -9,7 +9,6 @@ interface FiltersPanelProps {
 }
 
 function FiltersPanel({ filters }: FiltersPanelProps) {
-  const cursosParams = filters?.cursos
 
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-background shadow-sm">
@@ -24,7 +23,7 @@ function FiltersPanel({ filters }: FiltersPanelProps) {
           title="Cursos"
           content={<CursosContent />}
           icon={<Users size={15} strokeWidth={1.4} />}
-          filterValues={cursosParams}
+          filterTags={filters?.cursos}
         />
       </div>
     </ScrollArea>

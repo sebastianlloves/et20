@@ -391,14 +391,16 @@ export const CURSOS_POR_ANIO = (() => {
 
 export const FILTERS_FNS = {
   search: {
-    formatFn: (searchString: string) =>
-      searchString.split(' ').map((string) =>
-        string
-          .trim()
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''),
-      ),
+    formatValueFn: (searchString?: string) =>
+      searchString
+        ? searchString.split(' ').map((string) =>
+            string
+              .trim()
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, ''),
+          )
+        : undefined,
     filterFn: (
       student: Student,
       filterValue: StudentsTableFilters['search'],
@@ -414,7 +416,8 @@ export const FILTERS_FNS = {
     },
   },
   cursos: {
-    formatFn: (cursos: string) => cursos.split(',').sort(),
+    formatValueFn: (cursos?: string) =>
+      cursos ? cursos.split(',').sort() : undefined,
     filterFn: (
       student: Student,
       filterValue: StudentsTableFilters['cursos'],
