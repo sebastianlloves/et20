@@ -46,7 +46,7 @@ function DropdownFilter({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {filterTags && <TagsBox tags={filterTags} />}
+      {filterTags && <TagsBox tags={filterTags} maxTags={4} />}
     </div>
   )
 }
