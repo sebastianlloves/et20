@@ -99,7 +99,7 @@ export const getFiltersFromParams = (
   params: SearchParams,
 ): StudentsTableFilters => {
   const formatedValues = {
-    anio: params?.anio,
+    anio: params?.anio || '2024',
     search: FILTERS_FNS.search.formatValueFn(params?.search),
     cursos: FILTERS_FNS.cursos.formatValueFn(params?.cursos),
   }

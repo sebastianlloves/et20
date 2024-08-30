@@ -10,6 +10,7 @@ export interface SearchParams {
   anio?: string
   search?: string
   cursos?: string
+  promocion?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
@@ -24,7 +25,7 @@ export default function Page({ searchParams }: { searchParams: SearchParams }) {
       <FiltersPanel filters={filters} />
       <div className="col-span-full col-start-2">
         <Suspense
-          key={Object.entries(filters).toString()}
+          key={JSON.stringify(filters)}
           fallback={<SkeletonStudentsTable />}
         >
           <StudentsTable filters={filters} />

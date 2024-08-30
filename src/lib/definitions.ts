@@ -14,7 +14,8 @@ export type Student = {
 }
 
 export type StudentsTableFilters = {
-  anio?: string
+  anio: string
   search?: string[]
   cursos?: string[]
+  promocion?: string[]
 }

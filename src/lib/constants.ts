@@ -421,12 +421,35 @@ export const FILTERS_FNS = {
     filterFn: (
       student: Student,
       filterValue: StudentsTableFilters['cursos'],
-    ) => {
-      return filterValue === undefined
+    ) =>
+      filterValue === undefined
         ? true
         : filterValue.includes(
             `${student.anio?.[0]}° ${student.division?.[0]}°`,
-          )
+          ),
+  },
+  promocion: {
+    formatValueFn: (promocionValue?: string) => promocionValue,
+    filterFn: (
+      student: Student,
+      filterValue: StudentsTableFilters['promocion'],
+    ) => {
+      if (
+        filterValue === undefined ||
+        student.cantTroncales === null ||
+        student.cantGenerales === null
+      )
+        return true
+      const [value] = filterValue
+      if (value === 'solo promocionan')
+        return (
+          student.cantTroncales <= 2 &&
+          student.cantTroncales + student.cantTroncales <= 4
+        )
+      return (
+        student.cantTroncales > 2 ||
+        student.cantTroncales + student.cantTroncales > 4
+      )
     },
   },
 } as const

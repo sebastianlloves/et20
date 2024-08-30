@@ -10,15 +10,14 @@ export default async function StudentsTable({
   filters: StudentsTableFilters
 }) {
   const { anio, ...columnsFilters } = filters
-  const filtersData = Object.entries(columnsFilters).map(([id, value]) => {
-    return {
-      filterFn: FILTERS_FNS[id as keyof typeof FILTERS_FNS].filterFn,
-      value,
-    }
-  })
   const data = await fetchStudentsData(anio)
   const filteredData = data.filter((student) =>
-    filtersData.every(({ filterFn, value }) => filterFn(student, value)),
+    Object.entries(columnsFilters).every(([filterID, filterValue]) =>
+      FILTERS_FNS[filterID as keyof typeof FILTERS_FNS].filterFn(
+        student,
+        filterValue,
+      ),
+    ),
   )
 
   return <DataTable columns={columns} data={filteredData} />

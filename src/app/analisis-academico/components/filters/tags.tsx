@@ -20,51 +20,13 @@ function TagsBox({ tags, maxTags }: { tags: string[]; maxTags: number }) {
   )
 }
 
-function TagBadge({
-  tag,
-  quantity,
-  hasRemove = true,
-}: {
-  tag: string
-  quantity?: number
-  hasRemove?: boolean
-}) {
-  return (
-    <Badge
-      variant="default"
-      className="max-w-full justify-center rounded-2xl border-primary/70 bg-primary/10 py-1.5 px-2 font-normal leading-tight shadow-sm hover:bg-primary/10"
-    >
-      <div className="flex h-full items-center justify-start gap-x-2">
-        <div className="flex items-center justify-between gap-2.5 px-1 leading-3">
-          <p className="align-middle text-foreground">{tag}</p>
-          {quantity && (
-            <p className="pt-[3px] align-middle font-mono text-xs text-muted-foreground">
-              {`(${quantity})`}
-            </p>
-          )}
-        </div>
-
-        {hasRemove && (
-          <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
-            <Remove
-              paramName="cursos"
-              value={tag}
-              className="h-[13px] w-[13px] text-foreground/60 hover:text-foreground/90"
-            />
-          </div>
-        )}
-      </div>
-    </Badge>
-  )
-}
-
 function AllTags({ tags }: { tags: string[] }) {
   return (
-    <div className="my-1 w-full">
+    <div className="w-full">
       {tags.length > 1 && (
         <Remove
           paramName="cursos"
-          className="ml-auto mr-2.5 h-3.5 w-3.5 text-foreground/80 hover:text-foreground"
+          className="ml-auto mr-2.5 h-4 w-4 text-foreground/80 hover:text-foreground"
         />
       )}
       <div className="flex flex-wrap justify-start gap-1.5 overflow-hidden">
@@ -90,6 +52,44 @@ function AccordionTags({ tags }: { tags: string[] }) {
         </AccordionContent>
       </AccordionItem>
     </Accordion>
+  )
+}
+
+function TagBadge({
+  tag,
+  quantity,
+  hasRemove = true,
+}: {
+  tag: string
+  quantity?: number
+  hasRemove?: boolean
+}) {
+  return (
+    <Badge
+      variant="default"
+      className="max-w-full justify-center rounded-2xl border-primary/70 bg-primary/10 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10"
+    >
+      <div className="flex h-full items-center justify-start gap-x-2">
+        <div className="flex items-center justify-between gap-2.5 px-1 leading-3">
+          <p className="align-middle text-foreground">{tag}</p>
+          {quantity && (
+            <p className="pt-[3px] align-middle font-mono text-xs text-muted-foreground">
+              {`(${quantity})`}
+            </p>
+          )}
+        </div>
+
+        {hasRemove && (
+          <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
+            <Remove
+              paramName="cursos"
+              value={tag}
+              className="h-[13px] w-[13px] text-foreground/60 hover:text-foreground/90"
+            />
+          </div>
+        )}
+      </div>
+    </Badge>
   )
 }
 
