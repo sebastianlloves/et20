@@ -97,11 +97,20 @@ export function formatStudentsResponse(textResponse: string): Student[] {
 
 export const getFiltersFromParams = (
   params: SearchParams,
-): StudentsTableFilters => {
+) => {
   const formatedValues = {
-    anio: params?.anio || '2024',
-    search: FILTERS_FNS.search.formatValueFn(params?.search),
-    cursos: FILTERS_FNS.cursos.formatValueFn(params?.cursos),
+    anio: { value: params?.anio || '2024' },
+    search: {
+      value: FILTERS_FNS.search.formatValueFn(params?.search),
+      filterFn: FILTERS_FNS.search.filterFn,
+    },
+    cursos: {
+      value: FILTERS_FNS.cursos.formatValueFn(params?.cursos),
+      filterFn: FILTERS_FNS.cursos.filterFn,
+    },
+    promocion: {
+      value: FILTERS_FNS.promocion.formatValueFn(params?.promocion),
+    },
   }
-  return JSON.parse(JSON.stringify(formatedValues))
+  return Object.fromEntries(Object.entries(formatedValues).filter(([_key, obj]) => obj.value !== undefined))
 }

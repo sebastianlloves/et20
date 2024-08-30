@@ -13,6 +13,7 @@ function PromocionContent() {
   const promocionParams = searchParams.get('promocion')
 
   const handleChange = (value: string) => {
+    if(params.get('promocion'))
   }
 
   return (
