@@ -7,7 +7,7 @@ import { FILTERS_FNS } from '@/lib/constants'
 export default async function StudentsTable({
   filters,
 }: {
-  filters: StudentsTableFilters
+  filters: { value: string | string[]; filterFn?: typeof FILTERS_FNS[keyof typeof FILTERS_FNS]['filterFn'] }
 }) {
   const { anio, ...columnsFilters } = filters
   const data = await fetchStudentsData(anio)
