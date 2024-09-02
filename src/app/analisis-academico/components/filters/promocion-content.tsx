@@ -13,11 +13,17 @@ function PromocionContent() {
   const promocionParams = searchParams.get('promocion')
 
   const handleChange = (value: string) => {
-    if(params.get('promocion'))
+    promocionParams === value
+      ? searchParams.delete('promocion')
+      : searchParams.set('promocion', value)
+    replace(`${pathname}?${searchParams.toString()}`)
   }
 
   return (
-    <DropdownMenuRadioGroup value="solo permanecen" onValueChange={(value) => handleChange(value)}>
+    <DropdownMenuRadioGroup
+      value={promocionParams || undefined}
+      onValueChange={(value) => handleChange(value)}
+    >
       <DropdownMenuRadioItem
         value="solo promocionan"
         onSelect={(e) => e.preventDefault()}

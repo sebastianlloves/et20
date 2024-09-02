@@ -1,21 +1,21 @@
 import { fetchStudentsData } from '@/lib/data'
 import DataTable from '../../../components/ui/data-table'
 import { columns } from './columns'
-import { StudentsTableFilters } from '@/lib/definitions'
 import { FILTERS_FNS } from '@/lib/constants'
+import { SearchParams } from '../page'
 
 export default async function StudentsTable({
-  filters,
+  searchParams,
 }: {
-  filters: { value: string | string[]; filterFn?: typeof FILTERS_FNS[keyof typeof FILTERS_FNS]['filterFn'] }
+  searchParams: SearchParams
 }) {
-  const { anio, ...columnsFilters } = filters
+  const { anio, ...filterParams } = searchParams
   const data = await fetchStudentsData(anio)
   const filteredData = data.filter((student) =>
-    Object.entries(columnsFilters).every(([filterID, filterValue]) =>
-      FILTERS_FNS[filterID as keyof typeof FILTERS_FNS].filterFn(
+    Object.entries(filterParams).every(([filterName, filterParam]) =>
+      FILTERS_FNS[filterName as keyof typeof FILTERS_FNS].filterFn(
         student,
-        filterValue,
+        filterParam,
       ),
     ),
   )

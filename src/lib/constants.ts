@@ -1,4 +1,4 @@
-import { Student, StudentsTableFilters } from './definitions'
+import { Student } from './definitions'
 import { isCursosKey } from './typeGuards'
 
 export const DB: { [key: string]: string } = {
@@ -391,21 +391,14 @@ export const CURSOS_POR_ANIO = (() => {
 
 export const FILTERS_FNS = {
   search: {
-    formatValueFn: (searchString?: string) =>
-      searchString
-        ? searchString.split(' ').map((string) =>
-            string
-              .trim()
-              .toLowerCase()
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, ''),
-          )
-        : undefined,
-    filterFn: (
-      student: Student,
-      filterValue: StudentsTableFilters['search'],
-    ) => {
-      if (filterValue === undefined) return true
+    filterFn: (student: Student, searchParam: string) => {
+      const filterValue = searchParam.split(' ').map((string) =>
+        string
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, ''),
+      )
       const { apellido, nombre, dni } = student
       return filterValue.every(
         (string: string) =>
@@ -416,32 +409,18 @@ export const FILTERS_FNS = {
     },
   },
   cursos: {
-    formatValueFn: (cursos?: string) =>
-      cursos ? cursos.split(',').sort() : undefined,
-    filterFn: (
-      student: Student,
-      filterValue: StudentsTableFilters['cursos'],
-    ) =>
-      filterValue === undefined
-        ? true
-        : filterValue.includes(
-            `${student.anio?.[0]}° ${student.division?.[0]}°`,
-          ),
+    filterFn: (student: Student, cursosParam: string) => {
+      const filterValue = cursosParam.split(',').sort()
+      return filterValue.includes(
+        `${student.anio?.[0]}° ${student.division?.[0]}°`,
+      )
+    },
   },
   promocion: {
-    formatValueFn: (promocionValue?: string) => promocionValue,
-    filterFn: (
-      student: Student,
-      filterValue: StudentsTableFilters['promocion'],
-    ) => {
-      if (
-        filterValue === undefined ||
-        student.cantTroncales === null ||
-        student.cantGenerales === null
-      )
+    filterFn: (student: Student, promocionParam: string) => {
+      if (student.cantTroncales === null || student.cantGenerales === null)
         return true
-      const [value] = filterValue
-      if (value === 'solo promocionan')
+      if (promocionParam === 'solo promocionan')
         return (
           student.cantTroncales <= 2 &&
           student.cantTroncales + student.cantTroncales <= 4

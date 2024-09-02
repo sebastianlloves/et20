@@ -1,20 +1,11 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ListFilter, Users } from 'lucide-react'
+import { BadgeCheck, ListFilter, Users } from 'lucide-react'
 import DropdownFilter from './dropdown-filter'
 import CursosContent from './cursos-content'
-import { StudentsTableFilters } from '@/lib/definitions'
 import PromocionContent from './promocion-content'
+import { SearchParams } from '../../page'
 
-function FiltersPanel({ filters }: { filters?: StudentsTableFilters }) {
-  /* const { anio, ...columnsFilters } = filters || {}
-  const filtersData = Object.entries(columnsFilters).map(([id, value]) => {
-    return {
-      filterFn: FILTERS_FNS[id as keyof typeof FILTERS_FNS].filterFn,
-      value,
-    }
-  })
-  console.log(filtersData) */
-
+function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
       <div className="flex flex-col items-start justify-start gap-y-4 px-2 py-4">
@@ -26,15 +17,25 @@ function FiltersPanel({ filters }: { filters?: StudentsTableFilters }) {
         </div>
         <DropdownFilter
           title="Cursos"
+          paramName="cursos"
           content={<CursosContent />}
           icon={<Users size={15} strokeWidth={1.4} />}
-          filterTags={filters?.cursos}
+          filterTags={searchParams?.cursos?.split(',').sort()}
         />
         <DropdownFilter
-          title="Promocion"
+          title="Promoción"
+          paramName="promocion"
           content={<PromocionContent />}
-          icon={<Users size={15} strokeWidth={1.4} />}
-          filterTags={filters?.cursos}
+          icon={<BadgeCheck size={18} strokeWidth={1.0} />}
+          filterTags={
+            searchParams?.promocion
+              ? [
+                  searchParams.promocion === 'solo promocionan'
+                    ? 'Sólo estudiantes que promocionan'
+                    : 'Sólo estudiantes que permanecen',
+                ]
+              : undefined
+          }
         />
       </div>
     </ScrollArea>

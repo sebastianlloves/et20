@@ -1,8 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Student, StudentsTableFilters } from './definitions'
-import { SearchParams } from '@/app/analisis-academico/page'
-import { FILTERS_FNS } from './constants'
+import { Student } from './definitions'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -95,22 +93,3 @@ export function formatStudentsResponse(textResponse: string): Student[] {
   )
 }
 
-export const getFiltersFromParams = (
-  params: SearchParams,
-) => {
-  const formatedValues = {
-    anio: { value: params?.anio || '2024' },
-    search: {
-      value: FILTERS_FNS.search.formatValueFn(params?.search),
-      filterFn: FILTERS_FNS.search.filterFn,
-    },
-    cursos: {
-      value: FILTERS_FNS.cursos.formatValueFn(params?.cursos),
-      filterFn: FILTERS_FNS.cursos.filterFn,
-    },
-    promocion: {
-      value: FILTERS_FNS.promocion.formatValueFn(params?.promocion),
-    },
-  }
-  return Object.fromEntries(Object.entries(formatedValues).filter(([_key, obj]) => obj.value !== undefined))
-}

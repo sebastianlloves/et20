@@ -4,7 +4,6 @@ import ToggleDB from './components/toggle-db'
 import { Suspense } from 'react'
 import SearchBar from './components/filters/search-bar'
 import FiltersPanel from './components/filters/filters-panel'
-import { getFiltersFromParams } from '@/lib/utils'
 
 export interface SearchParams {
   anio?: string
@@ -14,7 +13,6 @@ export interface SearchParams {
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
-  const filters = getFiltersFromParams(searchParams)
 
   return (
     <div className="grid w-full grid-cols-7 gap-x-8 gap-y-4 px-8">
@@ -22,13 +20,13 @@ export default function Page({ searchParams }: { searchParams: SearchParams }) {
       <div className="col-span-full col-start-2">
         <SearchBar />
       </div>
-      <FiltersPanel filters={filters} />
+      <FiltersPanel searchParams={searchParams} />
       <div className="col-span-full col-start-2">
         <Suspense
-          key={JSON.stringify(filters)}
+          key={JSON.stringify(searchParams)}
           fallback={<SkeletonStudentsTable />}
         >
-          <StudentsTable filters={filters} />
+          <StudentsTable searchParams={searchParams} />
         </Suspense>
       </div>
     </div>
