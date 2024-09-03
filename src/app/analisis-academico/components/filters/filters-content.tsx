@@ -6,21 +6,15 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
-import useParamsState from '@/hooks/useParamsState'
 import { CURSOS_POR_ANIO } from '@/lib/constants'
 
-function CursosContent() {
-  const { pathname, searchParams, replace } = useParamsState()
-  const cursosParams = searchParams.get('cursos')?.split(',') || []
-  const updateParams = (curso: string) => {
-    const newCursosState = cursosParams.includes(curso)
-      ? cursosParams.filter((prevParam) => prevParam !== curso)
-      : [...cursosParams, curso]
-    newCursosState.length === 0
-      ? searchParams.delete('cursos')
-      : searchParams.set('cursos', newCursosState.join(','))
-    replace(`${pathname}?${searchParams.toString()}`)
-  }
+function CursosFilterContent({
+  filterValue,
+  updateParams,
+}: {
+  filterValue: string[]
+  updateParams: (curso: string) => void
+}) {
 
   return (
     <>
@@ -35,7 +29,7 @@ function CursosContent() {
                 key={curso}
                 className="cursor-pointer"
                 onSelect={(e) => e.preventDefault()}
-                checked={cursosParams.includes(curso)}
+                checked={filterValue.includes(curso)}
                 onCheckedChange={() => updateParams(curso)}
               >
                 {curso}
@@ -48,4 +42,4 @@ function CursosContent() {
   )
 }
 
-export default CursosContent
+export { CursosFilterContent }

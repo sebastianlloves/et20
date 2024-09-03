@@ -1,9 +1,10 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { BadgeCheck, ListFilter, Users } from 'lucide-react'
-import DropdownFilter from './dropdown-filter'
-import CursosContent from './cursos-content'
+import Filter from './filter'
 import PromocionContent from './promocion-content'
 import { SearchParams } from '../../page'
+import { CursosFilterContent } from './filters-content'
+import CursosFilter from './cursos-filter'
 
 function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
   return (
@@ -15,14 +16,16 @@ function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
             Filtros
           </h4>
         </div>
-        <DropdownFilter
+        <Filter
           title="Cursos"
           paramName="cursos"
-          content={<CursosContent />}
           icon={<Users size={15} strokeWidth={1.4} />}
           filterTags={searchParams?.cursos?.split(',').sort()}
-        />
-        <DropdownFilter
+        >
+          <CursosFilterContent />
+        </Filter>
+        <CursosFilter />
+        {/* <Filter
           title="Promoción"
           paramName="promocion"
           content={<PromocionContent />}
@@ -36,7 +39,7 @@ function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
                 ]
               : undefined
           }
-        />
+        /> */}
       </div>
     </ScrollArea>
   )

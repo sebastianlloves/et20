@@ -8,21 +8,23 @@ import { ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
 import { TagsBox } from './tags'
 
-interface DropdownFilterProps {
-  content: ReactNode | ReactNode[]
+interface FilterProps {
+  children: ReactNode | ReactNode[]
   title: string
-  paramName: string
   icon?: ReactNode
   filterTags?: string[]
+  handleRemoveTag: (value: string) => void
+  handleRemoveAll: () => void
 }
 
-function DropdownFilter({
+function Filter({
   title,
-  paramName,
-  content,
+  children,
   icon,
   filterTags,
-}: DropdownFilterProps) {
+  handleRemoveTag,
+  handleRemoveAll,
+}: FilterProps) {
   return (
     <div className="w-full rounded-md border">
       <DropdownMenu>
@@ -44,15 +46,20 @@ function DropdownFilter({
           side="right"
           className="rounded-md p-1"
         >
-          {content}
+          {children}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {filterTags && (
-        <TagsBox tags={filterTags} maxTags={4} paramName={paramName} />
+      {filterTags?.length > 0 && (
+        <TagsBox
+          tags={filterTags}
+          maxTags={4}
+          handleRemoveTag={handleRemoveTag}
+          handleRemoveAll={handleRemoveAll}
+        />
       )}
     </div>
   )
 }
 
-export default DropdownFilter
+export default Filter

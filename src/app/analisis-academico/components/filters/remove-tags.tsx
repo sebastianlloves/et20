@@ -22,7 +22,7 @@ function Remove({
     searchParams.delete(paramName)
     replace(`${pathname}?${searchParams}`)
   }
-  const handleRemoveValue = () => {
+  const handleRemoveTag = () => {
     const previousState = searchParams.get(paramName)?.split(',') || []
     const newState = previousState.filter((prevValue) => prevValue !== value)
     newState.length
@@ -35,7 +35,7 @@ function Remove({
     <X
       strokeWidth="1.5px"
       className={cn('cursor-pointer', className)}
-      onClick={value ? handleRemoveValue : handleRemoveAll}
+      onClick={value ? handleRemoveTag : handleRemoveAll}
     />
   )
 }

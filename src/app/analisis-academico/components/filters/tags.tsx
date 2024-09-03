@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Accordion,
   AccordionContent,
@@ -6,40 +8,53 @@ import {
 } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import React from 'react'
-import Remove from './remove-tags'
+import { X } from 'lucide-react'
 
 function TagsBox({
   tags,
   maxTags,
-  paramName,
+  handleRemoveTag,
+  handleRemoveAll,
 }: {
   tags: string[]
   maxTags: number
-  paramName: string
+  handleRemoveTag: (value: string) => void
+  handleRemoveAll: () => void
 }) {
   return (
     <div className="w-full bg-muted/25 p-2 shadow-inner">
       {tags.length <= maxTags ? (
-        <AllTags tags={tags} paramName={paramName} />
+        <AllTags tags={tags} handleRemoveTag={handleRemoveTag} handleRemoveAll={handleRemoveAll} />
       ) : (
-        <AccordionTags tags={tags} paramName={paramName} />
+        <AccordionTags tags={tags}>
+          <AllTags tags={tags} handleRemoveTag={handleRemoveTag} handleRemoveAll={handleRemoveAll} />
+        </AccordionTags>
       )}
     </div>
   )
 }
 
-function AllTags({ tags, paramName }: { tags: string[]; paramName: string }) {
+function AllTags({
+  tags,
+  handleRemoveTag,
+  handleRemoveAll,
+}: {
+  tags: string[]
+  handleRemoveTag: (value: string) => void
+  handleRemoveAll: () => void
+}) {
   return (
     <div className="w-full">
       {tags.length > 1 && (
-        <Remove
-          paramName={paramName}
-          className="ml-auto mr-2.5 h-4 w-4 text-foreground/80 hover:text-foreground"
+        <X
+          strokeWidth="1.5px"
+          className="ml-auto mr-2.5 h-4 w-4 cursor-pointer text-foreground/80 hover:text-foreground"
+          onClick={handleRemoveAll}
         />
       )}
       <div className="flex flex-wrap justify-start gap-1.5 overflow-hidden">
         {tags.map((tag) => (
-          <TagBadge key={tag} tag={tag} paramName={paramName} />
+          <TagBadge key={tag} tag={tag} handleRemoveTag={handleRemoveTag} />
         ))}
       </div>
     </div>
@@ -48,25 +63,21 @@ function AllTags({ tags, paramName }: { tags: string[]; paramName: string }) {
 
 function AccordionTags({
   tags,
-  paramName,
+  children,
 }: {
   tags: string[]
-  paramName: string
+  children: React.ReactNode
 }) {
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="filter" className="my-1 border-b-0">
         <div className="flex items-center">
           <AccordionTrigger className="py-0 pr-2.5 hover:no-underline">
-            <TagBadge
-              tag={`${tags.length} seleccionados`}
-              hasRemove={false}
-              paramName={paramName}
-            />
+            <TagBadge tag={`${tags.length} seleccionados`} hasRemove={false} />
           </AccordionTrigger>
         </div>
         <AccordionContent className="ml-2 mt-2 pb-0">
-          <AllTags tags={tags} paramName={paramName} />
+          {children}
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -75,14 +86,14 @@ function AccordionTags({
 
 function TagBadge({
   tag,
-  paramName,
   quantity,
   hasRemove = true,
+  handleRemoveTag,
 }: {
   tag: string
-  paramName: string
   quantity?: number
   hasRemove?: boolean
+  handleRemoveTag?: (value: string) => void
 }) {
   return (
     <Badge
@@ -101,10 +112,10 @@ function TagBadge({
 
         {hasRemove && (
           <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
-            <Remove
-              paramName={paramName}
-              value={tag}
-              className="h-[13px] w-[13px] text-foreground/60 hover:text-foreground/90"
+            <X
+              strokeWidth="1.5px"
+              className="h-[13px] w-[13px] cursor-pointer text-foreground/60 hover:text-foreground/90"
+              onClick={() => handleRemoveTag && handleRemoveTag(tag)}
             />
           </div>
         )}
