@@ -21,7 +21,7 @@ function Filter({
   title,
   children,
   icon,
-  filterTags,
+  filterTags = [],
   handleRemoveTag,
   handleRemoveAll,
 }: FilterProps) {
@@ -50,7 +50,7 @@ function Filter({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {filterTags?.length > 0 && (
+      {filterTags.length > 0 && (
         <TagsBox
           tags={filterTags}
           maxTags={4}

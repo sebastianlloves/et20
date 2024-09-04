@@ -2,6 +2,8 @@
 
 import {
   DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -15,7 +17,6 @@ function CursosFilterContent({
   filterValue: string[]
   updateParams: (curso: string) => void
 }) {
-
   return (
     <>
       {Object.keys(CURSOS_POR_ANIO).map((anio) => (
@@ -42,4 +43,34 @@ function CursosFilterContent({
   )
 }
 
-export { CursosFilterContent }
+function PromocionFilterContent({
+  filterValue,
+  updateParams,
+}: {
+  filterValue?: string
+  updateParams: (promocionValue: string) => void
+}) {
+  return (
+    <DropdownMenuRadioGroup
+      value={filterValue}
+      onValueChange={(value) => updateParams(value)}
+    >
+      <DropdownMenuRadioItem
+        value="solo promocionan"
+        onSelect={(e) => e.preventDefault()}
+        className="cursor-pointer"
+      >
+        Sólo estudiantes que promocionan
+      </DropdownMenuRadioItem>
+      <DropdownMenuRadioItem
+        value="solo permanecen"
+        onSelect={(e) => e.preventDefault()}
+        className="cursor-pointer"
+      >
+        Sólo estudiantes que permanecen
+      </DropdownMenuRadioItem>
+    </DropdownMenuRadioGroup>
+  )
+}
+
+export { CursosFilterContent, PromocionFilterContent }

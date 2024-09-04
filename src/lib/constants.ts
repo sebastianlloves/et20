@@ -423,11 +423,11 @@ export const FILTERS_FNS = {
       if (promocionParam === 'solo promocionan')
         return (
           student.cantTroncales <= 2 &&
-          student.cantTroncales + student.cantTroncales <= 4
+          student.cantTroncales + student.cantGenerales <= 4
         )
       return (
         student.cantTroncales > 2 ||
-        student.cantTroncales + student.cantTroncales > 4
+        student.cantTroncales + student.cantGenerales > 4
       )
     },
   },

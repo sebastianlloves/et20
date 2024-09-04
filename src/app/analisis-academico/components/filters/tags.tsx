@@ -24,10 +24,18 @@ function TagsBox({
   return (
     <div className="w-full bg-muted/25 p-2 shadow-inner">
       {tags.length <= maxTags ? (
-        <AllTags tags={tags} handleRemoveTag={handleRemoveTag} handleRemoveAll={handleRemoveAll} />
+        <AllTags
+          tags={tags}
+          handleRemoveTag={handleRemoveTag}
+          handleRemoveAll={handleRemoveAll}
+        />
       ) : (
         <AccordionTags tags={tags}>
-          <AllTags tags={tags} handleRemoveTag={handleRemoveTag} handleRemoveAll={handleRemoveAll} />
+          <AllTags
+            tags={tags}
+            handleRemoveTag={handleRemoveTag}
+            handleRemoveAll={handleRemoveAll}
+          />
         </AccordionTags>
       )}
     </div>
@@ -52,7 +60,7 @@ function AllTags({
           onClick={handleRemoveAll}
         />
       )}
-      <div className="flex flex-wrap justify-start gap-1.5 overflow-hidden">
+      <div className="mt-1 flex flex-wrap justify-start gap-1.5 overflow-hidden">
         {tags.map((tag) => (
           <TagBadge key={tag} tag={tag} handleRemoveTag={handleRemoveTag} />
         ))}

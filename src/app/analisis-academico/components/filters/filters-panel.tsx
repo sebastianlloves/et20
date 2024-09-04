@@ -1,10 +1,8 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { BadgeCheck, ListFilter, Users } from 'lucide-react'
-import Filter from './filter'
-import PromocionContent from './promocion-content'
+import { ListFilter } from 'lucide-react'
 import { SearchParams } from '../../page'
-import { CursosFilterContent } from './filters-content'
 import CursosFilter from './cursos-filter'
+import PromocionFilter from './promocion-filter'
 
 function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
   return (
@@ -16,30 +14,8 @@ function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
             Filtros
           </h4>
         </div>
-        <Filter
-          title="Cursos"
-          paramName="cursos"
-          icon={<Users size={15} strokeWidth={1.4} />}
-          filterTags={searchParams?.cursos?.split(',').sort()}
-        >
-          <CursosFilterContent />
-        </Filter>
         <CursosFilter />
-        {/* <Filter
-          title="Promoción"
-          paramName="promocion"
-          content={<PromocionContent />}
-          icon={<BadgeCheck size={18} strokeWidth={1.0} />}
-          filterTags={
-            searchParams?.promocion
-              ? [
-                  searchParams.promocion === 'solo promocionan'
-                    ? 'Sólo estudiantes que promocionan'
-                    : 'Sólo estudiantes que permanecen',
-                ]
-              : undefined
-          }
-        /> */}
+        <PromocionFilter />
       </div>
     </ScrollArea>
   )
