@@ -1,3 +1,4 @@
+import { SearchParams } from '@/app/analisis-academico/page'
 import { Student } from './definitions'
 import { isCursosKey } from './typeGuards'
 
@@ -391,7 +392,8 @@ export const CURSOS_POR_ANIO = (() => {
 
 export const FILTERS_FNS = {
   search: {
-    filterFn: (student: Student, searchParam: string) => {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const searchParam = searchParams.search || ''
       const filterValue = searchParam.split(' ').map((string) =>
         string
           .trim()
@@ -409,16 +411,39 @@ export const FILTERS_FNS = {
     },
   },
   cursos: {
-    filterFn: (student: Student, cursosParam: string) => {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const cursosParam = searchParams.cursos || ''
       const filterValue = cursosParam.split(',').sort()
       return filterValue.includes(
         `${student.anio?.[0]}° ${student.division?.[0]}°`,
       )
     },
   },
+  materias: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const materiasParam = searchParams.materias || ''
+      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
+      const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
+      const filterValue = materiasParam.split(',')
+      const studentMaterias = [
+        ...student.detalleTroncales,
+        ...student.detalleGenerales,
+      ]
+      if (enProceso2020Param)
+        studentMaterias.push(...student.detalleEnProceso2020)
+      return inclusionEstrictaParam
+        ? filterValue.every((materia) => studentMaterias.includes(materia))
+        : filterValue.some((materia) => studentMaterias.includes(materia))
+    },
+  },
   promocion: {
-    filterFn: (student: Student, promocionParam: string) => {
-      if (student.cantTroncales === null || student.cantGenerales === null)
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const promocionParam = searchParams.promocion
+      if (
+        !promocionParam ||
+        student.cantTroncales === null ||
+        student.cantGenerales === null
+      )
         return true
       if (promocionParam === 'solo promocionan')
         return (

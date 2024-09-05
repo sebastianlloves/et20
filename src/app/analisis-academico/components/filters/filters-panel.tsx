@@ -3,6 +3,7 @@ import { ListFilter } from 'lucide-react'
 import { SearchParams } from '../../page'
 import CursosFilter from './cursos-filter'
 import PromocionFilter from './promocion-filter'
+import MateriasFilter from './materias-filter'
 
 function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
   return (
@@ -15,6 +16,7 @@ function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
           </h4>
         </div>
         <CursosFilter />
+        <MateriasFilter />
         <PromocionFilter />
       </div>
     </ScrollArea>

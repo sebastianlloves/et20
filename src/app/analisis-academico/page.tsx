@@ -9,7 +9,10 @@ export interface SearchParams {
   anio?: string
   search?: string
   cursos?: string
+  materias?: string
   promocion?: string
+  enProceso2020?: string
+  inclusionEstricta?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

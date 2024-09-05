@@ -8,7 +8,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
-import { CURSOS_POR_ANIO } from '@/lib/constants'
+import { CURSOS_POR_ANIO, MATERIAS_POR_CURSO } from '@/lib/constants'
 
 function CursosFilterContent({
   filterValue,
@@ -73,4 +73,41 @@ function PromocionFilterContent({
   )
 }
 
-export { CursosFilterContent, PromocionFilterContent }
+function MateriasFilterContent({
+  filterValue,
+  updateParams,
+}: {
+  filterValue?: string[]
+  updateParams: (materia: string) => void
+}) {
+  return (
+    <>
+      {Object.keys(MATERIAS_POR_CURSO).map((anio) => (
+        <DropdownMenuSub key={anio}>
+          <DropdownMenuSubTrigger>{anio}</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent alignOffset={-5} sideOffset={6}>
+            {MATERIAS_POR_CURSO[anio as keyof typeof MATERIAS_POR_CURSO].map(
+              ({ nombre: materia }) => (
+                <DropdownMenuCheckboxItem
+                  key={materia}
+                  onSelect={(e) => {
+                    e.preventDefault()
+                    updateParams(`${materia} (${anio.split(' ')[0]})`)
+                  }}
+                  className="cursor-pointer"
+                  onChange={() =>
+                    updateParams(`${materia} (${anio.split(' ')[0]})`)
+                  }
+                >
+                  {materia}
+                </DropdownMenuCheckboxItem>
+              ),
+            )}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+      ))}
+    </>
+  )
+}
+
+export { CursosFilterContent, PromocionFilterContent, MateriasFilterContent }
