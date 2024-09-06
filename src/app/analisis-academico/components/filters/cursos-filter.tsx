@@ -8,11 +8,13 @@ import { Users } from 'lucide-react'
 function CursosFilter() {
   const { pathname, searchParams, replace } = useParamsState()
   const filterValue = searchParams.get('cursos')?.split(',') || []
+  console.log('CursosFilter')
 
   const updateParams = (curso: string) => {
     const newCursosState = filterValue.includes(curso)
       ? filterValue.filter((prevParam) => prevParam !== curso)
       : [...filterValue, curso]
+    console.log('updateParams')
     newCursosState.length === 0
       ? searchParams.delete('cursos')
       : searchParams.set('cursos', newCursosState.join(','))

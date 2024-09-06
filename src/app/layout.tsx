@@ -5,6 +5,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import ThemeProvider from '@/components/theme-provider'
 import ModeToggle from '@/components/mode-toggle'
+import { Analytics } from '@vercel/analytics/react'
 
 // const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const openSans = OpenSans({ subsets: ['latin'], variable: '--font-openSans' })
@@ -35,7 +36,10 @@ export default function RootLayout({
           <header className="flex justify-end p-2">
             <ModeToggle />
           </header>
-          <main>{children}</main>
+          <main>
+            {children}
+            <Analytics />
+          </main>
         </ThemeProvider>
       </body>
     </html>
