@@ -2,12 +2,16 @@
 
 import {
   DropdownMenuCheckboxItem,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { CURSOS_POR_ANIO, MATERIAS_POR_CURSO } from '@/lib/constants'
 
 function CursosFilterContent({
@@ -75,10 +79,14 @@ function PromocionFilterContent({
 
 function MateriasFilterContent({
   filterValue,
+  inclusionEstrictaValue,
   updateParams,
+  updateStrictInclusion,
 }: {
   filterValue?: string[]
+  inclusionEstrictaValue?: string
   updateParams: (materia: string) => void
+  updateStrictInclusion: () => void
 }) {
   return (
     <>
@@ -90,6 +98,9 @@ function MateriasFilterContent({
               ({ nombre: materia }) => (
                 <DropdownMenuCheckboxItem
                   key={materia}
+                  checked={filterValue?.includes(
+                    `${materia} (${anio.split(' ')[0]})`,
+                  )}
                   onSelect={(e) => {
                     e.preventDefault()
                     updateParams(`${materia} (${anio.split(' ')[0]})`)
@@ -106,6 +117,23 @@ function MateriasFilterContent({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
       ))}
+      <DropdownMenuSeparator />
+      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <div className="flex items-center space-x-6 p-1">
+          <Label
+            htmlFor="estrict-inclusion"
+            className="cursor-pointer font-normal text-foreground"
+          >
+            Inclusión estricta
+          </Label>
+          <Switch
+            id="estrict-inclusion"
+            className="h-4 w-8"
+            checked={inclusionEstrictaValue === 'true'}
+            onCheckedChange={updateStrictInclusion}
+          />
+        </div>
+      </DropdownMenuItem>
     </>
   )
 }

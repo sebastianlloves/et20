@@ -8,6 +8,7 @@ import { Book } from 'lucide-react'
 function MateriasFilter() {
   const { pathname, searchParams, replace } = useParamsState()
   const filterValue = searchParams.get('materias')?.split(',') || []
+  const strictInclusion = searchParams.get('inclusionEstricta')
 
   const updateParams = (materia: string) => {
     const newMateriasState = filterValue.includes(materia)
@@ -19,16 +20,28 @@ function MateriasFilter() {
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
+  const updateStrictInclusion = () => {
+    strictInclusion === 'true'
+      ? searchParams.delete('inclusionEstricta')
+      : searchParams.set('inclusionEstricta', 'true')
+    replace(`${pathname}?${searchParams.toString()}`)
+  }
+
   const handleRemoveTag = (value: string) => {
-    const newState = filterValue.filter((prevValue) => prevValue !== value)
-    newState.length
-      ? searchParams.set('materias', newState.join(','))
-      : searchParams.delete('materias')
+    if (value === 'Inclusión estricta') {
+      searchParams.delete('inclusionEstricta')
+    } else {
+      const newState = filterValue.filter((prevValue) => prevValue !== value)
+      newState.length
+        ? searchParams.set('materias', newState.join(','))
+        : searchParams.delete('materias')
+    }
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('materias')
+    searchParams.delete('inclusionEstricta')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -36,13 +49,19 @@ function MateriasFilter() {
     <Filter
       title="Materias"
       icon={<Book size={15} strokeWidth={1.4} />}
-      filterTags={filterValue}
+      filterTags={
+        strictInclusion === 'true'
+          ? ['Inclusión estricta', ...filterValue]
+          : filterValue
+      }
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
       <MateriasFilterContent
         filterValue={filterValue}
+        inclusionEstrictaValue={strictInclusion || undefined}
         updateParams={updateParams}
+        updateStrictInclusion={updateStrictInclusion}
       />
     </Filter>
   )
