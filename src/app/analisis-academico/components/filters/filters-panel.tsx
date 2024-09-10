@@ -11,24 +11,18 @@ function FiltersPanel({
   filterParams,
   data,
 }: {
-  filterParams: Omit<SearchParams, 'anio'>
+  filterParams?: Omit<SearchParams, 'anio'>
   data?: Student[]
 }) {
-  const cursosUniqueValues = getStudentsUniqueValues(
-    data || [],
-    filterParams,
-    'cursos',
-  )
-  const materiasUniqueValues = getStudentsUniqueValues(
-    data || [],
-    filterParams,
-    'materias',
-  )
-  const promocionUniqueValues = getStudentsUniqueValues(
-    data || [],
-    filterParams,
-    'promocion',
-  )
+  const cursosUniqueValues = filterParams
+    ? getStudentsUniqueValues(data || [], filterParams, 'cursos')
+    : new Map<string, number>()
+  const materiasUniqueValues = filterParams
+    ? getStudentsUniqueValues(data || [], filterParams, 'materias')
+    : new Map<string, number>()
+  const promocionUniqueValues = filterParams
+    ? getStudentsUniqueValues(data || [], filterParams, 'promocion')
+    : new Map<string, number>()
 
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
