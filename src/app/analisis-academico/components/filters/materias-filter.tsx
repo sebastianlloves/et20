@@ -5,9 +5,13 @@ import Filter from './filter'
 import { MateriasFilterContent } from './filters-content'
 import { Book } from 'lucide-react'
 
-function MateriasFilter() {
+function MateriasFilter({
+  uniqueValues,
+}: {
+  uniqueValues: Map<string, number>
+}) {
   const { pathname, searchParams, replace } = useParamsState()
-  const filterValue = searchParams.get('materias')?.split(',') || []
+  const filterValue = searchParams.get('materias')?.split('_') || []
   const strictInclusion = searchParams.get('inclusionEstricta')
 
   const updateParams = (materia: string) => {
@@ -16,7 +20,7 @@ function MateriasFilter() {
       : [...filterValue, materia]
     newMateriasState.length === 0
       ? searchParams.delete('materias')
-      : searchParams.set('materias', newMateriasState.join(','))
+      : searchParams.set('materias', newMateriasState.join('_'))
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -33,7 +37,7 @@ function MateriasFilter() {
     } else {
       const newState = filterValue.filter((prevValue) => prevValue !== value)
       newState.length
-        ? searchParams.set('materias', newState.join(','))
+        ? searchParams.set('materias', newState.join('_'))
         : searchParams.delete('materias')
     }
     replace(`${pathname}?${searchParams}`)
@@ -48,18 +52,21 @@ function MateriasFilter() {
   return (
     <Filter
       title="Materias"
+      maxTags={4}
       icon={<Book size={15} strokeWidth={1.4} />}
       filterTags={
         strictInclusion === 'true'
           ? ['Inclusión estricta', ...filterValue]
           : filterValue
       }
+      uniqueValues={uniqueValues}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
       <MateriasFilterContent
         filterValue={filterValue}
         inclusionEstrictaValue={strictInclusion || undefined}
+        uniqueValues={uniqueValues}
         updateParams={updateParams}
         updateStrictInclusion={updateStrictInclusion}
       />

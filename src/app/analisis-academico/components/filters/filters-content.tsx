@@ -3,8 +3,6 @@
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -13,13 +11,32 @@ import {
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { CURSOS_POR_ANIO, MATERIAS_POR_CURSO } from '@/lib/constants'
+import { cn } from '@/lib/utils'
+
+function Item({ value, quantity }: { value: string; quantity?: number }) {
+  return (
+    <div className="flex w-full items-end justify-between gap-x-7">
+      <h4 className="align-middle text-sm">{value}</h4>
+      <p
+        className={cn(
+          'w-5 text-right align-middle font-mono leading-tight text-muted-foreground/90',
+          quantity === 0 && 'text-muted-foreground/60',
+        )}
+      >
+        {quantity}
+      </p>
+    </div>
+  )
+}
 
 function CursosFilterContent({
   filterValue,
   updateParams,
+  uniqueValues,
 }: {
   filterValue: string[]
   updateParams: (curso: string) => void
+  uniqueValues: Map<string, number>
 }) {
   return (
     <>
@@ -37,7 +54,7 @@ function CursosFilterContent({
                 checked={filterValue.includes(curso)}
                 onCheckedChange={() => updateParams(curso)}
               >
-                {curso}
+                <Item value={curso} quantity={uniqueValues.get(curso) ?? 0} />
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuSubContent>
@@ -47,39 +64,10 @@ function CursosFilterContent({
   )
 }
 
-function PromocionFilterContent({
-  filterValue,
-  updateParams,
-}: {
-  filterValue?: string
-  updateParams: (promocionValue: string) => void
-}) {
-  return (
-    <DropdownMenuRadioGroup
-      value={filterValue}
-      onValueChange={(value) => updateParams(value)}
-    >
-      <DropdownMenuRadioItem
-        value="solo promocionan"
-        onSelect={(e) => e.preventDefault()}
-        className="cursor-pointer"
-      >
-        Sólo estudiantes que promocionan
-      </DropdownMenuRadioItem>
-      <DropdownMenuRadioItem
-        value="solo permanecen"
-        onSelect={(e) => e.preventDefault()}
-        className="cursor-pointer"
-      >
-        Sólo estudiantes que permanecen
-      </DropdownMenuRadioItem>
-    </DropdownMenuRadioGroup>
-  )
-}
-
 function MateriasFilterContent({
   filterValue,
   inclusionEstrictaValue,
+  uniqueValues,
   updateParams,
   updateStrictInclusion,
 }: {
@@ -87,6 +75,7 @@ function MateriasFilterContent({
   inclusionEstrictaValue?: string
   updateParams: (materia: string) => void
   updateStrictInclusion: () => void
+  uniqueValues: Map<string, number>
 }) {
   return (
     <>
@@ -110,7 +99,13 @@ function MateriasFilterContent({
                     updateParams(`${materia} (${anio.split(' ')[0]})`)
                   }
                 >
-                  {materia}
+                  <Item
+                    value={`${materia} (${anio.split(' ')[0]})`}
+                    quantity={
+                      uniqueValues.get(`${materia} (${anio.split(' ')[0]})`) ??
+                      0
+                    }
+                  />
                 </DropdownMenuCheckboxItem>
               ),
             )}
@@ -129,6 +124,7 @@ function MateriasFilterContent({
           <Switch
             id="estrict-inclusion"
             className="h-4 w-8"
+            onSelect={(e) => e.preventDefault()}
             checked={inclusionEstrictaValue === 'true'}
             onCheckedChange={updateStrictInclusion}
           />
@@ -138,4 +134,8 @@ function MateriasFilterContent({
   )
 }
 
-export { CursosFilterContent, PromocionFilterContent, MateriasFilterContent }
+export {
+  CursosFilterContent,
+  MateriasFilterContent,
+  Item,
+}

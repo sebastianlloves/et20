@@ -4,8 +4,32 @@ import { SearchParams } from '../../page'
 import CursosFilter from './cursos-filter'
 import PromocionFilter from './promocion-filter'
 import MateriasFilter from './materias-filter'
+import { Student } from '@/lib/definitions'
+import { getStudentsUniqueValues } from '@/lib/data'
 
-function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
+function FiltersPanel({
+  filterParams,
+  data,
+}: {
+  filterParams: Omit<SearchParams, 'anio'>
+  data?: Student[]
+}) {
+  const cursosUniqueValues = getStudentsUniqueValues(
+    data || [],
+    filterParams,
+    'cursos',
+  )
+  const materiasUniqueValues = getStudentsUniqueValues(
+    data || [],
+    filterParams,
+    'materias',
+  )
+  const promocionUniqueValues = getStudentsUniqueValues(
+    data || [],
+    filterParams,
+    'promocion',
+  )
+
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
       <div className="flex flex-col items-start justify-start gap-y-4 px-2 py-4">
@@ -15,10 +39,11 @@ function FiltersPanel({ searchParams }: { searchParams: SearchParams }) {
             Filtros
           </h4>
         </div>
-        <CursosFilter />
-        <MateriasFilter />
-        <PromocionFilter />
+        <CursosFilter uniqueValues={cursosUniqueValues} />
+        <MateriasFilter uniqueValues={materiasUniqueValues} />
+        <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
+      <div>{JSON.stringify(Array.from(promocionUniqueValues))}</div>
     </ScrollArea>
   )
 }

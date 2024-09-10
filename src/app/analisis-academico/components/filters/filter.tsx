@@ -11,17 +11,21 @@ import { TagsBox } from './tags'
 interface FilterProps {
   children: ReactNode | ReactNode[]
   title: string
+  maxTags: number
   icon?: ReactNode
   filterTags?: string[]
+  uniqueValues: Map<string, number>
   handleRemoveTag: (value: string) => void
   handleRemoveAll: () => void
 }
 
 function Filter({
-  title,
   children,
+  title,
+  maxTags,
   icon,
   filterTags = [],
+  uniqueValues,
   handleRemoveTag,
   handleRemoveAll,
 }: FilterProps) {
@@ -53,7 +57,8 @@ function Filter({
       {filterTags.length > 0 && (
         <TagsBox
           tags={filterTags}
-          maxTags={4}
+          uniqueValues={uniqueValues}
+          maxTags={maxTags}
           handleRemoveTag={handleRemoveTag}
           handleRemoveAll={handleRemoveAll}
         />

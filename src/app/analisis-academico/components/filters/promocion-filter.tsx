@@ -3,16 +3,24 @@
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
 import { BadgeCheck } from 'lucide-react'
-import { PromocionFilterContent } from './filters-content'
+import { Item } from './filters-content'
+import {
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from '@/components/ui/dropdown-menu'
 
 const filterValueTag: { [key: string]: string } = {
-  'solo promocionan': 'Sólo estudiantes que promocionan',
-  'solo permanecen': 'Sólo estudiantes que permanecen',
+  'solo promocionan': 'Estudiantes que promocionan',
+  'solo permanecen': 'Estudiantes que permanecen',
 }
 
-function PromocionFilter() {
+function PromocionFilter({
+  uniqueValues,
+}: {
+  uniqueValues: Map<string, number>
+}) {
   const { pathname, searchParams, replace } = useParamsState()
-  const filterValue = searchParams.get('promocion')
+  const filterValue = searchParams.get('promocion') || undefined
 
   const updateParams = (promocionValue: string) => {
     filterValue === promocionValue
@@ -31,12 +39,38 @@ function PromocionFilter() {
   return (
     <Filter
       title="Promoción"
+      maxTags={4}
       icon={<BadgeCheck size={18} strokeWidth={1.0} />}
       filterTags={filterValue ? [filterValueTag[filterValue]] : []}
+      uniqueValues={uniqueValues}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
-      <PromocionFilterContent filterValue={filterValue || undefined} updateParams={updateParams} />
+      <DropdownMenuRadioGroup
+        value={filterValue}
+        onValueChange={(value) => updateParams(value)}
+      >
+        <DropdownMenuRadioItem
+          value="solo promocionan"
+          onSelect={(e) => e.preventDefault()}
+          className="cursor-pointer"
+        >
+          <Item
+            value={filterValueTag['solo promocionan']}
+            quantity={uniqueValues.get(filterValueTag['solo promocionan']) ?? 0}
+          />
+        </DropdownMenuRadioItem>
+        <DropdownMenuRadioItem
+          value="solo permanecen"
+          onSelect={(e) => e.preventDefault()}
+          className="cursor-pointer"
+        >
+          <Item
+            value={filterValueTag['solo permanecen']}
+            quantity={uniqueValues.get(filterValueTag['solo permanecen']) ?? 0}
+          />
+        </DropdownMenuRadioItem>
+      </DropdownMenuRadioGroup>
     </Filter>
   )
 }

@@ -409,22 +409,70 @@ export const FILTERS_FNS = {
           `${dni}`.includes(string),
       )
     },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => undefined,
   },
   cursos: {
     filterFn: (student: Student, searchParams: SearchParams) => {
       const cursosParam = searchParams.cursos || ''
-      const filterValue = cursosParam.split(',').sort()
+      const filterValue = cursosParam.split('_').sort()
       return filterValue.includes(
         `${student.anio?.[0]}° ${student.division?.[0]}°`,
       )
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const value = `${student.anio?.[0]}° ${student.division?.[0]}°`
+        facetedModel.has(value)
+          ? facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+          : facetedModel.set(value, 1)
+      })
     },
   },
   materias: {
     filterFn: (student: Student, searchParams: SearchParams) => {
       const materiasParam = searchParams.materias || ''
       const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
+      const filterValue = materiasParam.split('_')
+      const studentMaterias = [
+        ...student.detalleTroncales,
+        ...student.detalleGenerales,
+      ]
+      if (enProceso2020Param)
+        studentMaterias.push(...student.detalleEnProceso2020)
+      return filterValue.some((materia) => studentMaterias.includes(materia))
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+      filterParams?: Omit<SearchParams, 'anio'>,
+    ) => {
+      filteredData.forEach((student) => {
+        const values = [
+          ...student.detalleTroncales,
+          ...student.detalleGenerales,
+        ]
+        if (filterParams?.enProceso2020 !== 'false')
+          values.push(...student.detalleEnProceso2020)
+        values.forEach((value) =>
+          facetedModel.has(value)
+            ? facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+            : facetedModel.set(value, 1),
+        )
+      })
+    },
+  },
+  inclusionEstricta: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const materiasParam = searchParams.materias || ''
+      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
       const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
-      const filterValue = materiasParam.split(',')
+      const filterValue = materiasParam.split('_')
       const studentMaterias = [
         ...student.detalleTroncales,
         ...student.detalleGenerales,
@@ -433,8 +481,12 @@ export const FILTERS_FNS = {
         studentMaterias.push(...student.detalleEnProceso2020)
       return inclusionEstrictaParam
         ? filterValue.every((materia) => studentMaterias.includes(materia))
-        : filterValue.some((materia) => studentMaterias.includes(materia))
+        : true
     },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => undefined,
   },
   promocion: {
     filterFn: (student: Student, searchParams: SearchParams) => {
@@ -454,6 +506,23 @@ export const FILTERS_FNS = {
         student.cantTroncales > 2 ||
         student.cantTroncales + student.cantGenerales > 4
       )
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const value =
+          student.cantTroncales === null || student.cantGenerales === null
+            ? 'faltan datos'
+            : student.cantTroncales <= 2 &&
+                student.cantTroncales + student.cantGenerales <= 4
+              ? 'Estudiantes que promocionan'
+              : 'Estudiantes que permanecen'
+        facetedModel.has(value)
+          ? facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+          : facetedModel.set(value, 1)
+      })
     },
   },
 } as const
