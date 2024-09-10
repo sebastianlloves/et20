@@ -2,8 +2,15 @@
 
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
-import { CursosFilterContent } from './filters-content'
 import { Users } from 'lucide-react'
+import { CURSOS_POR_ANIO } from '@/lib/constants'
+import {
+  DropdownMenuCheckboxItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from '@/components/ui/dropdown-menu'
+import MenuItem from './menu-item'
 
 function CursosFilter({ uniqueValues }: { uniqueValues: Map<string, number> }) {
   const { pathname, searchParams, replace } = useParamsState()
@@ -44,11 +51,28 @@ function CursosFilter({ uniqueValues }: { uniqueValues: Map<string, number> }) {
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
-      <CursosFilterContent
-        filterValue={filterValue}
-        updateParams={updateParams}
-        uniqueValues={uniqueValues}
-      />
+      <>
+        {Object.keys(CURSOS_POR_ANIO).map((anio) => (
+          <DropdownMenuSub key={anio}>
+            <DropdownMenuSubTrigger className="pl-3">
+              {anio}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent alignOffset={-5} sideOffset={6}>
+              {CURSOS_POR_ANIO[anio].map((curso) => (
+                <DropdownMenuCheckboxItem
+                  key={curso}
+                  className="cursor-pointer"
+                  onSelect={(e) => e.preventDefault()}
+                  checked={filterValue.includes(curso)}
+                  onCheckedChange={() => updateParams(curso)}
+                >
+                  <MenuItem value={curso} quantity={uniqueValues.get(curso) ?? 0} />
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        ))}
+      </>
     </Filter>
   )
 }

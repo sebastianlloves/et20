@@ -3,7 +3,7 @@
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
 import { BadgeCheck } from 'lucide-react'
-import { Item } from './filters-content'
+import MenuItem from './menu-item'
 import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -55,7 +55,7 @@ function PromocionFilter({
           onSelect={(e) => e.preventDefault()}
           className="cursor-pointer"
         >
-          <Item
+          <MenuItem
             value={filterValueTag['solo promocionan']}
             quantity={uniqueValues.get(filterValueTag['solo promocionan']) ?? 0}
           />
@@ -65,7 +65,7 @@ function PromocionFilter({
           onSelect={(e) => e.preventDefault()}
           className="cursor-pointer"
         >
-          <Item
+          <MenuItem
             value={filterValueTag['solo permanecen']}
             quantity={uniqueValues.get(filterValueTag['solo permanecen']) ?? 0}
           />

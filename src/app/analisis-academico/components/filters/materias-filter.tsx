@@ -2,8 +2,19 @@
 
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
-import { MateriasFilterContent } from './filters-content'
 import { Book } from 'lucide-react'
+import { MATERIAS_POR_CURSO } from '@/lib/constants'
+import {
+  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import MenuItem from './menu-item'
 
 function MateriasFilter({
   uniqueValues,
@@ -63,13 +74,60 @@ function MateriasFilter({
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
-      <MateriasFilterContent
-        filterValue={filterValue}
-        inclusionEstrictaValue={strictInclusion || undefined}
-        uniqueValues={uniqueValues}
-        updateParams={updateParams}
-        updateStrictInclusion={updateStrictInclusion}
-      />
+      <>
+        {Object.keys(MATERIAS_POR_CURSO).map((anio) => (
+          <DropdownMenuSub key={anio}>
+            <DropdownMenuSubTrigger>{anio}</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent alignOffset={-5} sideOffset={6}>
+              {MATERIAS_POR_CURSO[anio as keyof typeof MATERIAS_POR_CURSO].map(
+                ({ nombre: materia }) => (
+                  <DropdownMenuCheckboxItem
+                    key={materia}
+                    checked={filterValue?.includes(
+                      `${materia} (${anio.split(' ')[0]})`,
+                    )}
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      updateParams(`${materia} (${anio.split(' ')[0]})`)
+                    }}
+                    className="cursor-pointer"
+                    onChange={() =>
+                      updateParams(`${materia} (${anio.split(' ')[0]})`)
+                    }
+                  >
+                    <MenuItem
+                      value={`${materia} (${anio.split(' ')[0]})`}
+                      quantity={
+                        uniqueValues.get(
+                          `${materia} (${anio.split(' ')[0]})`,
+                        ) ?? 0
+                      }
+                    />
+                  </DropdownMenuCheckboxItem>
+                ),
+              )}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <div className="flex items-center space-x-6 p-1">
+            <Label
+              htmlFor="estrict-inclusion"
+              className="cursor-pointer font-normal text-foreground"
+            >
+              Inclusión estricta
+            </Label>
+            <Switch
+              id="estrict-inclusion"
+              className="h-4 w-8"
+              onSelect={(e) => e.preventDefault()}
+              checked={strictInclusion === 'true'}
+              onCheckedChange={updateStrictInclusion}
+            />
+          </div>
+        </DropdownMenuItem>
+      </>
     </Filter>
   )
 }
