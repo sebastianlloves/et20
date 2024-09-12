@@ -16,7 +16,7 @@ export async function fetchStudentsData(anio: string = '2024') {
 
 export function getFilteredStudentData(
   data: Student[],
-  filterParams: Omit<SearchParams, 'anio'>,
+  filterParams: Omit<SearchParams, 'anio'> = {},
   omitedKey?: string,
 ) {
   const filteredData = data.filter((student) =>

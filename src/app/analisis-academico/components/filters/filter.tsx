@@ -14,7 +14,7 @@ interface FilterProps {
   maxTags: number
   icon?: ReactNode
   filterTags?: string[]
-  uniqueValues: Map<string, number>
+  uniqueValues?: Map<string, number>
   handleRemoveTag: (value: string) => void
   handleRemoveAll: () => void
 }

@@ -19,7 +19,7 @@ import MenuItem from './menu-item'
 function MateriasFilter({
   uniqueValues,
 }: {
-  uniqueValues: Map<string, number>
+  uniqueValues?: Map<string, number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const filterValue = searchParams.get('materias')?.split('_') || []
@@ -98,7 +98,7 @@ function MateriasFilter({
                     <MenuItem
                       value={`${materia} (${anio.split(' ')[0]})`}
                       quantity={
-                        uniqueValues.get(
+                        uniqueValues?.get(
                           `${materia} (${anio.split(' ')[0]})`,
                         ) ?? 0
                       }

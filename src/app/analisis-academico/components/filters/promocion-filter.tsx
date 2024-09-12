@@ -17,7 +17,7 @@ const filterValueTag: { [key: string]: string } = {
 function PromocionFilter({
   uniqueValues,
 }: {
-  uniqueValues: Map<string, number>
+  uniqueValues?: Map<string, number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const filterValue = searchParams.get('promocion') || undefined
@@ -57,7 +57,7 @@ function PromocionFilter({
         >
           <MenuItem
             value={filterValueTag['solo promocionan']}
-            quantity={uniqueValues.get(filterValueTag['solo promocionan']) ?? 0}
+            quantity={uniqueValues?.get(filterValueTag['solo promocionan']) ?? 0}
           />
         </DropdownMenuRadioItem>
         <DropdownMenuRadioItem
@@ -67,7 +67,7 @@ function PromocionFilter({
         >
           <MenuItem
             value={filterValueTag['solo permanecen']}
-            quantity={uniqueValues.get(filterValueTag['solo permanecen']) ?? 0}
+            quantity={uniqueValues?.get(filterValueTag['solo permanecen']) ?? 0}
           />
         </DropdownMenuRadioItem>
       </DropdownMenuRadioGroup>

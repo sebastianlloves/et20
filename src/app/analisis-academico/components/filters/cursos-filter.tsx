@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 
-function CursosFilter({ uniqueValues }: { uniqueValues: Map<string, number> }) {
+function CursosFilter({ uniqueValues }: { uniqueValues?: Map<string, number> }) {
   const { pathname, searchParams, replace } = useParamsState()
   const filterValue = searchParams.get('cursos')?.split('_') || []
   console.log('CursosFilter')
@@ -66,7 +66,7 @@ function CursosFilter({ uniqueValues }: { uniqueValues: Map<string, number> }) {
                   checked={filterValue.includes(curso)}
                   onCheckedChange={() => updateParams(curso)}
                 >
-                  <MenuItem value={curso} quantity={uniqueValues.get(curso) ?? 0} />
+                  <MenuItem value={curso} quantity={uniqueValues?.get(curso) ?? 0} />
                 </DropdownMenuCheckboxItem>
               ))}
             </DropdownMenuSubContent>

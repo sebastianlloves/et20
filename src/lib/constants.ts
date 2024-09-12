@@ -428,9 +428,7 @@ export const FILTERS_FNS = {
     ) => {
       filteredData.forEach((student) => {
         const value = `${student.anio?.[0]}° ${student.division?.[0]}°`
-        facetedModel.has(value)
-          ? facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
-          : facetedModel.set(value, 1)
+        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
       })
     },
   },
@@ -450,7 +448,7 @@ export const FILTERS_FNS = {
     uniqueValuesFn: (
       filteredData: Student[],
       facetedModel: Map<string, number>,
-      filterParams?: Omit<SearchParams, 'anio'>,
+      filterParams: Omit<SearchParams, 'anio'>,
     ) => {
       filteredData.forEach((student) => {
         const values = [
@@ -460,9 +458,7 @@ export const FILTERS_FNS = {
         if (filterParams?.enProceso2020 !== 'false')
           values.push(...student.detalleEnProceso2020)
         values.forEach((value) =>
-          facetedModel.has(value)
-            ? facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
-            : facetedModel.set(value, 1),
+          facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
         )
       })
     },
@@ -519,9 +515,7 @@ export const FILTERS_FNS = {
                 student.cantTroncales + student.cantGenerales <= 4
               ? 'Estudiantes que promocionan'
               : 'Estudiantes que permanecen'
-        facetedModel.has(value)
-          ? facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
-          : facetedModel.set(value, 1)
+        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
       })
     },
   },

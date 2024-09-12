@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import React from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
 
 function TagsBox({
   tags,
@@ -19,7 +20,7 @@ function TagsBox({
   handleRemoveAll,
 }: {
   tags: string[]
-  uniqueValues: Map<string, number>
+  uniqueValues?: Map<string, number>
   maxTags: number
   handleRemoveTag: (value: string) => void
   handleRemoveAll: () => void
@@ -73,12 +74,10 @@ function AllTags({
             key={tag}
             tag={tag}
             handleRemoveTag={handleRemoveTag}
-            quantity={
-              tag === 'Inclusión estricta'
-                ? undefined
-                : (uniqueValues?.get(tag) ?? 0)
+            quantity={uniqueValues && (uniqueValues.get(tag) ?? 0)}
+            className={
+              tag === 'Inclusión estricta' ? 'rounded-lg pl-1' : undefined
             }
-            className={tag === 'Inclusión estricta' ? 'rounded-lg pl-1' : undefined}
           />
         ))}
       </div>
@@ -101,7 +100,8 @@ function AccordionTags({
             <TagBadge
               tag={`${tags.length} seleccionados`}
               hasRemove={false}
-              className="rounded-lg border-primary/50 bg-primary/5"
+              hasQuantity={false}
+              className="rounded-lg border-primary/70 bg-primary/10"
             />
           </AccordionTrigger>
         </div>
@@ -117,12 +117,14 @@ function TagBadge({
   tag,
   quantity,
   hasRemove = true,
+  hasQuantity = true,
   handleRemoveTag,
   className,
 }: {
   tag: string
   quantity?: number
   hasRemove?: boolean
+  hasQuantity?: boolean
   handleRemoveTag?: (value: string) => void
   className?: string
 }) {
@@ -130,18 +132,21 @@ function TagBadge({
     <Badge
       variant="default"
       className={cn(
-        'max-w-full justify-center rounded-2xl border-primary/70 bg-primary/10 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10',
+        'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10',
         className,
       )}
     >
       <div className="flex h-full items-center justify-start">
         <div className="flex items-center justify-between gap-3 px-2 leading-3">
-          <p className="align-middle text-foreground leading-snug">{tag}</p>
-          {quantity !== undefined && (
-            <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">
-              {`(${quantity})`}
-            </p>
-          )}
+          <p className="align-middle leading-snug text-foreground">{tag}</p>
+          {hasQuantity &&
+            (quantity !== undefined ? (
+              <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">
+                {`(${quantity})`}
+              </p>
+            ) : (
+              <Skeleton className="h-0.5 w-6 rounded-full bg-primary/60" />
+            ))}
         </div>
 
         {hasRemove && (
