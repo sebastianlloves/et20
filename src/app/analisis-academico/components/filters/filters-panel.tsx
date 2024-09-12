@@ -8,20 +8,20 @@ import { Student } from '@/lib/definitions'
 import { getStudentsUniqueValues } from '@/lib/data'
 
 function FiltersPanel({
-  filterParams,
+  filterParams = {},
   data,
 }: {
-  filterParams: Omit<SearchParams, 'anio'>
-  data?: Student[]
+  filterParams?: Omit<SearchParams, 'anio'>
+  data: Student[] | null
 }) {
   const cursosUniqueValues = data
-    ? getStudentsUniqueValues(data || [], filterParams, 'cursos')
+    ? getStudentsUniqueValues(data, filterParams, 'cursos')
     : undefined
   const materiasUniqueValues = data
-    ? getStudentsUniqueValues(data || [], filterParams, 'materias')
+    ? getStudentsUniqueValues(data, filterParams, 'materias')
     : undefined
   const promocionUniqueValues = data
-    ? getStudentsUniqueValues(data || [], filterParams, 'promocion')
+    ? getStudentsUniqueValues(data, filterParams, 'promocion')
     : undefined
 
   return (
