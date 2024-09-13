@@ -1,7 +1,7 @@
 import { SearchParams } from '@/app/analisis-academico/page'
-import { DB, FILTERS_FNS } from './constants'
+import { DB } from './constants'
 import { Student } from './definitions'
-import { formatStudentsResponse } from './utils'
+import { FILTERS_FNS, formatStudentsResponse } from './utils'
 
 export async function fetchStudentsData(anio: string = '2024') {
   const response = await fetch(DB[anio], {
@@ -41,7 +41,7 @@ export function getStudentsUniqueValues(
     filterParams,
     filterKey,
   )
-  const facetedModel = new Map<string, number>()
+  const facetedModel = new Map<any, number>()
   FILTERS_FNS[filterKey].uniqueValuesFn(
     partialFilteredData,
     facetedModel,

@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { Student } from './definitions'
+import { SearchParams } from '@/app/analisis-academico/page'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -93,3 +94,154 @@ export function formatStudentsResponse(textResponse: string): Student[] {
   )
 }
 
+export const FILTERS_FNS = {
+  search: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const searchParam = searchParams.search || ''
+      const filterValue = searchParam.split(' ').map((string) =>
+        string
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, ''),
+      )
+      const { apellido, nombre, dni } = student
+      return filterValue.every(
+        (string: string) =>
+          apellido?.toLowerCase().includes(string) ||
+          nombre?.toLowerCase().includes(string) ||
+          `${dni}`.includes(string),
+      )
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => undefined,
+  },
+  cursos: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      if (student.anio === null || student.division === null) return true
+      const cursosParam = searchParams.cursos || ''
+      const filterValue = cursosParam.split('_').sort()
+      return filterValue.includes(`${student.anio[0]}° ${student.division[0]}°`)
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const value = `${student.anio?.[0]}° ${student.division?.[0]}°`
+        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+      })
+    },
+  },
+  materias: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const materiasParam = searchParams.materias || ''
+      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
+      const filterValue = materiasParam.split('_')
+      const studentMaterias = [
+        ...student.detalleTroncales,
+        ...student.detalleGenerales,
+      ]
+      if (enProceso2020Param)
+        studentMaterias.push(...student.detalleEnProceso2020)
+      return filterValue.some((materia) => studentMaterias.includes(materia))
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+      filterParams: Omit<SearchParams, 'anio'>,
+    ) => {
+      filteredData.forEach((student) => {
+        const values = [
+          ...student.detalleTroncales,
+          ...student.detalleGenerales,
+        ]
+        if (filterParams?.enProceso2020 !== 'false')
+          values.push(...student.detalleEnProceso2020)
+        values.forEach((value) =>
+          facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
+        )
+      })
+    },
+  },
+  inclusionEstricta: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const materiasParam = searchParams.materias || ''
+      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
+      const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
+      const filterValue = materiasParam.split('_')
+      const studentMaterias = [
+        ...student.detalleTroncales,
+        ...student.detalleGenerales,
+      ]
+      if (enProceso2020Param)
+        studentMaterias.push(...student.detalleEnProceso2020)
+      return inclusionEstrictaParam
+        ? filterValue.every((materia) => studentMaterias.includes(materia))
+        : true
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => undefined,
+  },
+  cantTroncales: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      if (student.cantTroncales === null) return true
+      const cantTroncalesParam = searchParams.cantTroncales || ''
+      const [minValue, maxValue] = cantTroncalesParam
+        .split('_')
+        .map((value) => Number(value))
+
+      return (
+        student.cantTroncales >= minValue && student.cantTroncales <= maxValue
+      )
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<any, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const value = student.cantTroncales
+        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+      })
+    },
+  },
+  promocion: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const promocionParam = searchParams.promocion
+      if (
+        !promocionParam ||
+        student.cantTroncales === null ||
+        student.cantGenerales === null
+      )
+        return true
+      if (promocionParam === 'solo promocionan')
+        return (
+          student.cantTroncales <= 2 &&
+          student.cantTroncales + student.cantGenerales <= 4
+        )
+      return (
+        student.cantTroncales > 2 ||
+        student.cantTroncales + student.cantGenerales > 4
+      )
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const value =
+          student.cantTroncales === null || student.cantGenerales === null
+            ? 'faltan datos'
+            : student.cantTroncales <= 2 &&
+                student.cantTroncales + student.cantGenerales <= 4
+              ? 'Estudiantes que promocionan'
+              : 'Estudiantes que permanecen'
+        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+      })
+    },
+  },
+} as const

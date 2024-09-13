@@ -12,6 +12,7 @@ export interface SearchParams {
   promocion?: string
   enProceso2020?: string
   inclusionEstricta?: string
+  cantTroncales?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

@@ -25,6 +25,10 @@ function FiltersPanel({
     ? getStudentsUniqueValues(data, filterParams, 'promocion')
     : undefined
 
+  const cantTroncalesUniqueValues = data
+    ? getStudentsUniqueValues(data, filterParams, 'cantTroncales')
+    : undefined
+
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
       <div className="flex flex-col items-start justify-start gap-y-4 px-2 py-4">
@@ -36,7 +40,7 @@ function FiltersPanel({
         </div>
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter uniqueValues={materiasUniqueValues} />
-        <CantidadesFilter />
+        <CantidadesFilter uniqueValues={cantTroncalesUniqueValues} />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
     </ScrollArea>
