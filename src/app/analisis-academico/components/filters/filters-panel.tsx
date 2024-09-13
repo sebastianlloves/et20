@@ -6,6 +6,7 @@ import PromocionFilter from './promocion-filter'
 import MateriasFilter from './materias-filter'
 import { Student } from '@/lib/definitions'
 import { getStudentsUniqueValues } from '@/lib/data'
+import CantidadesFilter from './cantidades-filter'
 
 function FiltersPanel({
   filterParams = {},
@@ -35,6 +36,7 @@ function FiltersPanel({
         </div>
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter uniqueValues={materiasUniqueValues} />
+        <CantidadesFilter />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
     </ScrollArea>

@@ -15,7 +15,7 @@ function ExpandableRow({
         {subjects.length === 0 ? (
           <Badge
             variant="success"
-            className="bg-success/[0.05] flex w-fit gap-x-2 rounded-md border-0 pl-2 font-normal"
+            className="flex w-fit gap-x-2 rounded-md border-0 bg-success/[0.05] pl-2 font-normal"
           >
             <Check size={16} strokeWidth="1.0px" />
             No adeuda
@@ -29,15 +29,9 @@ function ExpandableRow({
           </Badge>
         )}
 
-        <CollapsibleContent className="ml-2 mt-3 flex flex-col items-start space-y-2">
+        <CollapsibleContent className="ml-2 mt-3 flex flex-col items-start space-y-3">
           {subjects.map((subject) => (
-            <Badge
-              key={subject}
-              variant="secondary"
-              className="w-fit text-pretty rounded-md bg-muted px-2 text-xs font-normal"
-            >
-              {subject}
-            </Badge>
+            <p key={subject} className="text-pretty text-xs font-normal text-foreground/85">{subject}</p>
           ))}
         </CollapsibleContent>
       </Collapsible>

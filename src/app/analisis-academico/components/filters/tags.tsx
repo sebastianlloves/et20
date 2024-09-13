@@ -145,7 +145,7 @@ function TagBadge({
                 {`(${quantity})`}
               </p>
             ) : (
-              <Skeleton className="h-0.5 w-5 rounded-full bg-primary/60" />
+              <Skeleton className="h-1.5 w-5 rounded-full bg-primary/50" />
             ))}
         </div>
 
