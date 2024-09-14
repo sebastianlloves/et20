@@ -31,7 +31,7 @@ function ExpandableRow({
 
         <CollapsibleContent className="ml-2 mt-4 flex flex-col items-start space-y-3">
           {subjects.map((subject) => (
-            <p key={subject} className="text-pretty text-xs font-normal text-foreground/85 italic">{subject}</p>
+            <p key={subject} className="text-pretty text-xs font-normal text-foreground/85">{subject}</p>
           ))}
         </CollapsibleContent>
       </Collapsible>

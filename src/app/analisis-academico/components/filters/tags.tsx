@@ -60,7 +60,7 @@ function TagsBox({
                         {`(${uniqueValues.get(tag) ?? 0})`}
                       </p>
                     ) : (
-                      <Skeleton className="h-3 w-5 rounded-md bg-primary/50" />
+                      <Skeleton className="h-2 w-5 rounded-md bg-primary/50" />
                     )}
                   </div>
                   <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
