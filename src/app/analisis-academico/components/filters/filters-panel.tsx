@@ -41,7 +41,7 @@ function FiltersPanel({
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter uniqueValues={materiasUniqueValues} />
         <CantidadesFilter uniqueValues={cantTroncalesUniqueValues} />
-        <PromocionFilter uniqueValues={promocionUniqueValues} />
+        <PromocionFilter uniqueValues={promocionUniqueValues} />        
       </div>
     </ScrollArea>
   )
