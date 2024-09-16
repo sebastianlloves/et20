@@ -13,21 +13,16 @@ function FiltersPanel({
   data,
 }: {
   filterParams?: Omit<SearchParams, 'anio'>
-  data: Student[] | null
+  data: Student[]
 }) {
-  const cursosUniqueValues = data
-    ? getStudentsUniqueValues(data, filterParams, 'cursos')
-    : undefined
-  const materiasUniqueValues = data
-    ? getStudentsUniqueValues(data, filterParams, 'materias')
-    : undefined
-  const promocionUniqueValues = data
-    ? getStudentsUniqueValues(data, filterParams, 'promocion')
-    : undefined
-
-  const cantTroncalesUniqueValues = data
-    ? getStudentsUniqueValues(data, filterParams, 'cantTroncales')
-    : undefined
+  const cursosUniqueValues =
+    data && getStudentsUniqueValues(data, filterParams, 'cursos')
+  const materiasUniqueValues =
+    data && getStudentsUniqueValues(data, filterParams, 'materias')
+  const promocionUniqueValues =
+    data && getStudentsUniqueValues(data, filterParams, 'promocion')
+  const cantTroncalesUniqueValues =
+    data && getStudentsUniqueValues(data, filterParams, 'cantTroncales')
 
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
@@ -41,7 +36,7 @@ function FiltersPanel({
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter uniqueValues={materiasUniqueValues} />
         <CantidadesFilter uniqueValues={cantTroncalesUniqueValues} />
-        <PromocionFilter uniqueValues={promocionUniqueValues} />        
+        <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
     </ScrollArea>
   )

@@ -1,9 +1,9 @@
 'use client'
 
 import { Calculator } from 'lucide-react'
-import Filter from './filter'
 import SliderItem from './slider-item'
 import useParamsState from '@/hooks/useParamsState'
+import Filter from './filter'
 
 function CantidadesFilter({
   maxMinValues,
@@ -13,19 +13,29 @@ function CantidadesFilter({
   uniqueValues?: Map<number, number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
-  const filterValue =
+  const troncalesValue =
     searchParams
       .get('cantTroncales')
       ?.split('_')
-      .map((value) => Number(value)) || undefined
+      .map((value) => Number(value))
 
-  const filterTags = filterValue
-    ? filterValue[0] === filterValue[1]
-      ? [`${filterValue[0]} materias troncales`]
-      : filterValue[0] === 0
-        ? [`Hasta ${filterValue[1]} materias troncales`]
-        : [`Entre ${filterValue[0]} y ${filterValue[1]} materias troncales`]
-    : []
+  const troncalesTag = troncalesValue && {
+    value:
+      troncalesValue[0] === troncalesValue[1]
+        ? `${troncalesValue[0]} materias troncales`
+        : troncalesValue[0] === 0
+          ? `Hasta ${troncalesValue[1]} materias troncales`
+          : `Entre ${troncalesValue[0]} y ${troncalesValue[1]} materias troncales`,
+    quantity:
+      uniqueValues &&
+      Array.from(uniqueValues.entries()).reduce(
+        (acc, [key, value]) =>
+          key >= troncalesValue[0] && key <= troncalesValue[1]
+            ? acc + value
+            : acc,
+        0,
+      ),
+  }
 
   const handleRemoveAll = () => {
     if (searchParams.get('cantTroncales')) searchParams.delete('cantTroncales')
@@ -42,9 +52,8 @@ function CantidadesFilter({
     <Filter
       title="Cantidades"
       maxTags={3}
+      filterTags={troncalesTag && [troncalesTag]}
       icon={<Calculator size={17} strokeWidth={1.2} />}
-      filterTags={filterTags}
-      uniqueValues={uniqueValues}
       handleRemoveAll={handleRemoveAll}
       handleRemoveTag={handleRemoveTag}
     >

@@ -9,7 +9,7 @@ import {
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu'
 
-const filterValueTag: { [key: string]: string } = {
+const promocionValueTag: { [key: string]: string } = {
   'solo promocionan': 'Estudiantes que promocionan',
   'solo permanecen': 'Estudiantes que permanecen',
 }
@@ -20,12 +20,20 @@ function PromocionFilter({
   uniqueValues?: Map<string, number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
-  const filterValue = searchParams.get('promocion') || undefined
+  const promocionValue = searchParams.get('promocion')
+  const promocionTag = promocionValue
+    ? [
+        {
+          value: promocionValue,
+          quantity: uniqueValues && (uniqueValues.get(promocionValue) ?? 0),
+        },
+      ]
+    : []
 
-  const updateParams = (promocionValue: string) => {
-    filterValue === promocionValue
+  const updateParams = (newPromocionValue: string) => {
+    promocionValue === newPromocionValue
       ? searchParams.delete('promocion')
-      : searchParams.set('promocion', promocionValue)
+      : searchParams.set('promocion', newPromocionValue)
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -41,13 +49,12 @@ function PromocionFilter({
       title="Promoción"
       maxTags={4}
       icon={<BadgeCheck size={18} strokeWidth={1.0} />}
-      filterTags={filterValue ? [filterValueTag[filterValue]] : []}
-      uniqueValues={uniqueValues}
+      filterTags={promocionTag}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
       <DropdownMenuRadioGroup
-        value={filterValue}
+        value={promocionValue || undefined}
         onValueChange={(value) => updateParams(value)}
       >
         <DropdownMenuRadioItem
@@ -56,8 +63,10 @@ function PromocionFilter({
           className="cursor-pointer"
         >
           <MenuItem
-            value={filterValueTag['solo promocionan']}
-            quantity={uniqueValues?.get(filterValueTag['solo promocionan']) ?? 0}
+            value={promocionValueTag['solo promocionan']}
+            quantity={
+              uniqueValues?.get(promocionValueTag['solo promocionan']) ?? 0
+            }
           />
         </DropdownMenuRadioItem>
         <DropdownMenuRadioItem
@@ -66,8 +75,10 @@ function PromocionFilter({
           className="cursor-pointer"
         >
           <MenuItem
-            value={filterValueTag['solo permanecen']}
-            quantity={uniqueValues?.get(filterValueTag['solo permanecen']) ?? 0}
+            value={promocionValueTag['solo permanecen']}
+            quantity={
+              uniqueValues?.get(promocionValueTag['solo permanecen']) ?? 0
+            }
           />
         </DropdownMenuRadioItem>
       </DropdownMenuRadioGroup>

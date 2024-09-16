@@ -12,15 +12,22 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 
-function CursosFilter({ uniqueValues }: { uniqueValues?: Map<string, number> }) {
+function CursosFilter({
+  uniqueValues,
+}: {
+  uniqueValues?: Map<string, number>
+}) {
   const { pathname, searchParams, replace } = useParamsState()
-  const filterValue = searchParams.get('cursos')?.split('_') || []
-  console.log('CursosFilter')
+  const cursosValue = searchParams.get('cursos')?.split('_') || []
+  const cursosTags = cursosValue.map((value) => {
+    const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
+    return { value, quantity }
+  })
 
   const updateParams = (curso: string) => {
-    const newCursosState = filterValue.includes(curso)
-      ? filterValue.filter((prevParam) => prevParam !== curso)
-      : [...filterValue, curso]
+    const newCursosState = cursosValue.includes(curso)
+      ? cursosValue.filter((prevParam) => prevParam !== curso)
+      : [...cursosValue, curso]
     console.log('updateParams')
     newCursosState.length === 0
       ? searchParams.delete('cursos')
@@ -34,7 +41,7 @@ function CursosFilter({ uniqueValues }: { uniqueValues?: Map<string, number> }) 
   }
 
   const handleRemoveTag = (value: string) => {
-    const newState = filterValue.filter((prevValue) => prevValue !== value)
+    const newState = cursosValue.filter((prevValue) => prevValue !== value)
     newState.length
       ? searchParams.set('cursos', newState.join('_'))
       : searchParams.delete('cursos')
@@ -46,8 +53,7 @@ function CursosFilter({ uniqueValues }: { uniqueValues?: Map<string, number> }) 
       title="Cursos"
       maxTags={4}
       icon={<Users size={15} strokeWidth={1.4} />}
-      filterTags={filterValue.sort()}
-      uniqueValues={uniqueValues}
+      filterTags={cursosTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
@@ -63,10 +69,13 @@ function CursosFilter({ uniqueValues }: { uniqueValues?: Map<string, number> }) 
                   key={curso}
                   className="cursor-pointer"
                   onSelect={(e) => e.preventDefault()}
-                  checked={filterValue.includes(curso)}
+                  checked={cursosValue.includes(curso)}
                   onCheckedChange={() => updateParams(curso)}
                 >
-                  <MenuItem value={curso} quantity={uniqueValues?.get(curso) ?? 0} />
+                  <MenuItem
+                    value={curso}
+                    quantity={uniqueValues?.get(curso) ?? 0}
+                  />
                 </DropdownMenuCheckboxItem>
               ))}
             </DropdownMenuSubContent>

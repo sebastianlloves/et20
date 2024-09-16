@@ -14,13 +14,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 function TagsBox({
   tags,
-  uniqueValues,
   maxTags,
   handleRemoveTag,
   handleRemoveAll,
 }: {
-  tags: string[]
-  uniqueValues?: Map<string, number>
+  tags: { value: string; quantity?: number | null }[]
   maxTags: number
   handleRemoveTag: (value: string) => void
   handleRemoveAll: () => void
@@ -43,21 +41,21 @@ function TagsBox({
           <div className="mt-1 flex flex-wrap justify-start gap-1.5 overflow-hidden">
             {tags.map((tag) => (
               <Badge
-                key={tag}
+                key={tag.value}
                 variant="default"
                 className={cn(
                   'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10',
-                  tag === 'Inclusión estricta' && 'rounded-lg pl-1',
+                  tag.value === 'Inclusión estricta' && 'rounded-lg pl-1',
                 )}
               >
                 <div className="flex h-full items-center justify-start">
                   <div className="flex items-center justify-between gap-3 px-2 leading-3">
                     <p className="text-pretty align-middle leading-snug text-foreground">
-                      {tag}
+                      {tag.value}
                     </p>
-                    {uniqueValues !== undefined ? (
+                    {tag.quantity !== undefined ? (
                       <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">
-                        {`(${uniqueValues.get(tag) ?? 0})`}
+                        {`(${tag.quantity})`}
                       </p>
                     ) : (
                       <Skeleton className="h-2 w-5 rounded-md bg-primary/50" />
@@ -67,7 +65,9 @@ function TagsBox({
                     <X
                       strokeWidth="1.5px"
                       className="h-[13px] w-[13px] cursor-pointer text-foreground/60 hover:text-foreground/90"
-                      onClick={() => handleRemoveTag && handleRemoveTag(tag)}
+                      onClick={() =>
+                        handleRemoveTag && handleRemoveTag(tag.value)
+                      }
                     />
                   </div>
                 </div>

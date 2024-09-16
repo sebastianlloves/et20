@@ -13,8 +13,7 @@ interface FilterProps {
   title: string
   maxTags: number
   icon?: ReactNode
-  filterTags?: string[]
-  uniqueValues?: Map<any, number>
+  filterTags?: { value: string; quantity?: number | null }[]
   handleRemoveTag: (value: string) => void
   handleRemoveAll: () => void
 }
@@ -25,7 +24,6 @@ function Filter({
   maxTags,
   icon,
   filterTags = [],
-  uniqueValues,
   handleRemoveTag,
   handleRemoveAll,
 }: FilterProps) {
@@ -57,7 +55,6 @@ function Filter({
       {filterTags.length > 0 && (
         <TagsBox
           tags={filterTags}
-          uniqueValues={uniqueValues}
           maxTags={maxTags}
           handleRemoveTag={handleRemoveTag}
           handleRemoveAll={handleRemoveAll}

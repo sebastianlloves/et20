@@ -190,8 +190,9 @@ export const FILTERS_FNS = {
   cantTroncales: {
     filterFn: (student: Student, searchParams: SearchParams) => {
       if (student.cantTroncales === null) return true
-      const cantTroncalesParam = searchParams.cantTroncales || ''
-      const [minValue, maxValue] = cantTroncalesParam
+      const { cantTroncales } = searchParams
+      if (cantTroncales === undefined) return true
+      const [minValue, maxValue] = cantTroncales
         .split('_')
         .map((value) => Number(value))
 
