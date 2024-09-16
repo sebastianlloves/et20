@@ -22,7 +22,10 @@ function SliderItem({
   const debounceUpdateParams = useDebouncedCallback(updateParams, 600)
 
   return (
-    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+    <DropdownMenuItem
+      disabled={min === 0 && max === 0}
+      onSelect={(e) => e.preventDefault()}
+    >
       <div className="flex gap-2">
         <h4 className="text-left text-sm font-normal">{title}</h4>
         <div className="flex items-center gap-x-1">
@@ -31,7 +34,6 @@ function SliderItem({
           </span>
           <Slider
             defaultValue={filterValue || [min, max]}
-            disabled={min === 0 && max === 0}
             min={min}
             max={max}
             step={1}
