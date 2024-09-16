@@ -12,7 +12,7 @@ export default function MenuItem({
   return (
     <div className="flex w-full items-end justify-between gap-x-7">
       <h4 className="align-middle text-sm">{value}</h4>
-      {quantity && (
+      {quantity !== undefined && (
         <p
           className={cn(
             'w-5 text-right align-middle font-mono leading-tight text-muted-foreground/90',

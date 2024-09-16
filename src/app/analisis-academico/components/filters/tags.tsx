@@ -18,7 +18,7 @@ function TagsBox({
   handleRemoveTag,
   handleRemoveAll,
 }: {
-  tags: { value: string; quantity?: number | null }[]
+  tags: { value: string; quantity?: number | null; className?: string }[]
   maxTags: number
   handleRemoveTag: (value: string) => void
   handleRemoveAll: () => void
@@ -45,7 +45,7 @@ function TagsBox({
                 variant="default"
                 className={cn(
                   'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10',
-                  tag.value === 'Inclusión estricta' && 'rounded-lg pl-1',
+                  tag.className,
                 )}
               >
                 <div className="flex h-full items-center justify-start">
@@ -53,21 +53,21 @@ function TagsBox({
                     <p className="text-pretty align-middle leading-snug text-foreground">
                       {tag.value}
                     </p>
-                    {tag.quantity !== undefined ? (
-                      <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">
-                        {`(${tag.quantity})`}
-                      </p>
-                    ) : (
+                    {tag.quantity === undefined ? (
                       <Skeleton className="h-2 w-5 rounded-md bg-primary/50" />
+                    ) : (
+                      tag.quantity !== null && (
+                        <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">
+                          {`(${tag.quantity})`}
+                        </p>
+                      )
                     )}
                   </div>
                   <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
                     <X
                       strokeWidth="1.5px"
                       className="h-[13px] w-[13px] cursor-pointer text-foreground/60 hover:text-foreground/90"
-                      onClick={() =>
-                        handleRemoveTag && handleRemoveTag(tag.value)
-                      }
+                      onClick={() => handleRemoveTag(tag.value)}
                     />
                   </div>
                 </div>

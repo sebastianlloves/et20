@@ -28,10 +28,9 @@ function CursosFilter({
     const newCursosState = cursosValue.includes(curso)
       ? cursosValue.filter((prevParam) => prevParam !== curso)
       : [...cursosValue, curso]
-    console.log('updateParams')
-    newCursosState.length === 0
-      ? searchParams.delete('cursos')
-      : searchParams.set('cursos', newCursosState.join('_'))
+    newCursosState.length
+      ? searchParams.set('cursos', newCursosState.join('_'))
+      : searchParams.delete('cursos')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -74,7 +73,7 @@ function CursosFilter({
                 >
                   <MenuItem
                     value={curso}
-                    quantity={uniqueValues?.get(curso) ?? 0}
+                    quantity={uniqueValues && (uniqueValues.get(curso) ?? 0)}
                   />
                 </DropdownMenuCheckboxItem>
               ))}

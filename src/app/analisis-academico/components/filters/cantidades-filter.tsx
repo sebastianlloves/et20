@@ -6,26 +6,27 @@ import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
 
 function CantidadesFilter({
-  maxMinValues,
   uniqueValues,
 }: {
-  maxMinValues?: number[]
   uniqueValues?: Map<number, number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
-  const troncalesValue =
-    searchParams
-      .get('cantTroncales')
-      ?.split('_')
-      .map((value) => Number(value))
+  const troncalesValue = searchParams
+    .get('cantTroncales')
+    ?.split('_')
+    .map((value) => Number(value))
+    .sort()
+    
+  const minValue =
+    (uniqueValues && Math.min(...Array.from(uniqueValues.keys()))) || 0
+  const maxValue =
+    (uniqueValues && Math.max(...Array.from(uniqueValues.keys()))) || 0
 
   const troncalesTag = troncalesValue && {
-    value:
-      troncalesValue[0] === troncalesValue[1]
-        ? `${troncalesValue[0]} materias troncales`
-        : troncalesValue[0] === 0
-          ? `Hasta ${troncalesValue[1]} materias troncales`
-          : `Entre ${troncalesValue[0]} y ${troncalesValue[1]} materias troncales`,
+    value: getCantidadesFilterValue(troncalesValue, {
+      plural: 'troncales',
+      singular: 'troncal',
+    }),
     quantity:
       uniqueValues &&
       Array.from(uniqueValues.entries()).reduce(
@@ -35,6 +36,13 @@ function CantidadesFilter({
             : acc,
         0,
       ),
+  }
+
+  const updateParams = (value: number[], min: number, max: number) => {
+    value[0] === min && value[1] === max
+      ? searchParams.delete('cantTroncales')
+      : searchParams.set('cantTroncales', value.join('_'))
+    replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
@@ -48,6 +56,15 @@ function CantidadesFilter({
     replace(`${pathname}?${searchParams}`)
   }
 
+  if (
+    troncalesValue &&
+    (minValue > troncalesValue[0] || maxValue < troncalesValue[1])
+  ) {
+    const min = troncalesValue[0] < minValue ? minValue : troncalesValue[0]
+    const max = troncalesValue[1] > maxValue ? maxValue : troncalesValue[1]
+    updateParams([min, max], minValue, maxValue)
+  }
+
   return (
     <Filter
       title="Cantidades"
@@ -57,8 +74,27 @@ function CantidadesFilter({
       handleRemoveAll={handleRemoveAll}
       handleRemoveTag={handleRemoveTag}
     >
-      <SliderItem title="Troncales" paramKey="cantTroncales" />
+      <SliderItem
+        title="Troncales"
+        updateParams={updateParams}
+        filterValue={troncalesValue}
+        min={minValue}
+        max={maxValue}
+      />
     </Filter>
   )
 }
 export default CantidadesFilter
+
+function getCantidadesFilterValue(
+  [min, max]: number[],
+  materiaType: { singular: string; plural: string },
+) {
+  if (min === 0) {
+    if (max === 0) return `No adeuda materias ${materiaType.plural}`
+    return `Hasta ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
+  }
+  if (min === max)
+    return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
+  return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
+}

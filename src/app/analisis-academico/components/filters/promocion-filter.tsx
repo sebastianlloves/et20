@@ -21,7 +21,7 @@ function PromocionFilter({
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const promocionValue = searchParams.get('promocion')
-  const promocionTag = promocionValue
+  const promocionTags = promocionValue
     ? [
         {
           value: promocionValue,
@@ -49,7 +49,7 @@ function PromocionFilter({
       title="Promoción"
       maxTags={4}
       icon={<BadgeCheck size={18} strokeWidth={1.0} />}
-      filterTags={promocionTag}
+      filterTags={promocionTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
@@ -65,7 +65,8 @@ function PromocionFilter({
           <MenuItem
             value={promocionValueTag['solo promocionan']}
             quantity={
-              uniqueValues?.get(promocionValueTag['solo promocionan']) ?? 0
+              uniqueValues &&
+              (uniqueValues.get(promocionValueTag['solo promocionan']) ?? 0)
             }
           />
         </DropdownMenuRadioItem>
@@ -77,7 +78,8 @@ function PromocionFilter({
           <MenuItem
             value={promocionValueTag['solo permanecen']}
             quantity={
-              uniqueValues?.get(promocionValueTag['solo permanecen']) ?? 0
+              uniqueValues &&
+              (uniqueValues.get(promocionValueTag['solo permanecen']) ?? 0)
             }
           />
         </DropdownMenuRadioItem>

@@ -23,19 +23,30 @@ function MateriasFilter({
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const materiasValue = searchParams.get('materias')?.split('_') || []
+  const strictInclusion = searchParams.get('inclusionEstricta')
   const materiasTags = materiasValue.map((value) => {
     const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
     return { value, quantity }
   })
-  const strictInclusion = searchParams.get('inclusionEstricta')
+  const filterTags =
+    strictInclusion === 'true'
+      ? [
+          {
+            value: 'Inclusión estricta',
+            quantity: null,
+            className: 'rounded-lg pl-1 bg-primary/15',
+          },
+          ...materiasTags,
+        ]
+      : materiasTags
 
   const updateParams = (materia: string) => {
     const newMateriasState = materiasValue.includes(materia)
       ? materiasValue.filter((prevValue) => prevValue !== materia)
       : [...materiasValue, materia]
-    newMateriasState.length === 0
-      ? searchParams.delete('materias')
-      : searchParams.set('materias', newMateriasState.join('_'))
+    newMateriasState.length
+      ? searchParams.set('materias', newMateriasState.join('_'))
+      : searchParams.delete('materias')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -60,7 +71,7 @@ function MateriasFilter({
 
   const handleRemoveAll = () => {
     searchParams.delete('materias')
-    searchParams.delete('inclusionEstricta')
+    if (strictInclusion === 'true') searchParams.delete('inclusionEstricta')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -69,17 +80,7 @@ function MateriasFilter({
       title="Materias"
       maxTags={4}
       icon={<Book size={15} strokeWidth={1.4} />}
-      filterTags={
-        strictInclusion === 'true'
-          ? [
-              {
-                value: 'Inclusión estricta',
-                quantity: null,
-              },
-              ...materiasTags,
-            ]
-          : materiasTags
-      }
+      filterTags={filterTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
@@ -92,24 +93,23 @@ function MateriasFilter({
                 ({ nombre: materia }) => (
                   <DropdownMenuCheckboxItem
                     key={materia}
-                    checked={materiasValue?.includes(
+                    checked={materiasValue.includes(
                       `${materia} (${anio.split(' ')[0]})`,
                     )}
-                    onSelect={(e) => {
-                      e.preventDefault()
-                      updateParams(`${materia} (${anio.split(' ')[0]})`)
-                    }}
+                    onSelect={(e) => e.preventDefault()}
                     className="cursor-pointer"
-                    onChange={() =>
+                    onCheckedChange={() =>
                       updateParams(`${materia} (${anio.split(' ')[0]})`)
                     }
                   >
                     <MenuItem
                       value={`${materia} (${anio.split(' ')[0]})`}
                       quantity={
-                        uniqueValues?.get(
+                        uniqueValues &&
+                        (uniqueValues.get(
                           `${materia} (${anio.split(' ')[0]})`,
-                        ) ?? 0
+                        ) ??
+                          0)
                       }
                     />
                   </DropdownMenuCheckboxItem>
