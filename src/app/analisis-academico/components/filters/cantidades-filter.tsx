@@ -143,7 +143,7 @@ function getCantidadesData(
   const filterValue = paramValue
     ?.split('_')
     .map((value) => Number(value))
-    .sort()
+    .sort((a, b) => a - b)
 
   const uniqueValuesArr = uniqueValues ? Array.from(uniqueValues.keys()) : [0]
   const quantity =
@@ -160,6 +160,9 @@ function getCantidadesData(
     filterValue,
     min: Math.min(...uniqueValuesArr),
     max: Math.max(...uniqueValuesArr),
-    filterTag: filterValue && {value: getCantidadesFilterValue(filterValue, materiaType), quantity},
+    filterTag: filterValue && {
+      value: getCantidadesFilterValue(filterValue, materiaType),
+      quantity,
+    },
   }
 }

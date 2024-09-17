@@ -24,7 +24,7 @@ function PromocionFilter({
   const promocionTags = promocionValue
     ? [
         {
-          value: promocionValue,
+          value: promocionValueTag[promocionValue],
           quantity: uniqueValues && (uniqueValues.get(promocionValue) ?? 0),
         },
       ]
