@@ -19,10 +19,20 @@ function FiltersPanel({
     data && getStudentsUniqueValues(data, filterParams, 'cursos')
   const materiasUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'materias')
+  const inclusionEstrictaUniqueValues =
+    data &&
+    getStudentsUniqueValues(
+      data,
+      { ...filterParams, inclusionEstricta: 'true' },
+      'inclusionEstricta',
+      true,
+    )
   const promocionUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'promocion')
   const cantTroncalesUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cantTroncales')
+  const cantGeneralesUniqueValues =
+    data && getStudentsUniqueValues(data, filterParams, 'cantGenerales')
 
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
@@ -34,8 +44,14 @@ function FiltersPanel({
           </h4>
         </div>
         <CursosFilter uniqueValues={cursosUniqueValues} />
-        <MateriasFilter uniqueValues={materiasUniqueValues} />
-        <CantidadesFilter uniqueValues={cantTroncalesUniqueValues} />
+        <MateriasFilter
+          materiasUniqueValues={materiasUniqueValues}
+          inclusionEstrictaUniqueValues={inclusionEstrictaUniqueValues}
+        />
+        <CantidadesFilter
+          cantTroncalesUniqueValues={cantTroncalesUniqueValues}
+          cantGeneralesUniqueValues={cantGeneralesUniqueValues}
+        />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
     </ScrollArea>

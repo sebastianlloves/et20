@@ -17,15 +17,18 @@ import { Switch } from '@/components/ui/switch'
 import MenuItem from './menu-item'
 
 function MateriasFilter({
-  uniqueValues,
+  materiasUniqueValues,
+  inclusionEstrictaUniqueValues,
 }: {
-  uniqueValues?: Map<string, number>
+  materiasUniqueValues?: Map<string, number>
+  inclusionEstrictaUniqueValues?: Map<'true', number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const materiasValue = searchParams.get('materias')?.split('_') || []
   const strictInclusion = searchParams.get('inclusionEstricta')
   const materiasTags = materiasValue.map((value) => {
-    const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
+    const quantity =
+      materiasUniqueValues && (materiasUniqueValues.get(value) ?? 0)
     return { value, quantity }
   })
   const filterTags =
@@ -93,6 +96,12 @@ function MateriasFilter({
                 ({ nombre: materia }) => (
                   <DropdownMenuCheckboxItem
                     key={materia}
+                    disabled={
+                      !materiasUniqueValues ||
+                      !materiasUniqueValues.get(
+                        `${materia} (${anio.split(' ')[0]})`,
+                      )
+                    }
                     checked={materiasValue.includes(
                       `${materia} (${anio.split(' ')[0]})`,
                     )}
@@ -105,8 +114,8 @@ function MateriasFilter({
                     <MenuItem
                       value={`${materia} (${anio.split(' ')[0]})`}
                       quantity={
-                        uniqueValues &&
-                        (uniqueValues.get(
+                        materiasUniqueValues &&
+                        (materiasUniqueValues.get(
                           `${materia} (${anio.split(' ')[0]})`,
                         ) ??
                           0)
@@ -119,7 +128,13 @@ function MateriasFilter({
           </DropdownMenuSub>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem
+          onSelect={(e) => e.preventDefault()}
+          disabled={
+            materiasValue.length <= 1 ||
+            !inclusionEstrictaUniqueValues?.get('true')
+          }
+        >
           <div className="flex items-center space-x-6 p-1">
             <Label
               htmlFor="estrict-inclusion"

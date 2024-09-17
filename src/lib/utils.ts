@@ -168,9 +168,9 @@ export const FILTERS_FNS = {
   },
   inclusionEstricta: {
     filterFn: (student: Student, searchParams: SearchParams) => {
-      const materiasParam = searchParams.materias || ''
       const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
       const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
+      const materiasParam = searchParams.materias || ''
       const filterValue = materiasParam.split('_')
       const studentMaterias = [
         ...student.detalleTroncales,
@@ -185,20 +185,19 @@ export const FILTERS_FNS = {
     uniqueValuesFn: (
       filteredData: Student[],
       facetedModel: Map<string, number>,
-    ) => undefined,
+    ) => facetedModel.set('true', filteredData.length),
   },
   cantTroncales: {
     filterFn: (student: Student, searchParams: SearchParams) => {
-      if (student.cantTroncales === null) return true
-      const { cantTroncales } = searchParams
-      if (cantTroncales === undefined) return true
-      const [minValue, maxValue] = cantTroncales
-        .split('_')
-        .map((value) => Number(value))
-
-      return (
-        student.cantTroncales >= minValue && student.cantTroncales <= maxValue
-      )
+      if (student.cantTroncales !== null && searchParams.cantTroncales) {
+        const [minValue, maxValue] = searchParams.cantTroncales
+          .split('_')
+          .map((value) => Number(value))
+        return (
+          student.cantTroncales >= minValue && student.cantTroncales <= maxValue
+        )
+      }
+      return true
     },
     uniqueValuesFn: (
       filteredData: Student[],
@@ -206,6 +205,28 @@ export const FILTERS_FNS = {
     ) => {
       filteredData.forEach((student) => {
         const value = student.cantTroncales
+        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+      })
+    },
+  },
+  cantGenerales: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      if (student.cantGenerales !== null && searchParams.cantGenerales) {
+        const [minValue, maxValue] = searchParams.cantGenerales
+          .split('_')
+          .map((value) => Number(value))
+        return (
+          student.cantGenerales >= minValue && student.cantGenerales <= maxValue
+        )
+      }
+      return true
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<any, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const value = student.cantGenerales
         facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
       })
     },

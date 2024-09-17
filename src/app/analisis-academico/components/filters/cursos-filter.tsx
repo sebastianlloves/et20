@@ -66,6 +66,7 @@ function CursosFilter({
               {CURSOS_POR_ANIO[anio].map((curso) => (
                 <DropdownMenuCheckboxItem
                   key={curso}
+                  disabled={!uniqueValues || !uniqueValues.get(curso)}
                   className="cursor-pointer"
                   onSelect={(e) => e.preventDefault()}
                   checked={cursosValue.includes(curso)}

@@ -13,6 +13,7 @@ export interface SearchParams {
   enProceso2020?: string
   inclusionEstricta?: string
   cantTroncales?: string
+  cantGenerales?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

@@ -1,7 +1,5 @@
 'use client'
 
-import { cn } from '@/lib/utils'
-
 export default function MenuItem({
   value,
   quantity,
@@ -13,12 +11,7 @@ export default function MenuItem({
     <div className="flex w-full items-end justify-between gap-x-7">
       <h4 className="align-middle text-sm">{value}</h4>
       {quantity !== undefined && (
-        <p
-          className={cn(
-            'w-5 text-right align-middle font-mono leading-tight text-muted-foreground/90',
-            quantity === 0 && 'text-muted-foreground/60',
-          )}
-        >
+        <p className="w-5 text-right align-middle font-mono leading-tight text-muted-foreground/90">
           {quantity}
         </p>
       )}

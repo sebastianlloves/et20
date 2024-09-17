@@ -35,11 +35,12 @@ export function getStudentsUniqueValues(
   data: Student[],
   filterParams: Omit<SearchParams, 'anio'>,
   filterKey: keyof typeof FILTERS_FNS,
+  omitKeyInFiltering?: boolean
 ) {
   const partialFilteredData = getFilteredStudentData(
     data,
     filterParams,
-    filterKey,
+    omitKeyInFiltering ? undefined : filterKey,
   )
   const facetedModel = new Map<any, number>()
   FILTERS_FNS[filterKey].uniqueValuesFn(

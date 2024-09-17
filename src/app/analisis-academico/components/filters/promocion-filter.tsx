@@ -59,6 +59,10 @@ function PromocionFilter({
       >
         <DropdownMenuRadioItem
           value="solo promocionan"
+          disabled={
+            !uniqueValues ||
+            !uniqueValues.get(promocionValueTag['solo promocionan'])
+          }
           onSelect={(e) => e.preventDefault()}
           className="cursor-pointer"
         >
@@ -72,6 +76,10 @@ function PromocionFilter({
         </DropdownMenuRadioItem>
         <DropdownMenuRadioItem
           value="solo permanecen"
+          disabled={
+            !uniqueValues ||
+            !uniqueValues.get(promocionValueTag['solo permanecen'])
+          }
           onSelect={(e) => e.preventDefault()}
           className="cursor-pointer"
         >
