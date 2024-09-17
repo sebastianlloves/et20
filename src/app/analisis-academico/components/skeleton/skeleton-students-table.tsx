@@ -24,7 +24,7 @@ function SkeletonStudentsTable() {
 
   return (
     <>
-      <FiltersPanel data={null} />
+      <FiltersPanel data={[]} />
       <div className="col-span-full col-start-2">
         <DataTable columns={skeletonColumns} data={skeletonData} />
       </div>
