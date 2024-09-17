@@ -13,7 +13,7 @@ function FiltersPanel({
   data,
 }: {
   filterParams?: Omit<SearchParams, 'anio'>
-  data: Student[]
+  data?: Student[]
 }) {
   const cursosUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cursos')
