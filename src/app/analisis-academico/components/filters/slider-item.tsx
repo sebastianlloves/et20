@@ -22,7 +22,7 @@ function SliderItem({
 
   return (
     <div className="flex gap-2">
-      <h4 className="text-left text-sm font-normal">{title}</h4>
+      <h4 className="text-left text-sm font-normal w-16">{title}</h4>
       <div className="flex items-center gap-x-1">
         <span className="w-8 text-center text-sm font-light">
           {rangeValue[0]}

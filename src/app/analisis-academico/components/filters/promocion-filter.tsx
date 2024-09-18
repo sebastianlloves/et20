@@ -25,7 +25,9 @@ function PromocionFilter({
     ? [
         {
           value: promocionValueTag[promocionValue],
-          quantity: uniqueValues && (uniqueValues.get(promocionValue) ?? 0),
+          quantity:
+            uniqueValues &&
+            (uniqueValues.get(promocionValueTag[promocionValue]) ?? 0),
         },
       ]
     : []

@@ -27,36 +27,19 @@ function CantidadesFilter({
       singular: 'troncal',
     },
   )
-  const generalesValue = searchParams
-    .get('cantGenerales')
-    ?.split('_')
-    .map((value) => Number(value))
-    .sort()
-
-  const minGeneralesValue =
-    (cantGeneralesUniqueValues &&
-      Math.min(...Array.from(cantGeneralesUniqueValues.keys()))) ||
-    0
-  const maxGeneralesValue =
-    (cantGeneralesUniqueValues &&
-      Math.max(...Array.from(cantGeneralesUniqueValues.keys()))) ||
-    0
-
-  const generalesTag = generalesValue && {
-    value: getCantidadesFilterValue(generalesValue, {
+  const {
+    filterValue: generalesValue,
+    min: minGenerales,
+    max: maxGenerales,
+    filterTag: generalesTag,
+  } = getCantidadesData(
+    searchParams.get('cantGenerales'),
+    cantGeneralesUniqueValues,
+    {
       plural: 'generales',
       singular: 'general',
-    }),
-    quantity:
-      cantGeneralesUniqueValues &&
-      Array.from(cantGeneralesUniqueValues.entries()).reduce(
-        (acc, [key, value]) =>
-          key >= generalesValue[0] && key <= generalesValue[1]
-            ? acc + value
-            : acc,
-        0,
-      ),
-  }
+    },
+  )    
 
   const filterTags = [troncalesTag, generalesTag].filter(
     (value) => value !== undefined,
@@ -64,7 +47,9 @@ function CantidadesFilter({
 
   const updateParams =
     (paramKey: string) => (value: number[], min: number, max: number) => {
-      value[0] === min && value[1] === max
+      const minValue = min < value[0] ? min : value[0]
+      const maxValue = max > value[1] ? max : value[1]
+      value[0] === minValue && value[1] === maxValue
         ? searchParams.delete(paramKey)
         : searchParams.set(paramKey, value.join('_'))
       replace(`${pathname}?${searchParams}`)
@@ -110,8 +95,8 @@ function CantidadesFilter({
           title="Generales"
           updateParams={updateParams('cantGenerales')}
           filterValue={generalesValue}
-          min={minGeneralesValue}
-          max={maxGeneralesValue}
+          min={minGenerales}
+          max={maxGenerales}
         />
       </DropdownMenuItem>
     </Filter>
