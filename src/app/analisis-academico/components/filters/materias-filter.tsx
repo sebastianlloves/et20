@@ -81,7 +81,7 @@ function MateriasFilter({
   return (
     <Filter
       title="Materias"
-      maxTags={4}
+      maxTags={3}
       icon={<Book size={15} strokeWidth={1.4} />}
       filterTags={filterTags}
       handleRemoveTag={handleRemoveTag}

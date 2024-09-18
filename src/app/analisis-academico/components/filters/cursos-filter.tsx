@@ -50,7 +50,7 @@ function CursosFilter({
   return (
     <Filter
       title="Cursos"
-      maxTags={4}
+      maxTags={3}
       icon={<Users size={15} strokeWidth={1.4} />}
       filterTags={cursosTags}
       handleRemoveTag={handleRemoveTag}

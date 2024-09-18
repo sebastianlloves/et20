@@ -49,7 +49,7 @@ function PromocionFilter({
   return (
     <Filter
       title="Promoción"
-      maxTags={4}
+      maxTags={2}
       icon={<BadgeCheck size={18} strokeWidth={1.0} />}
       filterTags={promocionTags}
       handleRemoveTag={handleRemoveTag}
