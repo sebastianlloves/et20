@@ -18,11 +18,14 @@ import MenuItem from './menu-item'
 
 function MateriasFilter({
   materiasUniqueValues,
-  inclusionEstrictaUniqueValues,
 }: {
   materiasUniqueValues?: Map<string, number>
-  inclusionEstrictaUniqueValues?: Map<'true', number>
 }) {
+  console.log(
+    materiasUniqueValues
+      ? Array.from(materiasUniqueValues?.entries())
+      : 'no hay',
+  )
   const { pathname, searchParams, replace } = useParamsState()
   const materiasValue = searchParams.get('materias')?.split('_') || []
   const strictInclusion = searchParams.get('inclusionEstricta')
@@ -130,10 +133,9 @@ function MateriasFilter({
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={(e) => e.preventDefault()}
-          disabled={
-            materiasValue.length <= 1 ||
-            !inclusionEstrictaUniqueValues?.get('true')
-          }
+          /* disabled={
+            materiasValue.length > 0 
+          } */
         >
           <div className="flex items-center space-x-6 p-1">
             <Label

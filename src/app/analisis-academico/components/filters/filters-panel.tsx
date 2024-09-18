@@ -18,14 +18,12 @@ function FiltersPanel({
   const cursosUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cursos')
   const materiasUniqueValues =
-    data && getStudentsUniqueValues(data, filterParams, 'materias')
-  const inclusionEstrictaUniqueValues =
     data &&
     getStudentsUniqueValues(
       data,
-      { ...filterParams, inclusionEstricta: 'true' },
-      'inclusionEstricta',
-      true,
+      filterParams,
+      'materias',
+      filterParams.inclusionEstricta === 'true',
     )
   const promocionUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'promocion')
@@ -44,10 +42,7 @@ function FiltersPanel({
           </h4>
         </div>
         <CursosFilter uniqueValues={cursosUniqueValues} />
-        <MateriasFilter
-          materiasUniqueValues={materiasUniqueValues}
-          inclusionEstrictaUniqueValues={inclusionEstrictaUniqueValues}
-        />
+        <MateriasFilter materiasUniqueValues={materiasUniqueValues} />
         <CantidadesFilter
           cantTroncalesUniqueValues={cantTroncalesUniqueValues}
           cantGeneralesUniqueValues={cantGeneralesUniqueValues}

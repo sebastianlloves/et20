@@ -139,6 +139,7 @@ export const FILTERS_FNS = {
     filterFn: (student: Student, searchParams: SearchParams) => {
       const materiasParam = searchParams.materias || ''
       const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
+      const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
       const filterValue = materiasParam.split('_')
       const studentMaterias = [
         ...student.detalleTroncales,
@@ -146,7 +147,9 @@ export const FILTERS_FNS = {
       ]
       if (enProceso2020Param)
         studentMaterias.push(...student.detalleEnProceso2020)
-      return filterValue.some((materia) => studentMaterias.includes(materia))
+      return inclusionEstrictaParam
+        ? filterValue.every((materia) => studentMaterias.includes(materia))
+        : filterValue.some((materia) => studentMaterias.includes(materia))
     },
     uniqueValuesFn: (
       filteredData: Student[],
@@ -165,27 +168,6 @@ export const FILTERS_FNS = {
         )
       })
     },
-  },
-  inclusionEstricta: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
-      const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
-      const materiasParam = searchParams.materias || ''
-      const filterValue = materiasParam.split('_')
-      const studentMaterias = [
-        ...student.detalleTroncales,
-        ...student.detalleGenerales,
-      ]
-      if (enProceso2020Param)
-        studentMaterias.push(...student.detalleEnProceso2020)
-      return inclusionEstrictaParam
-        ? filterValue.every((materia) => studentMaterias.includes(materia))
-        : true
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => facetedModel.set('true', filteredData.length),
   },
   cantTroncales: {
     filterFn: (student: Student, searchParams: SearchParams) => {
