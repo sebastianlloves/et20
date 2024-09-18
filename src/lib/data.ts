@@ -20,12 +20,12 @@ export function getFilteredStudentData(
   omitedKey?: string,
 ) {
   const filteredData = data.filter((student) =>
-    Object.keys(filterParams)
-      .filter((key) => key !== 'enProceso2020' && key !== omitedKey)
-      .every((filterName) =>
-        isValidKey(filterName)
-          ? FILTERS_FNS[filterName].filterFn(student, filterParams)
-          : true,
+    (Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>)
+      .filter(
+        (filterFnKey) => filterParams[filterFnKey] && filterFnKey !== omitedKey,
+      )
+      .every((filterFnKey) =>
+        FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
       ),
   )
   return filteredData
@@ -35,7 +35,7 @@ export function getStudentsUniqueValues(
   data: Student[],
   filterParams: Omit<SearchParams, 'anio'>,
   filterKey: keyof typeof FILTERS_FNS,
-  omitKeyInFiltering?: boolean
+  omitKeyInFiltering?: boolean,
 ) {
   const partialFilteredData = getFilteredStudentData(
     data,
@@ -52,6 +52,4 @@ export function getStudentsUniqueValues(
   return facetedModel
 }
 
-const isValidKey = (key: string): key is keyof typeof FILTERS_FNS => {
-  return FILTERS_FNS[key as keyof typeof FILTERS_FNS] !== undefined
-}
+

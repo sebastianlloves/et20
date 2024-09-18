@@ -54,7 +54,7 @@ function TagsBox({
                       {tag.value}
                     </p>
                     {tag.quantity === undefined ? (
-                      <Skeleton className="h-2 w-5 rounded-md bg-primary/50" />
+                      <Skeleton className="h-1 w-5 rounded-md bg-primary/50" />
                     ) : (
                       tag.quantity !== null && (
                         <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">

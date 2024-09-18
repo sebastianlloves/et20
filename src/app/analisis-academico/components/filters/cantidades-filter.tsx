@@ -39,7 +39,7 @@ function CantidadesFilter({
       plural: 'generales',
       singular: 'general',
     },
-  )    
+  )
 
   const filterTags = [troncalesTag, generalesTag].filter(
     (value) => value !== undefined,
@@ -90,7 +90,10 @@ function CantidadesFilter({
           max={maxTroncales}
         />
       </DropdownMenuItem>
-      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+      <DropdownMenuItem
+        onSelect={(e) => e.preventDefault()}
+        disabled={minGenerales === maxGenerales}
+      >
         <SliderItem
           title="Generales"
           updateParams={updateParams('cantGenerales')}
@@ -103,19 +106,6 @@ function CantidadesFilter({
   )
 }
 export default CantidadesFilter
-
-function getCantidadesFilterValue(
-  [min, max]: number[],
-  materiaType: { singular: string; plural: string },
-) {
-  if (min === 0) {
-    if (max === 0) return `No adeuda materias ${materiaType.plural}`
-    return `Hasta ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-  }
-  if (min === max)
-    return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-  return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-}
 
 function getCantidadesData(
   paramValue: string | null,
@@ -140,7 +130,6 @@ function getCantidadesData(
           : acc,
       0,
     )
-
   return {
     filterValue,
     min: Math.min(...uniqueValuesArr),
@@ -150,4 +139,17 @@ function getCantidadesData(
       quantity,
     },
   }
+}
+
+function getCantidadesFilterValue(
+  [min, max]: number[],
+  materiaType: { singular: string; plural: string },
+) {
+  if (min === 0) {
+    if (max === 0) return `No adeuda materias ${materiaType.plural}`
+    return `Hasta ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
+  }
+  if (min === max)
+    return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
+  return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
 }
