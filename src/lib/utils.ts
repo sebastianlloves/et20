@@ -169,6 +169,54 @@ export const FILTERS_FNS = {
       })
     },
   },
+  cantidades: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const { cantTroncales, cantGenerales, cantEnProceso2020 } = student
+      const {
+        cantTroncales: troncalesParam,
+        cantGenerales: generalesParam,
+        cantEnProceso2020: enProceso2020Param,
+        enProceso2020: showEnProcesoParam,
+      } = searchParams
+      const [troncalesValue, generalesValue, enProceso2020Value] = [
+        troncalesParam,
+        generalesParam,
+        enProceso2020Param,
+      ].map(
+        (filterValue) =>
+          filterValue !== undefined &&
+          filterValue
+            .split('_')
+            .map((value) => Number(value))
+            .sort((a, b) => a - b),
+      )
+
+      const isTroncalesValid =
+        troncalesValue && cantTroncales
+          ? cantTroncales >= troncalesValue[0] &&
+            cantTroncales <= troncalesValue[1]
+          : true
+      const isGeneralesValid =
+        generalesValue && cantGenerales
+          ? cantGenerales >= generalesValue[0] &&
+            cantGenerales <= generalesValue[1]
+          : true
+      const isEnProceso2020Valid =
+        enProceso2020Value &&
+        showEnProcesoParam !== 'false' &&
+        cantEnProceso2020
+          ? cantEnProceso2020 >= enProceso2020Value[0] &&
+            cantEnProceso2020 <= enProceso2020Value[1]
+          : true
+
+      return isTroncalesValid && isGeneralesValid && isEnProceso2020Valid
+      // return inclusionEstricta ? isTroncalesValid && isGeneralesValid && isEnProceso2020Valid : isTroncalesValid || isGeneralesValid || isEnProceso2020Valid
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => undefined,
+  },
   cantTroncales: {
     filterFn: (student: Student, searchParams: SearchParams) => {
       if (student.cantTroncales !== null && searchParams.cantTroncales) {

@@ -21,11 +21,6 @@ function MateriasFilter({
 }: {
   materiasUniqueValues?: Map<string, number>
 }) {
-  console.log(
-    materiasUniqueValues
-      ? Array.from(materiasUniqueValues?.entries())
-      : 'no hay',
-  )
   const { pathname, searchParams, replace } = useParamsState()
   const materiasValue = searchParams.get('materias')?.split('_') || []
   const strictInclusion = searchParams.get('inclusionEstricta')
