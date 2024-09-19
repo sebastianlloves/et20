@@ -22,15 +22,15 @@ function SliderItem({
 
   return (
     <div className="flex gap-2">
-      <h4 className="text-left text-sm font-normal w-16">{title}</h4>
+      <h4 className="text-left text-sm font-normal w-20 text-pretty">{title}</h4>
       <div className="flex items-center gap-x-1">
         <span className="w-8 text-center text-sm font-light">
           {rangeValue[0]}
         </span>
         <Slider
           defaultValue={filterValue || [min, max]}
-          min={filterValue && filterValue[0] < min ? filterValue[0] : min}
-          max={filterValue && filterValue[1] > max ? filterValue[1] : max}
+          min={min}
+          max={max}
           step={1}
           className="w-40"
           onValueChange={(value) => {

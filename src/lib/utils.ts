@@ -171,93 +171,66 @@ export const FILTERS_FNS = {
   },
   cantidades: {
     filterFn: (student: Student, searchParams: SearchParams) => {
-      const { cantTroncales, cantGenerales, cantEnProceso2020 } = student
       const {
-        cantTroncales: troncalesParam,
-        cantGenerales: generalesParam,
-        cantEnProceso2020: enProceso2020Param,
-        enProceso2020: showEnProcesoParam,
+        cantidadesTroncales,
+        cantidadesGenerales,
+        cantidadesEnProceso2020,
+        enProceso2020,
       } = searchParams
+      const criterioOptativo = searchParams.cantOptativo === 'true'
       const [troncalesValue, generalesValue, enProceso2020Value] = [
-        troncalesParam,
-        generalesParam,
-        enProceso2020Param,
+        cantidadesTroncales,
+        cantidadesGenerales,
+        cantidadesEnProceso2020,
       ].map(
-        (filterValue) =>
-          filterValue !== undefined &&
-          filterValue
+        (filterParam) =>
+          filterParam !== undefined &&
+          filterParam
             .split('_')
             .map((value) => Number(value))
             .sort((a, b) => a - b),
       )
 
       const isTroncalesValid =
-        troncalesValue && cantTroncales
-          ? cantTroncales >= troncalesValue[0] &&
-            cantTroncales <= troncalesValue[1]
+        troncalesValue && student.cantTroncales !== null
+          ? student.cantTroncales >= troncalesValue[0] &&
+            student.cantTroncales <= troncalesValue[1]
           : true
       const isGeneralesValid =
-        generalesValue && cantGenerales
-          ? cantGenerales >= generalesValue[0] &&
-            cantGenerales <= generalesValue[1]
+        generalesValue && student.cantGenerales !== null
+          ? student.cantGenerales >= generalesValue[0] &&
+            student.cantGenerales <= generalesValue[1]
           : true
       const isEnProceso2020Valid =
         enProceso2020Value &&
-        showEnProcesoParam !== 'false' &&
-        cantEnProceso2020
-          ? cantEnProceso2020 >= enProceso2020Value[0] &&
-            cantEnProceso2020 <= enProceso2020Value[1]
+        enProceso2020 !== 'false' &&
+        student.cantEnProceso2020 !== null
+          ? student.cantEnProceso2020 >= enProceso2020Value[0] &&
+            student.cantEnProceso2020 <= enProceso2020Value[1]
           : true
 
-      return isTroncalesValid && isGeneralesValid && isEnProceso2020Valid
-      // return inclusionEstricta ? isTroncalesValid && isGeneralesValid && isEnProceso2020Valid : isTroncalesValid || isGeneralesValid || isEnProceso2020Valid
+      return criterioOptativo
+        ? isTroncalesValid || isGeneralesValid || isEnProceso2020Valid
+        : isTroncalesValid && isGeneralesValid && isEnProceso2020Valid
     },
     uniqueValuesFn: (
       filteredData: Student[],
       facetedModel: Map<string, number>,
-    ) => undefined,
-  },
-  cantTroncales: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      if (student.cantTroncales !== null && searchParams.cantTroncales) {
-        const [minValue, maxValue] = searchParams.cantTroncales
-          .split('_')
-          .map((value) => Number(value))
-        return (
-          student.cantTroncales >= minValue && student.cantTroncales <= maxValue
-        )
-      }
-      return true
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<any, number>,
     ) => {
       filteredData.forEach((student) => {
-        const value = student.cantTroncales
-        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
-      })
-    },
-  },
-  cantGenerales: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      if (student.cantGenerales !== null && searchParams.cantGenerales) {
-        const [minValue, maxValue] = searchParams.cantGenerales
-          .split('_')
-          .map((value) => Number(value))
-        return (
-          student.cantGenerales >= minValue && student.cantGenerales <= maxValue
+        const { cantTroncales, cantGenerales, cantEnProceso2020 } = student
+        facetedModel.set(
+          `troncales_${cantTroncales}`,
+          (facetedModel.get(`troncales_${cantTroncales}`) ?? 0) + 1,
         )
-      }
-      return true
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<any, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const value = student.cantGenerales
-        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+        facetedModel.set(
+          `generales_${cantGenerales}`,
+          (facetedModel.get(`generales_${cantGenerales}`) ?? 0) + 1,
+        )
+        facetedModel.set(
+          `enProceso2020_${cantEnProceso2020}`,
+          (facetedModel.get(`enProceso2020_${cantEnProceso2020}`) ?? 0) + 1,
+        )
       })
     },
   },

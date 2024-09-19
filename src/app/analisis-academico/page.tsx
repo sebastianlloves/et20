@@ -1,8 +1,8 @@
 import StudentsTable from './components/students-table'
-import SkeletonStudentsTable from './components/skeleton/skeleton-students-table'
 import ToggleDB from './components/toggle-db'
 import { Suspense } from 'react'
 import SearchBar from './components/filters/search-bar'
+import SkeletonStudentsTable from './components/skeleton-students-table'
 
 export interface SearchParams {
   anio?: string
@@ -12,10 +12,10 @@ export interface SearchParams {
   promocion?: string
   enProceso2020?: string
   inclusionEstricta?: string
-  cantidades?: string
-  cantTroncales?: string
-  cantGenerales?: string
-  cantEnProceso2020?: string
+  cantidadesTroncales?: string
+  cantidadesGenerales?: string
+  cantidadesEnProceso2020?: string
+  cantOptativo?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

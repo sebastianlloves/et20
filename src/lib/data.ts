@@ -22,7 +22,9 @@ export function getFilteredStudentData(
   const filteredData = data.filter((student) =>
     (Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>)
       .filter(
-        (filterFnKey) => filterParams[filterFnKey] && filterFnKey !== omitedKey,
+        (filterFnKey) =>
+          Object.keys(filterParams).some((key) => key.includes(filterFnKey)) &&
+          filterFnKey !== omitedKey,
       )
       .every((filterFnKey) =>
         FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
@@ -51,5 +53,3 @@ export function getStudentsUniqueValues(
 
   return facetedModel
 }
-
-
