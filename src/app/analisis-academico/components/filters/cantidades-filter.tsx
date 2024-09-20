@@ -4,7 +4,10 @@ import { Calculator } from 'lucide-react'
 import SliderItem from './slider-item'
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
 
 function CantidadesFilter({
   cantidadesUniqueValues,
@@ -18,38 +21,34 @@ function CantidadesFilter({
   }
 }) {
   const { pathname, searchParams, replace } = useParamsState()
-  const {
-    filterValue: troncalesValue,
-    filterTag: troncalesTag,
-  } = getCantidadesData(
-    searchParams.get('cantidadesTroncales'),
-    cantidadesUniqueValues &&
-    Array.from(cantidadesUniqueValues.entries()).filter(
-      ([key]) => key.split('_')[0] === 'troncales',
-    ),
-    {
-      plural: 'troncales',
-      singular: 'troncal',
-    },
-  )
-  const {
-    filterValue: generalesValue,
-    filterTag: generalesTag,
-  } = getCantidadesData(
-    searchParams.get('cantidadesGenerales'),
-    cantidadesUniqueValues &&
-    Array.from(cantidadesUniqueValues.entries()).filter(
-      ([key]) => key.split('_')[0] === 'generales',
-    ),
-    {
-      plural: 'generales',
-      singular: 'general',
-    },
-  )
+  const { filterValue: troncalesValue, filterTag: troncalesTag } =
+    getCantidadesData(
+      searchParams.get('cantidadesTroncales'),
+      cantidadesUniqueValues &&
+        Array.from(cantidadesUniqueValues.entries()).filter(
+          ([key]) => key.split('_')[0] === 'troncales',
+        ),
+      {
+        plural: 'troncales',
+        singular: 'troncal',
+      },
+    )
+  const { filterValue: generalesValue, filterTag: generalesTag } =
+    getCantidadesData(
+      searchParams.get('cantidadesGenerales'),
+      cantidadesUniqueValues &&
+        Array.from(cantidadesUniqueValues.entries()).filter(
+          ([key]) => key.split('_')[0] === 'generales',
+        ),
+      {
+        plural: 'generales',
+        singular: 'general',
+      },
+    )
   const showEnProceso2020 = searchParams.get('enProceso2020') !== 'false'
   const { filterValue: enProceso2020Value, filterTag: enProceso2020Tag } =
-  getCantidadesData(
-    searchParams.get('cantidadesEnProceso2020'),
+    getCantidadesData(
+      searchParams.get('cantidadesEnProceso2020'),
       cantidadesUniqueValues &&
         Array.from(cantidadesUniqueValues.entries()).filter(
           ([key]) => key.split('_')[0] === 'enProceso2020',
@@ -60,9 +59,11 @@ function CantidadesFilter({
       },
     )
 
-  const filterTags = [troncalesTag, generalesTag, showEnProceso2020 ? enProceso2020Tag : undefined].filter(
-    (value) => value !== undefined,
-  )
+  const filterTags = [
+    troncalesTag,
+    generalesTag,
+    showEnProceso2020 ? enProceso2020Tag : undefined,
+  ].filter((value) => value !== undefined)
 
   const updateParams =
     (paramKey: string) => (value: number[], min: number, max: number) => {
@@ -113,6 +114,7 @@ function CantidadesFilter({
           max={cantidadesMinMaxValues?.troncalesMinMax[1] || 0}
         />
       </DropdownMenuItem>
+      <DropdownMenuSeparator />
       <DropdownMenuItem
         onSelect={(e) => e.preventDefault()}
         disabled={
@@ -129,21 +131,24 @@ function CantidadesFilter({
         />
       </DropdownMenuItem>
       {showEnProceso2020 && (
-        <DropdownMenuItem
-          onSelect={(e) => e.preventDefault()}
-          disabled={
-            cantidadesMinMaxValues?.enProceso2020MinMax[0] ===
-            cantidadesMinMaxValues?.enProceso2020MinMax[1]
-          }
-        >
-          <SliderItem
-            title="En Proceso (2020)"
-            updateParams={updateParams('cantidadesEnProceso2020')}
-            filterValue={enProceso2020Value}
-            min={cantidadesMinMaxValues?.enProceso2020MinMax[0] || 0}
-            max={cantidadesMinMaxValues?.enProceso2020MinMax[1] || 0}
-          />
-        </DropdownMenuItem>
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={(e) => e.preventDefault()}
+            disabled={
+              cantidadesMinMaxValues?.enProceso2020MinMax[0] ===
+              cantidadesMinMaxValues?.enProceso2020MinMax[1]
+            }
+          >
+            <SliderItem
+              title="En Proceso (2020)"
+              updateParams={updateParams('cantidadesEnProceso2020')}
+              filterValue={enProceso2020Value}
+              min={cantidadesMinMaxValues?.enProceso2020MinMax[0] || 0}
+              max={cantidadesMinMaxValues?.enProceso2020MinMax[1] || 0}
+            />
+          </DropdownMenuItem>
+        </>
       )}
     </Filter>
   )

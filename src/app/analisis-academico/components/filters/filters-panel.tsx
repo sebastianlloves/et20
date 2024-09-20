@@ -7,6 +7,8 @@ import MateriasFilter from './materias-filter'
 import { Student } from '@/lib/definitions'
 import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
+import { FILTERS_FNS } from '@/lib/utils'
+import RepitenciaFilter from './repitencia-filter'
 
 function FiltersPanel({
   filterParams = {},
@@ -29,7 +31,7 @@ function FiltersPanel({
     data && getStudentsUniqueValues(data, filterParams, 'promocion')
   const cantidadesUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cantidades', true)
-  const cantidadesMinMaxValues = data && getMinMaxCant(data)
+  const cantidadesMinMaxValues = data && FILTERS_FNS.cantidades.getMinMaxCant(data)
 
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
@@ -47,35 +49,10 @@ function FiltersPanel({
           cantidadesMinMaxValues={cantidadesMinMaxValues}
         />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
+        <RepitenciaFilter />
       </div>
     </ScrollArea>
   )
 }
 
 export default FiltersPanel
-
-function getMinMaxCant(data: Student[]) {
-  const uniqueValues = getStudentsUniqueValues(data, {}, 'cantidades')
-  const troncalesUniqueValues = Array.from(uniqueValues.entries())
-    .filter(([key]) => key.split('_')[0] === 'troncales')
-    .map(([key]) => Number(key.split('_')[1]))
-  const generalesUniqueValues = Array.from(uniqueValues.entries())
-    .filter(([key]) => key.split('_')[0] === 'generales')
-    .map(([key]) => Number(key.split('_')[1]))
-  const enProceso2020UniqueValues = Array.from(uniqueValues.entries())
-    .filter(([key]) => key.split('_')[0] === 'enProceso2020')
-    .map(([key]) => Number(key.split('_')[1]))
-  const troncalesMinMax = [
-    Math.min(...troncalesUniqueValues),
-    Math.max(...troncalesUniqueValues),
-  ]
-  const generalesMinMax = [
-    Math.min(...generalesUniqueValues),
-    Math.max(...generalesUniqueValues),
-  ]
-  const enProceso2020MinMax = [
-    Math.min(...enProceso2020UniqueValues),
-    Math.max(...enProceso2020UniqueValues),
-  ]
-  return { troncalesMinMax, generalesMinMax, enProceso2020MinMax }
-}

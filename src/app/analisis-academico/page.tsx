@@ -16,6 +16,8 @@ export interface SearchParams {
   cantidadesGenerales?: string
   cantidadesEnProceso2020?: string
   cantOptativo?: string
+  repitenciaAnios?: string
+  repitenciaCant?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

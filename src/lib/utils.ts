@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { Student } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
+import { getStudentsUniqueValues } from './data'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -232,6 +233,31 @@ export const FILTERS_FNS = {
           (facetedModel.get(`enProceso2020_${cantEnProceso2020}`) ?? 0) + 1,
         )
       })
+    },
+    getMinMaxCant: (data: Student[]) => {
+      const uniqueValues = getStudentsUniqueValues(data, {}, 'cantidades')
+      const troncalesUniqueValues = Array.from(uniqueValues.entries())
+        .filter(([key]) => key.split('_')[0] === 'troncales')
+        .map(([key]) => Number(key.split('_')[1]))
+      const generalesUniqueValues = Array.from(uniqueValues.entries())
+        .filter(([key]) => key.split('_')[0] === 'generales')
+        .map(([key]) => Number(key.split('_')[1]))
+      const enProceso2020UniqueValues = Array.from(uniqueValues.entries())
+        .filter(([key]) => key.split('_')[0] === 'enProceso2020')
+        .map(([key]) => Number(key.split('_')[1]))
+      const troncalesMinMax = [
+        Math.min(...troncalesUniqueValues),
+        Math.max(...troncalesUniqueValues),
+      ]
+      const generalesMinMax = [
+        Math.min(...generalesUniqueValues),
+        Math.max(...generalesUniqueValues),
+      ]
+      const enProceso2020MinMax = [
+        Math.min(...enProceso2020UniqueValues),
+        Math.max(...enProceso2020UniqueValues),
+      ]
+      return { troncalesMinMax, generalesMinMax, enProceso2020MinMax }
     },
   },
   promocion: {
