@@ -10,9 +10,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 import SliderItem from './slider-item'
-import { useSearchParams } from 'next/navigation'
+import useParamsState from '@/hooks/useParamsState'
+import { getCantRepitenciasString, getSliderFilterData } from '../../utils'
 
 function RepitenciaFilter() {
+  const { pathname, searchParams, replace } = useParamsState()
   const anios = Object.keys(CURSOS)
     .sort(
       (a, b) =>
@@ -20,10 +22,65 @@ function RepitenciaFilter() {
         Number(b.split(' ')[0].slice(0, -1)),
     )
     .slice(0, -1)
-  const searchParams = new URLSearchParams(useSearchParams())
-  const filterValue = searchParams.get('repitenciaAnios')?.split('_')
+  const repitenciaAniosValue =
+    searchParams
+      .get('repitenciaAnios')
+      ?.split('_')
+      .sort(
+        (a, b) =>
+          Number(a.split(' ')[0].slice(0, -1)) -
+          Number(b.split(' ')[0].slice(0, -1)),
+      ) || []
+  const repitenciaAniosTags = repitenciaAniosValue.map((value) => {
+    return { value: `Repite ${value}`, quantity: 0 }
+  })
+
+  const { filterValue: repitenciaCantValue, filterTag: repitenciaCantTag } =
+    getSliderFilterData(
+      searchParams.get('repitenciaCant'),
+      getCantRepitenciasString,
+    )
+
+  const repitenciaTags = [...repitenciaAniosTags, repitenciaCantTag].filter(
+    (value) => value !== undefined,
+  )
+
   const updateAniosParam = (anio: string) => {
-    filterValue && searchParams.set('repitenciaAnios', filterValue?.join('_'))
+    const newRepitenciaState = repitenciaAniosValue.includes(anio)
+      ? repitenciaAniosValue.filter((prevAnio) => prevAnio !== anio)
+      : [...repitenciaAniosValue, anio]
+    newRepitenciaState.length
+      ? searchParams.set('repitenciaAnios', newRepitenciaState.join('_'))
+      : searchParams.delete('repitenciaAnios')
+    replace(`${pathname}?${searchParams}`)
+  }
+
+  const updateCantParam = (value: number[], min: number, max: number) => {
+    value[0] === min && value[1] === max
+      ? searchParams.delete('repitenciaCant')
+      : searchParams.set('repitenciaCant', value.join('_'))
+    replace(`${pathname}?${searchParams}`)
+  }
+
+  const handleRemoveTag = (tagValue: string) => {
+    if (tagValue.includes('año')) {
+      const value = tagValue.split('Repite ')[1]
+      const newState = repitenciaAniosValue.filter(
+        (prevValue) => prevValue !== value,
+      )
+      newState.length
+        ? searchParams.set('repitenciaAnios', newState.join('_'))
+        : searchParams.delete('repitenciaAnios')
+    } else {
+      searchParams.delete('repitenciaCant')
+    }
+    replace(`${pathname}?${searchParams}`)
+  }
+
+  const handleRemoveAll = () => {
+    searchParams.delete('repitenciaAnios')
+    searchParams.delete('repitenciaCant')
+    replace(`${pathname}?${searchParams}`)
   }
 
   return (
@@ -31,15 +88,18 @@ function RepitenciaFilter() {
       title="Repitencia"
       maxTags={3}
       icon={<IterationCcw size={15} strokeWidth={1.4} />}
-      filterTags={[]}
-      handleRemoveTag={() => undefined}
-      handleRemoveAll={() => undefined}
+      filterTags={repitenciaTags}
+      handleRemoveTag={handleRemoveTag}
+      handleRemoveAll={handleRemoveAll}
     >
       <>
         {anios.map((anio) => (
           <DropdownMenuCheckboxItem
             key={anio}
+            onSelect={(e) => e.preventDefault()}
+            checked={repitenciaAniosValue.includes(anio)}
             onCheckedChange={() => updateAniosParam(anio)}
+            className="cursor-pointer"
           >
             <MenuItem value={anio} quantity={4} />
           </DropdownMenuCheckboxItem>
@@ -49,10 +109,10 @@ function RepitenciaFilter() {
       <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={false}>
         <SliderItem
           title="Cantidad"
-          updateParams={() => undefined}
-          filterValue={[]}
+          updateParams={updateCantParam}
+          filterValue={repitenciaCantValue}
           min={0}
-          max={10}
+          max={3}
           className="w-24"
         />
       </DropdownMenuItem>
@@ -61,3 +121,5 @@ function RepitenciaFilter() {
 }
 
 export default RepitenciaFilter
+
+

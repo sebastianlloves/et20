@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
+import { getCantMateriasString, getSliderFilterData } from '../../utils'
 
 function CantidadesFilter({
   cantidadesUniqueValues,
@@ -22,8 +23,9 @@ function CantidadesFilter({
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const { filterValue: troncalesValue, filterTag: troncalesTag } =
-    getCantidadesData(
+    getSliderFilterData(
       searchParams.get('cantidadesTroncales'),
+      getCantMateriasString,
       cantidadesUniqueValues &&
         Array.from(cantidadesUniqueValues.entries()).filter(
           ([key]) => key.split('_')[0] === 'troncales',
@@ -34,8 +36,9 @@ function CantidadesFilter({
       },
     )
   const { filterValue: generalesValue, filterTag: generalesTag } =
-    getCantidadesData(
+    getSliderFilterData(
       searchParams.get('cantidadesGenerales'),
+      getCantMateriasString,
       cantidadesUniqueValues &&
         Array.from(cantidadesUniqueValues.entries()).filter(
           ([key]) => key.split('_')[0] === 'generales',
@@ -47,8 +50,9 @@ function CantidadesFilter({
     )
   const showEnProceso2020 = searchParams.get('enProceso2020') !== 'false'
   const { filterValue: enProceso2020Value, filterTag: enProceso2020Tag } =
-    getCantidadesData(
+    getSliderFilterData(
       searchParams.get('cantidadesEnProceso2020'),
+      getCantMateriasString,
       cantidadesUniqueValues &&
         Array.from(cantidadesUniqueValues.entries()).filter(
           ([key]) => key.split('_')[0] === 'enProceso2020',
@@ -155,48 +159,3 @@ function CantidadesFilter({
 }
 export default CantidadesFilter
 
-function getCantidadesData(
-  paramValue: string | null,
-  uniqueValues: Array<[string, number]> | undefined,
-  materiaType: {
-    singular: string
-    plural: string
-  },
-) {
-  const filterValue = paramValue
-    ?.split('_')
-    .map((value) => Number(value))
-    .sort((a, b) => a - b)
-
-  const formatedUniqueValues = uniqueValues?.map(([key, value]) => [
-    Number(key.split('_')[1]),
-    value,
-  ])
-  const quantity = formatedUniqueValues?.reduce(
-    (acc, [key, value]) =>
-      filterValue && key >= filterValue[0] && key <= filterValue[1]
-        ? acc + value
-        : acc,
-    0,
-  )
-  return {
-    filterValue,
-    filterTag: filterValue && {
-      value: getCantidadesFilterValue(filterValue, materiaType),
-      quantity,
-    },
-  }
-}
-
-function getCantidadesFilterValue(
-  [min, max]: number[],
-  materiaType: { singular: string; plural: string },
-) {
-  if (min === 0) {
-    if (max === 0) return `No adeuda materias ${materiaType.plural}`
-    return `Hasta ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-  }
-  if (min === max)
-    return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-  return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-}

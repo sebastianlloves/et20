@@ -8,7 +8,7 @@ import { Student } from '@/lib/definitions'
 import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
 import { FILTERS_FNS } from '@/lib/utils'
-// import RepitenciaFilter from './repitencia-filter'
+import RepitenciaFilter from './repitencia-filter'
 
 function FiltersPanel({
   filterParams = {},
@@ -49,7 +49,7 @@ function FiltersPanel({
           cantidadesMinMaxValues={cantidadesMinMaxValues}
         />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
-        {/* <RepitenciaFilter /> */}
+        <RepitenciaFilter />
       </div>
     </ScrollArea>
   )
