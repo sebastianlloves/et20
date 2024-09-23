@@ -31,7 +31,18 @@ function FiltersPanel({
     data && getStudentsUniqueValues(data, filterParams, 'promocion')
   const cantidadesUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cantidades', true)
-  const cantidadesMinMaxValues = data && FILTERS_FNS.cantidades.getMinMaxCant(data)
+  const cantidadesMinMaxValues =
+    data && FILTERS_FNS.cantidades.getMinMaxCant(data)
+  const repitenciaUniqueValues =
+    data &&
+    getStudentsUniqueValues(
+      data,
+      filterParams,
+      'repitencia',
+      filterParams.repitenciaCant !== undefined,
+    )
+  const repitenciaCantMinMaxValues =
+    data && FILTERS_FNS.repitencia.getMinMaxCant(data)
 
   return (
     <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
@@ -49,7 +60,10 @@ function FiltersPanel({
           cantidadesMinMaxValues={cantidadesMinMaxValues}
         />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
-        <RepitenciaFilter />
+        <RepitenciaFilter
+          repitenciaUniqueValues={repitenciaUniqueValues}
+          repitenciaCantMinMaxValues={repitenciaCantMinMaxValues}
+        />
       </div>
     </ScrollArea>
   )

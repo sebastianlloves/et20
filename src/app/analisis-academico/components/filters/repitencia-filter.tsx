@@ -13,7 +13,13 @@ import SliderItem from './slider-item'
 import useParamsState from '@/hooks/useParamsState'
 import { getCantRepitenciasString, getSliderFilterData } from '../../utils'
 
-function RepitenciaFilter() {
+function RepitenciaFilter({
+  repitenciaUniqueValues,
+  repitenciaCantMinMaxValues,
+}: {
+  repitenciaUniqueValues?: Map<string, number>
+  repitenciaCantMinMaxValues?: number[]
+}) {
   const { pathname, searchParams, replace } = useParamsState()
   const anios = Object.keys(CURSOS)
     .sort(
@@ -32,13 +38,19 @@ function RepitenciaFilter() {
           Number(b.split(' ')[0].slice(0, -1)),
       ) || []
   const repitenciaAniosTags = repitenciaAniosValue.map((value) => {
-    return { value: `Repite ${value}`, quantity: 0 }
+    const quantity =
+      repitenciaUniqueValues && (repitenciaUniqueValues.get(value) ?? 0)
+    return { value: `Repite ${value}`, quantity }
   })
 
   const { filterValue: repitenciaCantValue, filterTag: repitenciaCantTag } =
     getSliderFilterData(
       searchParams.get('repitenciaCant'),
       getCantRepitenciasString,
+      repitenciaUniqueValues &&
+        Array.from(repitenciaUniqueValues.entries()).filter(
+          ([key]) => key.split('_')[0] === 'cant',
+        )
     )
 
   const repitenciaTags = [...repitenciaAniosTags, repitenciaCantTag].filter(
@@ -101,7 +113,13 @@ function RepitenciaFilter() {
             onCheckedChange={() => updateAniosParam(anio)}
             className="cursor-pointer"
           >
-            <MenuItem value={anio} quantity={4} />
+            <MenuItem
+              value={anio}
+              quantity={
+                repitenciaUniqueValues &&
+                (repitenciaUniqueValues.get(anio) ?? 0)
+              }
+            />
           </DropdownMenuCheckboxItem>
         ))}
       </>
@@ -111,8 +129,8 @@ function RepitenciaFilter() {
           title="Cantidad"
           updateParams={updateCantParam}
           filterValue={repitenciaCantValue}
-          min={0}
-          max={3}
+          min={repitenciaCantMinMaxValues?.[0] || 0}
+          max={repitenciaCantMinMaxValues?.[1] || 0}
           className="w-24"
         />
       </DropdownMenuItem>
@@ -121,5 +139,3 @@ function RepitenciaFilter() {
 }
 
 export default RepitenciaFilter
-
-

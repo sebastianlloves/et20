@@ -19,7 +19,7 @@ const capitalizeWords = (words: string) =>
 const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
   repitenciaArr
     .filter((repValue) => !Number.isNaN(parseInt(repValue[0])))
-    .map((value) => `${value[0]}º año`)
+    .map((value) => `${value[0]}° año`)
     .sort()
 
 const formatDetalleMaterias = (detalle: string): string[] => {
@@ -293,6 +293,56 @@ export const FILTERS_FNS = {
               : 'Estudiantes que permanecen'
         facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
       })
+    },
+  },
+  repitencia: {
+    filterFn: (student: Student, searchParams: SearchParams) => {
+      const studentRepitencia = student.repitencia
+      const repitenciaAniosParam = searchParams.repitenciaAnios?.split('_')
+      const repitenciaCantParam = searchParams.repitenciaCant
+        ?.split('_')
+        .map((value) => Number(value))
+        .sort((a, b) => a - b)
+
+      const isAniosOk = repitenciaAniosParam
+        ? studentRepitencia.some((anioRepetido) =>
+            repitenciaAniosParam.includes(anioRepetido),
+          )
+        : true
+      const isCantOk = repitenciaCantParam
+        ? studentRepitencia.length >= repitenciaCantParam[0] &&
+          studentRepitencia.length <= repitenciaCantParam[1]
+        : true
+
+      return isAniosOk && isCantOk
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach(({ repitencia }) => {
+        repitencia.forEach((anioRepetido) =>
+          facetedModel.set(
+            anioRepetido,
+            (facetedModel.get(anioRepetido) ?? 0) + 1,
+          ),
+        )
+        facetedModel.set(
+          `cant_${repitencia.length}`,
+          (facetedModel.get(`cant_${repitencia.length}`) ?? 0) + 1,
+        )
+      })
+    },
+    getMinMaxCant: (data: Student[]) => {
+      const uniqueValues = getStudentsUniqueValues(data, {}, 'repitencia')
+      const repitenciaCantUniqueValues = Array.from(uniqueValues.entries())
+        .filter(([key]) => key.includes('cant'))
+        .map(([key]) => Number(key.split('_')[1]))
+      const repitenciaCantMinMax = [
+        Math.min(...repitenciaCantUniqueValues),
+        Math.max(...repitenciaCantUniqueValues),
+      ]
+      return repitenciaCantMinMax
     },
   },
 } as const
