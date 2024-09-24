@@ -1,4 +1,4 @@
-import { Book, Bookmark, BookmarkX, BookX, Check, CircleX, SquareX, Lock, BookLock, AlertTriangle, TrendingDown } from 'lucide-react'
+import { /* Book, Bookmark, BookmarkX, BookX, */ Check, /* CircleX, SquareX, Lock, BookLock, AlertTriangle, */ TrendingDown } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
