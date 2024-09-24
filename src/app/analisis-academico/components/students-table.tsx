@@ -16,9 +16,7 @@ export default async function StudentsTable({
   return (
     <>
       <FiltersPanel filterParams={filterParams} data={data} />
-      <div className="col-span-full col-start-2">
-        <DataTable columns={columns} data={filteredData} />
-      </div>
+      <DataTable columns={columns} data={filteredData} />
     </>
   )
 }

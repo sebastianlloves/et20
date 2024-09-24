@@ -134,7 +134,7 @@ function RepitenciaFilter({
           filterValue={repitenciaCantValue}
           min={repitenciaCantMinMaxValues?.[0] || 0}
           max={repitenciaCantMinMaxValues?.[1] || 0}
-          className="w-24"
+          className="w-[7.5rem]"
         />
       </DropdownMenuItem>
     </Filter>

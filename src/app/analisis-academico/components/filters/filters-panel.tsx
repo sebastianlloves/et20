@@ -73,12 +73,12 @@ function FiltersPanel({
           cantidadesUniqueValues={cantidadesUniqueValues}
           cantidadesMinMaxValues={cantidadesMinMaxValues}
         />
-        <PromocionFilter uniqueValues={promocionUniqueValues} />
         <RepitenciaFilter
           repitenciaAniosUniqueValues={repitenciaAniosUniqueValues}
           repitenciaCantUniqueValues={repitenciaCantUniqueValues}
           repitenciaCantMinMaxValues={repitenciaCantMinMaxValues}
         />
+        <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
     </ScrollArea>
   )

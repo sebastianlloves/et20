@@ -108,6 +108,7 @@ export const columns: ColumnDef<Student>[] = [
       <ExpandableRow
         subjects={row.original.detalleTroncales}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
+        iconColor="text-destructive dark:text-red-600/80"
       />
     ),
     sortingFn: 'basic',
@@ -124,7 +125,7 @@ export const columns: ColumnDef<Student>[] = [
       <ExpandableRow
         subjects={row.original.detalleGenerales}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
-        iconColor="text-amber-500"
+        iconColor="text-amber-600 dark:text-amber-700"
       />
     ),
     sortingFn: 'basic',
@@ -141,7 +142,7 @@ export const columns: ColumnDef<Student>[] = [
       <ExpandableRow
         subjects={row.original.detalleEnProceso2020}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
-        iconColor="text-muted-foreground"
+        iconColor="text-slate-500 dark:text-slate-500"
       />
     ),
     sortingFn: 'basic',

@@ -22,11 +22,9 @@ export interface SearchParams {
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <div className="grid w-full grid-cols-7 gap-x-8 gap-y-4 px-8">
+    <div className="grid-cols-[minmax(230px,1fr)_7fr] grid w-full gap-x-8 gap-y-4 px-8">
       <ToggleDB />
-      <div className="col-span-full col-start-2">
-        <SearchBar />
-      </div>
+      <SearchBar />
       <Suspense
         key={JSON.stringify(searchParams)}
         fallback={<SkeletonStudentsTable />}

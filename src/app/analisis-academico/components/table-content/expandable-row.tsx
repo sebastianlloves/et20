@@ -36,12 +36,12 @@ function ExpandableRow({
           {subjects.map((subject) => (
             <div
               key={subject}
-              className="flex items-start justify-start gap-1.5"
+              className="flex items-start justify-start gap-2"
             >
               <TrendingDown
-                size={15}
-                strokeWidth="1.4px"
-                className={cn('shrink-0 text-destructive', iconColor)}
+                size={13}
+                strokeWidth="1.7px"
+                className={cn('shrink-0', iconColor)}
               />
               <p className="text-pretty text-xs font-normal text-foreground/85">
                 {subject}
