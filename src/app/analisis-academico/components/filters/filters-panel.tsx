@@ -33,13 +33,27 @@ function FiltersPanel({
     data && getStudentsUniqueValues(data, filterParams, 'cantidades', true)
   const cantidadesMinMaxValues =
     data && FILTERS_FNS.cantidades.getMinMaxCant(data)
-  const repitenciaUniqueValues =
+  const repitenciaAniosUniqueValues =
     data &&
     getStudentsUniqueValues(
       data,
-      filterParams,
+      {
+        ...filterParams,
+        repitenciaAnios: undefined,
+      },
       'repitencia',
-      filterParams.repitenciaCant !== undefined,
+      true,
+    )
+  const repitenciaCantUniqueValues =
+    data &&
+    getStudentsUniqueValues(
+      data,
+      {
+        ...filterParams,
+        repitenciaCant: undefined,
+      },
+      'repitencia',
+      true,
     )
   const repitenciaCantMinMaxValues =
     data && FILTERS_FNS.repitencia.getMinMaxCant(data)
@@ -61,7 +75,8 @@ function FiltersPanel({
         />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
         <RepitenciaFilter
-          repitenciaUniqueValues={repitenciaUniqueValues}
+          repitenciaAniosUniqueValues={repitenciaAniosUniqueValues}
+          repitenciaCantUniqueValues={repitenciaCantUniqueValues}
           repitenciaCantMinMaxValues={repitenciaCantMinMaxValues}
         />
       </div>

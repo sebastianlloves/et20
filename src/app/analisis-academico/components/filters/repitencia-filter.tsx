@@ -14,10 +14,12 @@ import useParamsState from '@/hooks/useParamsState'
 import { getCantRepitenciasString, getSliderFilterData } from '../../utils'
 
 function RepitenciaFilter({
-  repitenciaUniqueValues,
+  repitenciaAniosUniqueValues,
+  repitenciaCantUniqueValues,
   repitenciaCantMinMaxValues,
 }: {
-  repitenciaUniqueValues?: Map<string, number>
+  repitenciaAniosUniqueValues?: Map<string, number>
+  repitenciaCantUniqueValues?: Map<string, number>
   repitenciaCantMinMaxValues?: number[]
 }) {
   const { pathname, searchParams, replace } = useParamsState()
@@ -39,18 +41,19 @@ function RepitenciaFilter({
       ) || []
   const repitenciaAniosTags = repitenciaAniosValue.map((value) => {
     const quantity =
-      repitenciaUniqueValues && (repitenciaUniqueValues.get(value) ?? 0)
-    return { value: `Repite ${value}`, quantity }
+      repitenciaAniosUniqueValues &&
+      (repitenciaAniosUniqueValues.get(value) ?? 0)
+    return { value: `Repitió ${value}`, quantity }
   })
 
   const { filterValue: repitenciaCantValue, filterTag: repitenciaCantTag } =
     getSliderFilterData(
       searchParams.get('repitenciaCant'),
       getCantRepitenciasString,
-      repitenciaUniqueValues &&
-        Array.from(repitenciaUniqueValues.entries()).filter(
+      repitenciaCantUniqueValues &&
+        Array.from(repitenciaCantUniqueValues.entries()).filter(
           ([key]) => key.split('_')[0] === 'cant',
-        )
+        ),
     )
 
   const repitenciaTags = [...repitenciaAniosTags, repitenciaCantTag].filter(
@@ -114,10 +117,10 @@ function RepitenciaFilter({
             className="cursor-pointer"
           >
             <MenuItem
-              value={anio}
+              value={`Repitió ${anio}`}
               quantity={
-                repitenciaUniqueValues &&
-                (repitenciaUniqueValues.get(anio) ?? 0)
+                repitenciaAniosUniqueValues &&
+                (repitenciaAniosUniqueValues.get(anio) ?? 0)
               }
             />
           </DropdownMenuCheckboxItem>

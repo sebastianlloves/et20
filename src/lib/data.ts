@@ -19,12 +19,14 @@ export function getFilteredStudentData(
   filterParams: Omit<SearchParams, 'anio'> = {},
   omitedKey?: string,
 ) {
+  const paramsWithValue = JSON.parse(JSON.stringify(filterParams))
   const filteredData = data.filter((student) =>
     (Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>)
       .filter(
         (filterFnKey) =>
-          Object.keys(filterParams).some((key) => key.includes(filterFnKey)) &&
-          filterFnKey !== omitedKey,
+          Object.keys(paramsWithValue).some((key) =>
+            key.includes(filterFnKey),
+          ) && filterFnKey !== omitedKey,
       )
       .every((filterFnKey) =>
         FILTERS_FNS[filterFnKey].filterFn(student, filterParams),

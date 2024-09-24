@@ -19,7 +19,7 @@ function CursosFilter({
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const cursosValue = searchParams.get('cursos')?.split('_') || []
-  const cursosTags = cursosValue.map((value) => {
+  const cursosTags = cursosValue.sort().map((value) => {
     const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
     return { value, quantity }
   })

@@ -321,7 +321,8 @@ export const FILTERS_FNS = {
       facetedModel: Map<string, number>,
     ) => {
       filteredData.forEach(({ repitencia }) => {
-        repitencia.forEach((anioRepetido) =>
+        const aniosRepetidos = Array.from(new Set(repitencia))
+        aniosRepetidos.forEach((anioRepetido) =>
           facetedModel.set(
             anioRepetido,
             (facetedModel.get(anioRepetido) ?? 0) + 1,

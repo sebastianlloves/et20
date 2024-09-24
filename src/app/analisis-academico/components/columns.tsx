@@ -124,7 +124,7 @@ export const columns: ColumnDef<Student>[] = [
       <ExpandableRow
         subjects={row.original.detalleGenerales}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
-        iconColor="text-amber-700"
+        iconColor="text-amber-500"
       />
     ),
     sortingFn: 'basic',

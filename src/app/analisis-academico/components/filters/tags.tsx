@@ -33,7 +33,7 @@ function TagsBox({
           {tags.length > 1 && (
             <X
               strokeWidth="1.5px"
-              className="ml-auto -mr-1 h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
+              className="ml-auto -mr-0.5 h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
               onClick={handleRemoveAll}
             />
           )}
