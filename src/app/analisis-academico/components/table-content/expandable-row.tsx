@@ -1,13 +1,16 @@
-import { Check } from 'lucide-react'
+import { Bookmark, BookmarkX, BookX, Check, CircleX, SquareX } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
+import { cn } from '@/lib/utils'
 
 function ExpandableRow({
   subjects,
   open,
+  iconColor,
 }: {
   subjects: string[]
   open: boolean
+  iconColor?: string
 }) {
   return (
     <>
@@ -29,9 +32,21 @@ function ExpandableRow({
           </Badge>
         )}
 
-        <CollapsibleContent className="ml-2 mt-4 flex flex-col items-start space-y-3">
+        <CollapsibleContent className="ml-0.5 mt-4 flex flex-col items-start space-y-3">
           {subjects.map((subject) => (
-            <p key={subject} className="text-pretty text-xs font-normal text-foreground/85">{subject}</p>
+            <div
+              key={subject}
+              className="flex items-start justify-start gap-1.5"
+            >
+              <Bookmark
+                size={13}
+                strokeWidth="0.9px"
+                className={cn("mt-0.5 shrink-0 text-destructive", iconColor)}
+              />
+              <p className="text-pretty text-xs font-normal text-foreground/85">
+                {subject}
+              </p>
+            </div>
           ))}
         </CollapsibleContent>
       </Collapsible>

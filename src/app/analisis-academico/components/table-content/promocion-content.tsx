@@ -18,7 +18,7 @@ function PromocionContent({ value }: PromocionContentProps) {
           {value === 'promociona' ? (
             <BadgeCheck size={16} strokeWidth="1.5px" />
           ) : (
-            <CircleAlert size={16} strokeWidth="1.5px" />
+            <CircleAlert size={16} strokeWidth="2px" />
           )}
           {value}
         </Badge>
