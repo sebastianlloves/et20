@@ -20,7 +20,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html suppressHydrationWarning lang="en" className='w-min border'>
+    <html suppressHydrationWarning lang="en" className='border'>
       <body
         className={cn(
           /* inter.className,  */ openSans.className,

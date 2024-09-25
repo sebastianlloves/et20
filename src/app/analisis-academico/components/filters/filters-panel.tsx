@@ -9,6 +9,7 @@ import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
 import { FILTERS_FNS } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
+import Filter from './filter'
 
 function FiltersPanel({
   filterParams = {},
@@ -67,6 +68,10 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
+        <Filter
+          title="Año en curso"
+          maxTags={3}
+        ></Filter>
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter materiasUniqueValues={materiasUniqueValues} />
         <CantidadesFilter
