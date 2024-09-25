@@ -1,4 +1,7 @@
-import { /* Book, Bookmark, BookmarkX, BookX, */ Check, /* CircleX, SquareX, Lock, BookLock, AlertTriangle, */ TrendingDown } from 'lucide-react'
+import {
+  /* Book, Bookmark, BookmarkX, BookX, */ Check,
+  /* CircleX, SquareX, Lock, BookLock, AlertTriangle, TrendingDown, */ ChevronRight,
+} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
@@ -34,14 +37,11 @@ function ExpandableRow({
 
         <CollapsibleContent className="ml-0.5 mt-4 flex flex-col items-start space-y-3">
           {subjects.map((subject) => (
-            <div
-              key={subject}
-              className="flex items-start justify-start gap-2"
-            >
-              <TrendingDown
-                size={13}
-                strokeWidth="1.7px"
-                className={cn('shrink-0', iconColor)}
+            <div key={subject} className="flex items-start justify-start gap-1">
+              <ChevronRight
+                size={14}
+                strokeWidth="1.5px"
+                className={cn('shrink-0 mt-[1px]', iconColor)}
               />
               <p className="text-pretty text-xs font-normal text-foreground/85">
                 {subject}

@@ -1,10 +1,10 @@
 import { SearchParams } from '@/app/analisis-academico/page'
-import { DB } from './constants'
+import { DB_CALIFICACIONES_HISTORICO } from './constants'
 import { Student } from './definitions'
 import { FILTERS_FNS, formatStudentsResponse } from './utils'
 
 export async function fetchStudentsData(anio: string = '2024') {
-  const response = await fetch(DB[anio], {
+  const response = await fetch(DB_CALIFICACIONES_HISTORICO[anio], {
     cache: 'force-cache',
     next: { tags: ['db2023'] },
   })

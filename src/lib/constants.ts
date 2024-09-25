@@ -1,6 +1,6 @@
 import { isCursosKey } from './typeGuards'
 
-export const DB: { [key: string]: string } = {
+export const DB_CALIFICACIONES_HISTORICO: { [key: string]: string } = {
   '2024':
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=0&single=true&output=tsv',
   '2023':
