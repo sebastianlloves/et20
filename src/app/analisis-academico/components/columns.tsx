@@ -13,6 +13,7 @@ declare module '@tanstack/react-table' {
   // eslint-disable-next-line no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
     title: string
+    width: string
     align?: 'right'
   }
 }
@@ -42,29 +43,29 @@ export const columns: ColumnDef<Student>[] = [
         className="-mt-1.5 text-foreground/80"
       />
     ),
-    size: 35,
     enableSorting: false,
     meta: {
       title: 'Expandir',
+      width: 'w-8 lg:w-8',
     },
-    enableHiding: false,
   },
   {
     id: 'curso',
     accessorFn: ({ anio, division }) => `${anio} ${division}`,
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ getValue }) => (
-      <Badge variant="outline" className="text-nowrap rounded-md px-3 py-1.5">
+      <Badge
+        variant="outline"
+        className="text-nowrap rounded-md px-2 lg:px-3 py-1 lg:py-1.5 text-xs"
+      >
         {getValue<string>()}
       </Badge>
     ),
-    size: 100,
     sortingFn: 'alphanumeric',
-    filterFn: 'arrIncludes',
     meta: {
       title: 'Curso',
+      width: 'w-11 lg:w-14',
     },
-    enableHiding: false,
   },
   {
     id: 'estudiante',
@@ -73,7 +74,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const { apellido, nombre } = row.original
       return (
-        <div className="h-full text-nowrap">
+        <div className="h-full text-pretty">
           <p className="font-medium">{apellido}</p>
           <p className="font-normal text-muted-foreground">{nombre}</p>
         </div>
@@ -81,24 +82,23 @@ export const columns: ColumnDef<Student>[] = [
     },
     meta: {
       title: 'Estudiante',
+      width: 'w-24 lg:w-32',
     },
     sortingFn: 'text',
-    size: 180,
-    enableHiding: false,
   },
   {
     id: 'dni',
     accessorKey: 'dni',
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ row }) => (
-      <p className="text-xs leading-relaxed text-muted-foreground">
+      <p className="text-[length:inherit] leading-relaxed text-muted-foreground">
         {row.original.dni}
       </p>
     ),
     meta: {
       title: 'DNI',
+      width: 'w-14 lg:w-20',
     },
-    size: 70,
   },
   {
     id: 'troncales',
@@ -112,9 +112,9 @@ export const columns: ColumnDef<Student>[] = [
       />
     ),
     sortingFn: 'basic',
-    size: 190,
     meta: {
       title: 'Troncales',
+      width: 'w-32 lg:w-44',
     },
   },
   {
@@ -132,6 +132,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 190,
     meta: {
       title: 'Generales',
+      width: 'w-32 lg:w-44',
     },
   },
   {
@@ -149,6 +150,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 190,
     meta: {
       title: 'En Proceso (2020)',
+      width: 'w-32 lg:w-44',
     },
   },
   {
@@ -160,6 +162,7 @@ export const columns: ColumnDef<Student>[] = [
     ),
     meta: {
       title: 'Repitencia',
+      width: 'w-8 lg:w-24',
     },
   },
   {
@@ -181,6 +184,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 150,
     meta: {
       title: 'Promoción',
+      width: 'w-8 lg:w-24',
     },
     sortingFn: 'text',
   },

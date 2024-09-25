@@ -16,7 +16,7 @@ function ToggleDB() {
   }
 
   return (
-    <Tabs defaultValue={prevValue} onValueChange={handleChange} className="">
+    <Tabs defaultValue={prevValue} onValueChange={handleChange} className="hidden lg:block">
       <TabsList className="w-full h-fit rounded-lg shadow-sm p-1">
         <TabsTrigger
           value={'2023'}

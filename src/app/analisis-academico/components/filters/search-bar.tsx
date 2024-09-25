@@ -18,7 +18,7 @@ function SearchBar() {
   }, 500)
 
   return (
-    <div className="relative flex w-1/3">
+    <div className="relative flex w-2/3 lg:w-1/3 ">
       <label htmlFor="search" className="sr-only">
         Search
       </label>

@@ -22,7 +22,7 @@ export interface SearchParams {
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <div className="grid w-full grid-cols-[minmax(230px,1fr)_7fr] gap-x-8 gap-y-4 px-8">
+    <div className="grid w-full lg:grid-cols-[minmax(230px,1fr)_7fr] gap-x-8 gap-y-4 px-0 lg:px-8">
       <ToggleDB />
       <SearchBar />
       <Suspense

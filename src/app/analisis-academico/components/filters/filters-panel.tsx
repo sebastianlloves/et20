@@ -60,7 +60,7 @@ function FiltersPanel({
     data && FILTERS_FNS.repitencia.getMinMaxCant(data)
 
   return (
-    <ScrollArea className="h-[80vh] rounded-md border bg-card shadow-sm">
+    <ScrollArea className="hidden h-[80vh] rounded-md border bg-card shadow-sm lg:block">
       <div className="flex flex-col items-start justify-start gap-y-4 px-2 py-4">
         <div className="mb-6 flex w-1/2 items-center justify-start gap-6 px-2">
           <ListFilter size={16} className="min-w-6" />
@@ -68,10 +68,7 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
-        <Filter
-          title="Año en curso"
-          maxTags={3}
-        ></Filter>
+        <Filter title="Año en curso" maxTags={3}></Filter>
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter materiasUniqueValues={materiasUniqueValues} />
         <CantidadesFilter

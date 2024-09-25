@@ -13,9 +13,13 @@ function RepitenciaContent({ repArray }: RepitenciaContentProps) {
           <Badge
             key={index}
             variant="outline"
-            className="justify-center gap-x-1 rounded-lg border-destructive/40 bg-destructive/[0.03] px-1.5 font-bold leading-4 text-destructive/80 dark:border-destructive dark:bg-destructive/15 dark:text-destructive-foreground/90"
+            className="justify-center gap-x-1 rounded-lg border-destructive/40 bg-destructive/[0.03] px-1.5 text-[length:inherit] font-bold leading-4 text-destructive/80 dark:border-destructive dark:bg-destructive/15 dark:text-destructive-foreground/90"
           >
-            <IterationCcw size={13} strokeWidth="2px" />
+            <IterationCcw
+              size={13}
+              strokeWidth="2px"
+              className="text-[length:inherit]"
+            />
             {`${repValue[0]}°`}
           </Badge>
         ))

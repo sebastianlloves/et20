@@ -7,13 +7,13 @@ interface PromocionContentProps {
 
 function PromocionContent({ value }: PromocionContentProps) {
   return (
-    <div>
+    <div className="text-[length:inherit]">
       {value === 'faltan datos' ? (
         <p className="capitalize text-muted-foreground">{value}</p>
       ) : (
         <Badge
           variant={value === 'promociona' ? 'success' : 'destructive'}
-          className="justify-center gap-x-2 py-1.5 capitalize"
+          className="justify-center gap-x-2 py-1.5 text-[length:inherit] capitalize"
         >
           {value === 'promociona' ? (
             <BadgeCheck size={16} strokeWidth="1.5px" />

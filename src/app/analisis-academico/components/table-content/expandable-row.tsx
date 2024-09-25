@@ -17,11 +17,11 @@ function ExpandableRow({
 }) {
   return (
     <>
-      <Collapsible open={open}>
+      <Collapsible open={open} className="text-[length:inherit]">
         {subjects.length === 0 ? (
           <Badge
             variant="success"
-            className="flex w-fit gap-x-2 rounded-md border-0 bg-success/[0.05] pl-2 font-normal"
+            className="flex w-fit gap-x-2 rounded-md border-0 bg-success/[0.05] pl-2 text-[length:inherit] font-normal"
           >
             <Check size={16} strokeWidth="1.0px" />
             No adeuda
@@ -29,7 +29,7 @@ function ExpandableRow({
         ) : (
           <Badge
             variant="secondary"
-            className="rounded-md bg-muted text-sm font-medium"
+            className="rounded-md bg-muted text-[length:inherit] font-medium"
           >
             {subjects.length}
           </Badge>
@@ -41,9 +41,9 @@ function ExpandableRow({
               <ChevronRight
                 size={14}
                 strokeWidth="1.5px"
-                className={cn('shrink-0 mt-[1px]', iconColor)}
+                className={cn('mt-[1px] shrink-0', iconColor)}
               />
-              <p className="text-pretty text-xs font-normal text-foreground/85">
+              <p className="text-pretty font-normal text-foreground/85">
                 {subject}
               </p>
             </div>

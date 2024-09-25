@@ -16,7 +16,7 @@ function ColumnHead<TData, TValue>({
     <Button
       variant="link"
       className={cn(
-        'px-0 font-medium text-foreground hover:no-underline',
+        'px-0 text-[length:inherit] font-medium text-foreground hover:no-underline',
         className,
       )}
       onClick={() => column.toggleSorting(undefined, true)}
