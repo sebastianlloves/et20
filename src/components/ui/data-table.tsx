@@ -72,13 +72,13 @@ function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="flex px-1 lg:px-2"
+                className="flex px-1.5 lg:px-2"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      'mx-1 border px-0 sm:mx-2 lg:mx-3.5',
+                      'mx-1 px-0 sm:mx-2 lg:mx-3.5',
                       cell.column.columnDef.meta?.width,
                     )}
                   >

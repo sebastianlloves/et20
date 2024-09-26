@@ -40,13 +40,13 @@ export const columns: ColumnDef<Student>[] = [
         handleClick={() => row.toggleExpanded()}
         isOpen={row.getIsExpanded() && getValue<string[]>().length > 0}
         disabled={getValue<string[]>().length === 0}
-        className="-mt-1.5 text-foreground/80"
+        className="text-foreground/80"
       />
     ),
     enableSorting: false,
     meta: {
       title: 'Expandir',
-      width: 'w-8 lg:w-8',
+      width: 'w-6 lg:w-[26px]',
     },
   },
   {
@@ -162,7 +162,7 @@ export const columns: ColumnDef<Student>[] = [
     ),
     meta: {
       title: 'Repitencia',
-      width: 'w-8 lg:w-24',
+      width: 'w-[84px] lg:w-[105px]',
     },
   },
   {
@@ -184,7 +184,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 150,
     meta: {
       title: 'Promoción',
-      width: 'w-8 lg:w-24',
+      width: 'w-28 lg:w-32',
     },
     sortingFn: 'text',
   },

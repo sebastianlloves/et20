@@ -16,19 +16,30 @@ function ExpandButton({
   disabled = false,
 }: ExpandButtonProps) {
   return (
-    <Button
-      variant="ghost"
-      onClick={handleClick}
-      className={cn('w-8 px-0 py-1', className)}
-      disabled={disabled}
-    >
-      {isOpen ? (
-        <ChevronsDownUp strokeWidth="1.2px" size={15} />
-      ) : (
-        <ChevronsUpDown strokeWidth="1.2px" size={15} />
-      )}
-      <span className="sr-only">Toggle</span>
-    </Button>
+    <div>
+      <Button
+        variant="ghost"
+        onClick={handleClick}
+        className={cn(
+          'flex h-7 w-6 items-center justify-center px-0 py-0 lg:h-8',
+          className,
+        )}
+        disabled={disabled}
+      >
+        {isOpen ? (
+          <ChevronsDownUp
+            strokeWidth="1.2px"
+            className="w-[13px] lg:w-[15px]"
+          />
+        ) : (
+          <ChevronsUpDown
+            strokeWidth="1.2px"
+            className="w-[13px] lg:w-[15px]"
+          />
+        )}
+        <span className="sr-only">Toggle</span>
+      </Button>
+    </div>
   )
 }
 
