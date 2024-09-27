@@ -13,7 +13,7 @@ function PromocionContent({ value }: PromocionContentProps) {
       ) : (
         <Badge
           variant={value === 'promociona' ? 'success' : 'destructive'}
-          className="justify-center gap-x-1.5 px-2 py-1 text-[length:inherit] capitalize lg:gap-x-2 lg:px-3 lg:py-1.5"
+          className="justify-center gap-x-1.5 px-2 py-[2px] text-[length:inherit] capitalize lg:gap-x-2 lg:px-3 lg:py-[3px]"
         >
           {value === 'promociona' ? (
             <BadgeCheck strokeWidth="1.5px" className='w-[16px] lg:w-[18px]' />

@@ -14,6 +14,7 @@ declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     title: string
     width: string
+    stickyProperties?: string
     align?: 'right'
   }
 }
@@ -46,7 +47,8 @@ export const columns: ColumnDef<Student>[] = [
     enableSorting: false,
     meta: {
       title: 'Expandir',
-      width: 'w-6 lg:w-[26px]',
+      width: 'w-[40px] lg:w-[52px]',
+      stickyProperties: 'left-0 sticky z-10',
     },
   },
   {
@@ -56,7 +58,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ getValue }) => (
       <Badge
         variant="outline"
-        className="text-nowrap rounded-md px-2 lg:px-3 py-1 lg:py-1.5 text-xs"
+        className="text-nowrap rounded-md px-2 py-[5px] text-[length:inherit] font-medium lg:px-3 lg:py-1.5"
       >
         {getValue<string>()}
       </Badge>
@@ -64,7 +66,8 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'alphanumeric',
     meta: {
       title: 'Curso',
-      width: 'w-11 lg:w-14',
+      width: 'w-[66px] lg:w-[92px]',
+      stickyProperties: 'left-[40px] lg:left-[52px] sticky z-10',
     },
   },
   {
@@ -83,6 +86,7 @@ export const columns: ColumnDef<Student>[] = [
     meta: {
       title: 'Estudiante',
       width: 'w-24 lg:w-32',
+      stickyProperties: 'left-[106px] lg:left-[144px] sticky z-10',
     },
     sortingFn: 'text',
   },

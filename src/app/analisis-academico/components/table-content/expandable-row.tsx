@@ -21,9 +21,9 @@ function ExpandableRow({
         {subjects.length === 0 ? (
           <Badge
             variant="success"
-            className="flex w-fit gap-x-2 rounded-md border-0 bg-success/[0.05] pl-2 text-[length:inherit] font-normal"
+            className="flex w-fit gap-x-2 rounded-md border-0 bg-success/[0.05] text-[length:inherit] font-normal lg:px-4 lg:py-[5px]"
           >
-            <Check size={16} strokeWidth="1.0px" />
+            <Check size={16} strokeWidth="1.0px" className="-ml-1" />
             No adeuda
           </Badge>
         ) : (

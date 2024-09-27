@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -35,14 +36,22 @@ function DataTable<TData, TValue>({
     manualFiltering: true,
   })
 
+  const [showShadow, setShowShadow] = useState(false)
+
   return (
-    <ScrollArea className="h-[80vh] w-full rounded-lg border bg-card shadow-sm">
+    <ScrollArea
+      onScrollCapture={(e) => {
+        if (e.target.scrollLeft === 0) setShowShadow(false)
+        e.target.scrollLeft > 0 && !showShadow && setShowShadow(true)
+      }}
+      className="scrollArea h-[80vh] w-full rounded-lg border bg-card shadow-sm"
+    >
       <Table className="flex w-full flex-col bg-card text-xs lg:text-sm">
-        <TableHeader className="sticky top-0 z-10 border-b border-primary/70 shadow-sm shadow-primary/40">
+        <TableHeader className="sticky top-0 z-20 border-b border-primary/70 shadow-sm shadow-primary/40">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="flex w-full items-center bg-popover p-1 hover:bg-popover lg:p-2"
+              className="flex w-full items-center bg-popover p-0 hover:bg-popover"
             >
               {headerGroup.headers.map((header) => {
                 return (
@@ -50,36 +59,42 @@ function DataTable<TData, TValue>({
                     key={header.id}
                     align={header.column.columnDef.meta?.align || 'left'}
                     className={cn(
-                      'mx-1 h-fit px-0 sm:mx-2 lg:mx-3.5',
+                      'h-fit bg-inherit px-2.5 py-1 md:px-3.5 lg:px-4 lg:py-2 2xl:px-5',
                       header.column.columnDef.meta?.width,
+                      header.column.columnDef.meta?.stickyProperties,
+                      header.column.id === 'estudiante' &&
+                        showShadow &&
+                        'shadow-[4px_0px_15px_-5px_rgba(232,118,27,0.2)]',
                     )}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                   </TableHead>
                 )
               })}
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="w-full">
+        <TableBody className="w-full bg-popover">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="flex px-1.5 lg:px-2"
+                className="flex bg-inherit px-0 hover:bg-muted"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      'mx-1 px-0 sm:mx-2 lg:mx-3.5',
+                      'bg-inherit px-2.5 md:px-3.5 lg:px-4 2xl:px-5',
                       cell.column.columnDef.meta?.width,
+                      cell.column.columnDef.meta?.stickyProperties,
+                      cell.column.id === 'estudiante' &&
+                        showShadow &&
+                        'shadow-[4px_0px_15px_-5px_rgba(232,118,27,0.2)]',
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

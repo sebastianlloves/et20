@@ -21,7 +21,7 @@ function ExpandButton({
         variant="ghost"
         onClick={handleClick}
         className={cn(
-          'flex h-7 w-6 items-center justify-center px-0 py-0 lg:h-8',
+          'h-5.5 lg:w-5.5 flex w-5 items-center bg-inherit bg-opacity-100 justify-center px-0 py-0 lg:h-6',
           className,
         )}
         disabled={disabled}
@@ -29,12 +29,12 @@ function ExpandButton({
         {isOpen ? (
           <ChevronsDownUp
             strokeWidth="1.2px"
-            className="w-[13px] lg:w-[15px]"
+            className="w-[11px] lg:w-[14px]"
           />
         ) : (
           <ChevronsUpDown
             strokeWidth="1.2px"
-            className="w-[13px] lg:w-[15px]"
+            className="w-[11px] lg:w-[14px]"
           />
         )}
         <span className="sr-only">Toggle</span>
