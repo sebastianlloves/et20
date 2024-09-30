@@ -47,7 +47,7 @@ export const columns: ColumnDef<Student>[] = [
     enableSorting: false,
     meta: {
       title: 'Expandir',
-      width: 'w-[40px] lg:w-[52px]',
+      width: 'w-[40px] lg:w-[45px]',
       stickyProperties: 'left-0 sticky z-10',
     },
   },
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ getValue }) => (
       <Badge
         variant="outline"
-        className="text-nowrap rounded-md px-2 py-[5px] text-[length:inherit] font-medium lg:px-3 lg:py-1.5"
+        className="text-nowrap rounded-md px-2 py-[5px] text-xs font-medium lg:px-3 lg:py-1.5"
       >
         {getValue<string>()}
       </Badge>
@@ -66,7 +66,7 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'alphanumeric',
     meta: {
       title: 'Curso',
-      width: 'w-[66px] lg:w-[92px]',
+      width: 'w-[66px] lg:w-[80px]',
       stickyProperties: 'left-[40px] lg:left-[52px] sticky z-10',
     },
   },
@@ -85,7 +85,7 @@ export const columns: ColumnDef<Student>[] = [
     },
     meta: {
       title: 'Estudiante',
-      width: 'w-24 lg:w-32',
+      width: 'w-24 lg:w-[150px]',
       stickyProperties: 'left-[106px] lg:left-[144px] sticky z-10',
     },
     sortingFn: 'text',
