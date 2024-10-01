@@ -99,7 +99,7 @@ function DataTable<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        'mx-2 my-4 md:mx-3.5 lg:mx-6 2xl:mx-7',
+                        'mx-2 my-4 md:mx-3.5 lg:mx-6 2xl:mx-7 lg:my-5',
                         cell.column.columnDef.meta?.width,
                         border && 'border',
                       )}

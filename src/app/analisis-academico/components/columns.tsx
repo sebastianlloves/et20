@@ -47,7 +47,8 @@ export const columns: ColumnDef<Student>[] = [
     enableSorting: false,
     meta: {
       title: 'Expandir',
-      width: 'w-[20px] lg:w-[22px]',
+      width:
+        'w-[20px] lg:w-[22px] mx-1 md:mx-1.5 lg:mx-2.5 2xl:mx-3',
       stickyProperties: 'left-0 sticky z-10',
     },
   },
@@ -68,7 +69,7 @@ export const columns: ColumnDef<Student>[] = [
       title: 'Curso',
       width: 'w-[45px] lg:w-[55px]',
       stickyProperties:
-        'left-[30px] md:left-[37px] lg:left-[47px] 2xl:left-[53px] sticky z-10',
+        'left-[25px] md:left-[29px] lg:left-[37px] 2xl:left-[39px] sticky z-10',
     },
   },
   {
@@ -88,7 +89,7 @@ export const columns: ColumnDef<Student>[] = [
       title: 'Estudiante',
       width: 'w-24 lg:w-[150px]',
       stickyProperties:
-        'left-[90px] md:left-[105px] lg:left-[138px] 2xl:left-[145px] sticky z-10',
+        'left-[80px] md:left-[85px] lg:left-[115px] 2xl:left-[120px] sticky z-10',
     },
     sortingFn: 'text',
   },
