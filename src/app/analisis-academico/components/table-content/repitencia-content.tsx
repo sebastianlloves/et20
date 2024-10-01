@@ -13,9 +13,12 @@ function RepitenciaContent({ repArray }: RepitenciaContentProps) {
           <Badge
             key={index}
             variant="outline"
-            className="justify-center gap-x-1.5 rounded-lg border-destructive/40 bg-destructive/[0.03] px-1 text-[length:inherit] font-bold leading-4 text-destructive/80 dark:border-destructive dark:bg-destructive/15 dark:text-destructive-foreground/90 lg:gap-x-[7px] lg:px-[7px]"
+            className="justify-center gap-x-1.5 rounded-lg border-destructive/40 bg-destructive/[0.03] px-1 font-bold leading-4 text-destructive/80 dark:border-destructive dark:bg-destructive/15 dark:text-destructive-foreground/90 lg:gap-x-[7px] lg:px-[5px]"
           >
-            <IterationCcw size={13} strokeWidth="2px" className="" />
+            <IterationCcw
+              strokeWidth="2px"
+              className="h-[11px] w-[11px] lg:h-3 lg:w-3"
+            />
             {`${repValue[0]}°`}
           </Badge>
         ))
@@ -24,7 +27,10 @@ function RepitenciaContent({ repArray }: RepitenciaContentProps) {
           variant="outline"
           className="border-0 px-2 text-muted-foreground"
         >
-          <Minus size={14} strokeWidth="1.5px" />
+          <Minus
+            strokeWidth="1.5px"
+            className="h-2.5 w-2.5 lg:h-3 lg:w-3"
+          />
         </Badge>
       )}
     </div>

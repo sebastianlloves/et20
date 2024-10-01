@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -35,6 +36,8 @@ function DataTable<TData, TValue>({
     manualFiltering: true,
   })
 
+  const [border] = useState(false)
+
   return (
     <ScrollArea className="scrollArea h-[80vh] w-full rounded-lg border bg-card shadow-sm">
       <Table className="flex w-full flex-col bg-card text-xs lg:text-sm">
@@ -50,17 +53,25 @@ function DataTable<TData, TValue>({
                     key={header.id}
                     align={header.column.columnDef.meta?.align || 'left'}
                     className={cn(
-                      'h-fit bg-inherit px-2.5 py-1 md:px-3.5 lg:px-4 lg:py-2 2xl:px-7',
-                      header.column.columnDef.meta?.width,
+                      'h-fit bg-inherit p-0',
                       header.column.columnDef.meta?.stickyProperties,
                       header.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80',
+                      border && 'border',
                     )}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                    <div
+                      className={cn(
+                        'mx-2 my-1 md:mx-3.5 lg:mx-6 lg:my-2 2xl:mx-7',
+                        header.column.columnDef.meta?.width,
+                        border && 'border',
+                      )}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                    </div>
                   </TableHead>
                 )
               })}
@@ -79,14 +90,25 @@ function DataTable<TData, TValue>({
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      'bg-inherit px-2.5 md:px-3.5 lg:px-4 lg:py-4 2xl:px-7 border',
-                      cell.column.columnDef.meta?.width,
+                      'bg-inherit p-0',
                       cell.column.columnDef.meta?.stickyProperties,
                       cell.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80',
+                      border && 'border',
                     )}
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    <div
+                      className={cn(
+                        'mx-2 my-4 md:mx-3.5 lg:mx-6 2xl:mx-7',
+                        cell.column.columnDef.meta?.width,
+                        border && 'border',
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </div>
                   </TableCell>
                 ))}
               </TableRow>

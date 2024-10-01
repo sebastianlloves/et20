@@ -47,7 +47,7 @@ export const columns: ColumnDef<Student>[] = [
     enableSorting: false,
     meta: {
       title: 'Expandir',
-      width: 'w-[40px] lg:w-[45px]',
+      width: 'w-[20px] lg:w-[22px]',
       stickyProperties: 'left-0 sticky z-10',
     },
   },
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ getValue }) => (
       <Badge
         variant="outline"
-        className="text-nowrap rounded-md px-2 py-[5px] text-xs font-medium lg:px-3 lg:py-1.5"
+        className="text-nowrap rounded-md px-2 py-[5px] font-medium lg:px-3 lg:py-1.5"
       >
         {getValue<string>()}
       </Badge>
@@ -66,8 +66,9 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'alphanumeric',
     meta: {
       title: 'Curso',
-      width: 'w-[66px] lg:w-[80px]',
-      stickyProperties: 'left-[40px] lg:left-[52px] sticky z-10',
+      width: 'w-[45px] lg:w-[55px]',
+      stickyProperties:
+        'left-[30px] md:left-[37px] lg:left-[47px] 2xl:left-[53px] sticky z-10',
     },
   },
   {
@@ -86,7 +87,8 @@ export const columns: ColumnDef<Student>[] = [
     meta: {
       title: 'Estudiante',
       width: 'w-24 lg:w-[150px]',
-      stickyProperties: 'left-[106px] lg:left-[144px] sticky z-10',
+      stickyProperties:
+        'left-[90px] md:left-[105px] lg:left-[138px] 2xl:left-[145px] sticky z-10',
     },
     sortingFn: 'text',
   },
@@ -101,7 +103,7 @@ export const columns: ColumnDef<Student>[] = [
     ),
     meta: {
       title: 'DNI',
-      width: 'w-14 lg:w-20',
+      width: 'w-[55px] lg:w-[65px]',
     },
   },
   {
@@ -166,7 +168,7 @@ export const columns: ColumnDef<Student>[] = [
     ),
     meta: {
       title: 'Repitencia',
-      width: 'w-[84px] lg:w-[105px]',
+      width: 'w-[84px] lg:w-[95px]',
     },
   },
   {
@@ -188,7 +190,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 150,
     meta: {
       title: 'Promoción',
-      width: 'w-28 lg:w-32',
+      width: 'w-[110px]',
     },
     sortingFn: 'text',
   },
