@@ -4,7 +4,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
 import { TagsBox } from './tags'
 
@@ -35,17 +35,24 @@ function Filter({
             variant="ghost"
             className="w-full font-medium tracking-wide shadow-sm"
           >
-            <div className="flex items-center gap-4 py-2 w-full">
+            <div className="flex w-full items-center gap-4 py-2">
               {icon}
-              <h4 className='text-left w-2/3 text-wrap'>{title}</h4>
+              <h4 className="w-2/3 text-wrap text-left">{title}</h4>
             </div>
-            <ChevronRight size={16} className="ml-auto text-muted-foreground" />
+            <ChevronRight
+              size={16}
+              className="ml-auto hidden text-muted-foreground sm:block"
+            />
+            <ChevronDown
+              size={16}
+              className="ml-auto block text-muted-foreground sm:hidden"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
           alignOffset={-1}
-          side="right"
+          side="bottom"
           className="rounded-md p-1"
         >
           {children}

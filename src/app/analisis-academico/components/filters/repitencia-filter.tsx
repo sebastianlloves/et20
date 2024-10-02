@@ -118,7 +118,7 @@ function RepitenciaFilter({
               !repitenciaAniosUniqueValues ||
               !repitenciaAniosUniqueValues.get(anio)
             }
-            className="cursor-pointer"
+            className="w-[150px] cursor-pointer sm:w-full"
           >
             <MenuItem
               value={`Repitió ${anio}`}
@@ -138,7 +138,6 @@ function RepitenciaFilter({
           filterValue={repitenciaCantValue}
           min={repitenciaCantMinMaxValues?.[0] || 0}
           max={repitenciaCantMinMaxValues?.[1] || 0}
-          className="w-[7.5rem]"
         />
       </DropdownMenuItem>
     </Filter>

@@ -31,7 +31,7 @@ function SearchBar() {
         key={searchParams.get('search')}
         name="search"
         className="peer block bg-popover pl-12 pr-9"
-        placeholder="Buscar estudiante por nombre o DNI"
+        placeholder="Buscar por nombre o DNI"
         defaultValue={searchParams.get('search')?.toString()}
         onChange={(e) => updateUrlParams(e.target.value)}
       />

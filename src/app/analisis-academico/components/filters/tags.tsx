@@ -24,7 +24,7 @@ function TagsBox({
   handleRemoveAll: () => void
 }) {
   return (
-    <div className="w-full bg-muted/25 p-2 shadow-inner">
+    <div className="hidden lg:block w-full bg-muted/25 p-2 shadow-inner">
       <ConditionalWrapper
         condition={tags.length > maxTags}
         tagsQuantity={tags.length}

@@ -8,7 +8,7 @@ export default function MenuItem({
   quantity?: number
 }) {
   return (
-    <div className="flex w-full items-end justify-between gap-x-7">
+    <div className="flex w-full items-center justify-between gap-x-4 sm:gap-x-7">
       <h4 className="align-middle text-sm">{value}</h4>
       {quantity !== undefined && (
         <p className="w-5 text-right align-middle font-mono leading-tight text-muted-foreground/90">

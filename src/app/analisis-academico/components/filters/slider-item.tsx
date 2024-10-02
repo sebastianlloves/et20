@@ -37,7 +37,7 @@ function SliderItem({
           min={min}
           max={max}
           step={1}
-          className={cn('w-40', className)}
+          className={cn('w-20 sm:w-40', className)}
           onValueChange={(value) => {
             setRangeValue(value)
             debounceUpdateParams(value, min, max)

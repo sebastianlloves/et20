@@ -7,6 +7,7 @@ import { MATERIAS_POR_CURSO } from '@/lib/constants'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -15,6 +16,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import MenuItem from './menu-item'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 function MateriasFilter({
   materiasUniqueValues,
@@ -88,41 +90,51 @@ function MateriasFilter({
       <>
         {Object.keys(MATERIAS_POR_CURSO).map((anio) => (
           <DropdownMenuSub key={anio}>
-            <DropdownMenuSubTrigger>{anio}</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent alignOffset={-5} sideOffset={6}>
-              {MATERIAS_POR_CURSO[anio as keyof typeof MATERIAS_POR_CURSO].map(
-                ({ nombre: materia }) => (
-                  <DropdownMenuCheckboxItem
-                    key={materia}
-                    disabled={
-                      !materiasUniqueValues ||
-                      !materiasUniqueValues.get(
-                        `${materia} (${anio.split(' ')[0]})`,
-                      )
-                    }
-                    checked={materiasValue.includes(
-                      `${materia} (${anio.split(' ')[0]})`,
-                    )}
-                    onSelect={(e) => e.preventDefault()}
-                    className="cursor-pointer"
-                    onCheckedChange={() =>
-                      updateParams(`${materia} (${anio.split(' ')[0]})`)
-                    }
-                  >
-                    <MenuItem
-                      value={`${materia} (${anio.split(' ')[0]})`}
-                      quantity={
-                        materiasUniqueValues &&
-                        (materiasUniqueValues.get(
+            <DropdownMenuSubTrigger className="w-36 sm:w-full">
+              {anio}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent
+                collisionPadding={20}
+                alignOffset={-5}
+                sideOffset={6}
+              >
+                <ScrollArea className="pr-1">
+                  {MATERIAS_POR_CURSO[
+                    anio as keyof typeof MATERIAS_POR_CURSO
+                  ].map(({ nombre: materia }) => (
+                    <DropdownMenuCheckboxItem
+                      key={materia}
+                      disabled={
+                        !materiasUniqueValues ||
+                        !materiasUniqueValues.get(
                           `${materia} (${anio.split(' ')[0]})`,
-                        ) ??
-                          0)
+                        )
                       }
-                    />
-                  </DropdownMenuCheckboxItem>
-                ),
-              )}
-            </DropdownMenuSubContent>
+                      checked={materiasValue.includes(
+                        `${materia} (${anio.split(' ')[0]})`,
+                      )}
+                      onSelect={(e) => e.preventDefault()}
+                      className="w-52 cursor-pointer sm:w-64 lg:w-full"
+                      onCheckedChange={() =>
+                        updateParams(`${materia} (${anio.split(' ')[0]})`)
+                      }
+                    >
+                      <MenuItem
+                        value={`${materia} (${anio.split(' ')[0]})`}
+                        quantity={
+                          materiasUniqueValues &&
+                          (materiasUniqueValues.get(
+                            `${materia} (${anio.split(' ')[0]})`,
+                          ) ??
+                            0)
+                        }
+                      />
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </ScrollArea>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
           </DropdownMenuSub>
         ))}
         <DropdownMenuSeparator />
@@ -131,6 +143,7 @@ function MateriasFilter({
           /* disabled={
             materiasValue.length > 0 
           } */
+          className="w-36 sm:w-full"
         >
           <div className="flex items-center space-x-6 p-1">
             <Label
