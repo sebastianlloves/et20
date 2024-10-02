@@ -118,7 +118,7 @@ function RepitenciaFilter({
               !repitenciaAniosUniqueValues ||
               !repitenciaAniosUniqueValues.get(anio)
             }
-            className="w-[150px] cursor-pointer sm:w-full"
+            className="cursor-pointer sm:w-full"
           >
             <MenuItem
               value={`Repitió ${anio}`}

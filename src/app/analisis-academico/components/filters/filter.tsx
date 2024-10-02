@@ -52,7 +52,6 @@ function Filter({
         <DropdownMenuContent
           align="start"
           alignOffset={-1}
-          side="bottom"
           className="rounded-md p-1"
         >
           {children}
