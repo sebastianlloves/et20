@@ -114,6 +114,10 @@ function RepitenciaFilter({
             onSelect={(e) => e.preventDefault()}
             checked={repitenciaAniosValue.includes(anio)}
             onCheckedChange={() => updateAniosParam(anio)}
+            disabled={
+              !repitenciaAniosUniqueValues ||
+              !repitenciaAniosUniqueValues.get(anio)
+            }
             className="cursor-pointer"
           >
             <MenuItem
