@@ -102,7 +102,7 @@ function RepitenciaFilter({
     <Filter
       title="Repitencia"
       maxTags={3}
-      icon={<IterationCcw size={15} strokeWidth={1.4} />}
+      icon={<IterationCcw strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
       filterTags={repitenciaTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}

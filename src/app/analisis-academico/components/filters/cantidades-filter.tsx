@@ -99,7 +99,7 @@ function CantidadesFilter({
       title="Cantidades"
       maxTags={3}
       filterTags={filterTags}
-      icon={<Calculator size={17} strokeWidth={1.2} />}
+      icon={<Calculator strokeWidth={1.2} className="w-[15.5px] lg:w-[17px]" />}
       handleRemoveAll={handleRemoveAll}
       handleRemoveTag={handleRemoveTag}
     >
@@ -158,4 +158,3 @@ function CantidadesFilter({
   )
 }
 export default CantidadesFilter
-

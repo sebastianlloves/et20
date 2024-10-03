@@ -82,22 +82,22 @@ function MateriasFilter({
     <Filter
       title="Materias"
       maxTags={3}
-      icon={<Book size={15} strokeWidth={1.4} />}
+      icon={<Book strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
       filterTags={filterTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
-      <>
+      <div className="text-xs lg:text-sm">
         {Object.keys(MATERIAS_POR_CURSO).map((anio) => (
           <DropdownMenuSub key={anio}>
-            <DropdownMenuSubTrigger className="w-36 sm:w-full">
+            <DropdownMenuSubTrigger className="w-28 sm:w-full">
               {anio}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent
-                collisionPadding={20}
                 alignOffset={-5}
                 sideOffset={6}
+                className="text-[length:inherit]"
               >
                 <ScrollArea className="pr-1">
                   {MATERIAS_POR_CURSO[
@@ -115,7 +115,7 @@ function MateriasFilter({
                         `${materia} (${anio.split(' ')[0]})`,
                       )}
                       onSelect={(e) => e.preventDefault()}
-                      className="w-52 cursor-pointer sm:w-64 lg:w-full"
+                      className="max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] w-full cursor-pointer"
                       onCheckedChange={() =>
                         updateParams(`${materia} (${anio.split(' ')[0]})`)
                       }
@@ -143,12 +143,12 @@ function MateriasFilter({
           /* disabled={
             materiasValue.length > 0 
           } */
-          className="w-36 sm:w-full"
+          className="w-28 sm:w-full"
         >
-          <div className="flex items-center space-x-6 p-1">
+          <div className="flex items-center gap-4 p-1 lg:gap-6">
             <Label
               htmlFor="estrict-inclusion"
-              className="cursor-pointer font-normal text-foreground"
+              className="cursor-pointer text-[length:inherit] font-normal text-foreground"
             >
               Inclusión estricta
             </Label>
@@ -161,7 +161,7 @@ function MateriasFilter({
             />
           </div>
         </DropdownMenuItem>
-      </>
+      </div>
     </Filter>
   )
 }

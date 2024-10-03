@@ -54,9 +54,9 @@ function DataTable<TData, TValue>({
                     align={header.column.columnDef.meta?.align || 'left'}
                     className={cn(
                       'h-fit bg-inherit p-0',
-                      header.column.columnDef.meta?.stickyProperties,
+                      header.column.columnDef.meta?.stickyProperties,/* 
                       header.column.id === 'estudiante' &&
-                        'border-r-[0.5px] border-border/80',
+                        'border-r-[0.5px] border-border/80', */
                       border && 'border',
                     )}
                   >
@@ -91,9 +91,9 @@ function DataTable<TData, TValue>({
                     key={cell.id}
                     className={cn(
                       'bg-inherit p-0',
-                      cell.column.columnDef.meta?.stickyProperties,
+                      cell.column.columnDef.meta?.stickyProperties,/* 
                       cell.column.id === 'estudiante' &&
-                        'border-r-[0.5px] border-border/80',
+                        'border-r-[0.5px] border-border/80', */
                       border && 'border',
                     )}
                   >

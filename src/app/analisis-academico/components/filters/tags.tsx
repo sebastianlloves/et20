@@ -24,7 +24,7 @@ function TagsBox({
   handleRemoveAll: () => void
 }) {
   return (
-    <div className="hidden lg:block w-full bg-muted/25 p-2 shadow-inner">
+    <div className="w-full bg-muted/25 p-2 shadow-inner">
       <ConditionalWrapper
         condition={tags.length > maxTags}
         tagsQuantity={tags.length}
@@ -33,31 +33,31 @@ function TagsBox({
           {tags.length > 1 && (
             <X
               strokeWidth="1.5px"
-              className="ml-auto -mr-0.5 h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
+              className="-mr-0.5 ml-auto h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
               onClick={handleRemoveAll}
             />
           )}
 
-          <div className="mt-1 flex flex-wrap justify-start gap-1.5 overflow-hidden">
+          <div className="mt-0.5 lg:mt-1 flex flex-wrap justify-start gap-1.5 overflow-hidden">
             {tags.map((tag) => (
               <Badge
                 key={tag.value}
                 variant="default"
                 className={cn(
-                  'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10',
+                  'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 lg:px-2 py-1 lg:py-1.5 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10',
                   tag.className,
                 )}
               >
                 <div className="flex h-full items-center justify-start">
                   <div className="flex items-center justify-between gap-3 px-2 leading-3">
-                    <p className="text-pretty align-middle leading-snug text-foreground">
+                    <p className="text-pretty align-middle text-[length:inherit] leading-snug text-foreground">
                       {tag.value}
                     </p>
                     {tag.quantity === undefined ? (
                       <Skeleton className="h-1 w-5 rounded-md bg-primary/50" />
                     ) : (
                       tag.quantity !== null && (
-                        <p className="align-middle font-mono text-xs leading-tight text-muted-foreground/80">
+                        <p className="align-middle font-mono text-[length:inherit] leading-tight text-muted-foreground/80 mt-0.5">
                           {`(${tag.quantity})`}
                         </p>
                       )
@@ -95,7 +95,7 @@ function AccordionTags({
             <Badge
               variant="default"
               className={
-                'max-w-full justify-center rounded-lg border-primary/70 bg-primary/10 px-2 py-1.5 font-normal leading-tight shadow-sm hover:bg-primary/10'
+                'max-w-full justify-center rounded-lg border-primary/70 bg-primary/10 px-2 py-1.5 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10'
               }
             >
               <div className="flex h-full items-center justify-start">

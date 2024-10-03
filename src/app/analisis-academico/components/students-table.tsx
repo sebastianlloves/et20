@@ -4,8 +4,6 @@ import { columns } from './columns'
 import { SearchParams } from '../page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
-import SearchBar from './filters/search-bar'
-import ToggleDB from './toggle-db'
 
 export default async function StudentsTable({
   searchParams,
@@ -19,13 +17,9 @@ export default async function StudentsTable({
   return (
     <>
       <FiltersPanelMobile>
-        <div className="flex flex-col gap-10">
-          <ToggleDB />
-          <SearchBar />
-          <FiltersPanel filterParams={filterParams} data={data} />
-        </div>
+        <FiltersPanel filterParams={filterParams} data={data} />
       </FiltersPanelMobile>
-      <div className="hidden lg:block">
+      <div className='hidden lg:block'>
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
       <DataTable columns={columns} data={filteredData} />

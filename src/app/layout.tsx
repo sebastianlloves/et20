@@ -33,7 +33,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <header className="flex justify-end p-2">
+          <header className="flex justify-end pb-0 p-1 lg:p-2">
             <ModeToggle />
           </header>
           <main>

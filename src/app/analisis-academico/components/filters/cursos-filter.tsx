@@ -51,12 +51,12 @@ function CursosFilter({
     <Filter
       title="Cursos"
       maxTags={3}
-      icon={<Users size={15} strokeWidth={1.4} />}
+      icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
       filterTags={cursosTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
-      <>
+      <div className="text-xs lg:text-sm">
         {Object.keys(CURSOS_POR_ANIO).map((anio) => (
           <DropdownMenuSub key={anio}>
             <DropdownMenuSubTrigger className="pl-3">
@@ -81,7 +81,7 @@ function CursosFilter({
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         ))}
-      </>
+      </div>
     </Filter>
   )
 }

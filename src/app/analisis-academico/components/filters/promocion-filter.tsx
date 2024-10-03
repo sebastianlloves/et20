@@ -50,7 +50,7 @@ function PromocionFilter({
     <Filter
       title="Promoción"
       maxTags={2}
-      icon={<BadgeCheck size={18} strokeWidth={1.0} />}
+      icon={<BadgeCheck strokeWidth={1.0} className="w-[16px] lg:w-[18px]" />}
       filterTags={promocionTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}

@@ -20,13 +20,13 @@ function ToggleDB() {
       <TabsList className="w-full h-fit rounded-lg shadow-sm p-1">
         <TabsTrigger
           value={'2023'}
-          className="w-full text-base rounded-md data-[state=active]:bg-card"
+          className="w-full text-sm lg:text-base rounded-md data-[state=active]:bg-card"
         >
           2023
         </TabsTrigger>
         <TabsTrigger
           value={'2024'}
-          className="w-full text-base rounded-md data-[state=active]:bg-card"
+          className="w-full text-sm lg:text-base rounded-md data-[state=active]:bg-card"
         >
           2024
         </TabsTrigger>
