@@ -89,7 +89,7 @@ export const columns: ColumnDef<Student>[] = [
       title: 'Estudiante',
       width: 'w-24 lg:w-[150px]',
       stickyProperties:
-        'left-[80px] md:left-[85px] lg:left-[115px] 2xl:left-[120px] sticky z-10',
+        'left-[80px] md:left-[87px] lg:left-[115px] 2xl:left-[120px] sticky z-10',
     },
     sortingFn: 'text',
   },
