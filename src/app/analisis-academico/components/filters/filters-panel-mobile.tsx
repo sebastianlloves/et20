@@ -19,8 +19,14 @@ function FiltersPanelMobile({ children }: { children: ReactNode }) {
       <Sheet>
         <SheetTrigger asChild>
           <Button size="sm" className="justify-start gap-x-2">
-            <ListFilter size={14} strokeWidth={2.0} className="min-w-6" />
-            <h4 className="font-semibold tracking-tight">Filtros</h4>
+            <ListFilter
+              size={14}
+              strokeWidth={2.0}
+              className="min-w-6 dark:text-foreground"
+            />
+            <h4 className="font-semibold tracking-tight dark:text-foreground">
+              Filtros
+            </h4>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-[250px] p-0 pl-2.5 pt-10">

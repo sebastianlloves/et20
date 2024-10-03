@@ -39,13 +39,13 @@ function DataTable<TData, TValue>({
   const [border] = useState(false)
 
   return (
-    <ScrollArea className="scrollArea h-[80vh] w-full rounded-lg border bg-card shadow-sm">
-      <Table className="flex w-full flex-col bg-card text-xs lg:text-sm">
+    <ScrollArea className="scrollArea bg-table-body h-[80vh] w-full rounded-lg border shadow-sm">
+      <Table className="bg-table-body flex w-full flex-col text-xs lg:text-sm">
         <TableHeader className="sticky top-0 z-20 border-b border-primary/70 shadow-sm shadow-primary/40">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="flex w-full items-center bg-popover p-0 hover:bg-popover"
+              className="flex w-full items-center bg-table-header p-0 hover:bg-table-header"
             >
               {headerGroup.headers.map((header) => {
                 return (
@@ -54,9 +54,9 @@ function DataTable<TData, TValue>({
                     align={header.column.columnDef.meta?.align || 'left'}
                     className={cn(
                       'h-fit bg-inherit p-0',
-                      header.column.columnDef.meta?.stickyProperties,/* 
+                      header.column.columnDef.meta?.stickyProperties /* 
                       header.column.id === 'estudiante' &&
-                        'border-r-[0.5px] border-border/80', */
+                        'border-r-[0.5px] border-border/80', */,
                       border && 'border',
                     )}
                   >
@@ -78,7 +78,7 @@ function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="w-full bg-popover">
+        <TableBody className="w-full bg-table-body">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -91,15 +91,15 @@ function DataTable<TData, TValue>({
                     key={cell.id}
                     className={cn(
                       'bg-inherit p-0',
-                      cell.column.columnDef.meta?.stickyProperties,/* 
+                      cell.column.columnDef.meta?.stickyProperties /* 
                       cell.column.id === 'estudiante' &&
-                        'border-r-[0.5px] border-border/80', */
+                        'border-r-[0.5px] border-border/80', */,
                       border && 'border',
                     )}
                   >
                     <div
                       className={cn(
-                        'mx-2 my-4 md:mx-3.5 lg:mx-6 2xl:mx-7 lg:my-5',
+                        'mx-2 my-4 md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
                         cell.column.columnDef.meta?.width,
                         border && 'border',
                       )}
@@ -114,7 +114,7 @@ function DataTable<TData, TValue>({
               </TableRow>
             ))
           ) : (
-            <TableRow className="flex items-center justify-center">
+            <TableRow className="flex items-center bg-table-body justify-center">
               <TableCell
                 colSpan={columns.length}
                 className="h-24 py-6 text-center italic text-muted-foreground"

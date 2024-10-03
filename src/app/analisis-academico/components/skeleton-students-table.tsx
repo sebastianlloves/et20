@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { columns } from './columns'
 import FiltersPanel from './filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
+import FiltersPanelMobile from './filters/filters-panel-mobile'
 
 function SkeletonStudentsTable() {
   const skeletonData = Array(30).fill({})
@@ -24,7 +25,12 @@ function SkeletonStudentsTable() {
 
   return (
     <>
-      <FiltersPanel />
+      <FiltersPanelMobile>
+        <FiltersPanel />
+      </FiltersPanelMobile>
+      <div className="hidden lg:block">
+        <FiltersPanel />
+      </div>
       <DataTable columns={skeletonColumns} data={skeletonData} />
     </>
   )

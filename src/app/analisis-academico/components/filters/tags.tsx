@@ -24,7 +24,7 @@ function TagsBox({
   handleRemoveAll: () => void
 }) {
   return (
-    <div className="w-full bg-muted/25 p-2 shadow-inner">
+    <div className="w-full bg-muted/20 p-2 shadow-inner">
       <ConditionalWrapper
         condition={tags.length > maxTags}
         tagsQuantity={tags.length}
@@ -50,7 +50,7 @@ function TagsBox({
               >
                 <div className="flex h-full items-center justify-start">
                   <div className="flex items-center justify-between gap-3 px-2 leading-3">
-                    <p className="text-pretty align-middle text-[length:inherit] leading-snug text-foreground">
+                    <p className="text-pretty align-middle text-[length:inherit] leading-snug text-foreground/80">
                       {tag.value}
                     </p>
                     {tag.quantity === undefined ? (

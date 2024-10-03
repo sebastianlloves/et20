@@ -79,7 +79,7 @@ function RepitenciaFilter({
 
   const handleRemoveTag = (tagValue: string) => {
     if (tagValue.includes('año')) {
-      const value = tagValue.split('Repite ')[1]
+      const value = tagValue.split('Repitió ')[1]
       const newState = repitenciaAniosValue.filter(
         (prevValue) => prevValue !== value,
       )
