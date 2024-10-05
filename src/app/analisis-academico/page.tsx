@@ -20,6 +20,9 @@ export interface SearchParams {
   repitenciaCant?: string
 }
 
+// eslint-disable-next-line camelcase
+export const experimental_ppr = true
+
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
   return (
     <div className="grid w-full gap-x-8 gap-y-4 px-0 lg:grid-cols-[minmax(230px,1fr)_7fr] lg:px-4 2xl:px-8 ">

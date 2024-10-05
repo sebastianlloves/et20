@@ -2,7 +2,7 @@
 
 const nextConfig = {
   experimental:{
-    ppr: true
+    ppr: 'incremental'
   },
   async redirects() {
     return [
