@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  experimental:{
-    ppr: 'incremental'
+  experimental: {
+    ppr: 'incremental',
   },
   async redirects() {
     return [
@@ -12,6 +12,11 @@ const nextConfig = {
         permanent: true,
       },
     ]
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
 }
 

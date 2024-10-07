@@ -11,6 +11,7 @@ const tags: { [key: string]: string } = {
 export async function fetchStudentsData(anio: string = '2024') {
   const response = await fetch(DB_CALIFICACIONES_HISTORICO[anio], {
     next: { tags: [tags[anio]] },
+    cache: 'force-cache'
   })
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 2000))
