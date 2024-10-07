@@ -6,7 +6,7 @@
   :root {
     --background: 25 100% 99.3%;
     --foreground: 240 10% 3.9%;
-    --background-main: 21 70% 98%;
+    --background-main: 21 60% 98.7%;
     --card: 25 100% 99.3%;
     --card-foreground: 240 10% 3.9%;
     --popover: 25 100% 99.5%;
@@ -55,7 +55,7 @@
     --destructive-foreground: 0 60% 90%;
     --success: 100 30% 50%;
     --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --input: 21 5% 15.9%;
     --ring: 240 4.9% 83.9%;
     --table-header: 21 10% 14%;
     --table-body: 21 8% 10%;
