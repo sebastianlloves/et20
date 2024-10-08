@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+// import { useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -36,7 +36,7 @@ function DataTable<TData, TValue>({
     manualFiltering: true,
   })
 
-  const [border] = useState(false)
+  // const [border] = useState(false)
 
   return (
     <ScrollArea className="scrollArea bg-table-body h-[80vh] w-full rounded-lg border shadow-sm">
@@ -57,14 +57,14 @@ function DataTable<TData, TValue>({
                       header.column.columnDef.meta?.stickyProperties /* 
                       header.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80', */,
-                      border && 'border',
+                      // border && 'border',
                     )}
                   >
                     <div
                       className={cn(
                         'mx-2 my-1 md:mx-3.5 lg:mx-6 lg:my-2 2xl:mx-7',
                         header.column.columnDef.meta?.width,
-                        border && 'border',
+                        // border && 'border',
                       )}
                     >
                       {flexRender(
@@ -94,14 +94,14 @@ function DataTable<TData, TValue>({
                       cell.column.columnDef.meta?.stickyProperties /* 
                       cell.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80', */,
-                      border && 'border',
+                      // border && 'border',
                     )}
                   >
                     <div
                       className={cn(
                         'mx-2 my-4 md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
                         cell.column.columnDef.meta?.width,
-                        border && 'border',
+                        // border && 'border',
                       )}
                     >
                       {flexRender(

@@ -21,7 +21,7 @@ export interface SearchParams {
 }
 
 // eslint-disable-next-line camelcase
-export const experimental_ppr = true
+// export const experimental_ppr = true
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
   return (

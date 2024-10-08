@@ -33,11 +33,11 @@ function Filter({
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="h-9 w-full text-[length:inherit] font-medium tracking-wide shadow-sm lg:h-10"
+            className="h-min min-h-9 w-full py-2 text-[length:inherit] font-medium tracking-wide shadow-sm lg:min-h-10"
           >
             <div className="flex w-full items-center gap-3 lg:gap-4">
               {icon}
-              <h4 className="w-2/3 text-wrap text-left">{title}</h4>
+              <h4 className="text-pretty text-left border">{title}</h4>
             </div>
             <ChevronRight
               size={16}
