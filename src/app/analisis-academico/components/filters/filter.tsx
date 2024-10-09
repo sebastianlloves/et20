@@ -37,7 +37,7 @@ function Filter({
           >
             <div className="flex w-full items-center gap-3 lg:gap-4">
               {icon}
-              <h4 className="text-pretty text-left border">{title}</h4>
+              <h4 className="text-pretty text-left">{title}</h4>
             </div>
             <ChevronRight
               size={16}
