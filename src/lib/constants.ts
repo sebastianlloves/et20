@@ -1,12 +1,5 @@
 import { isCursosKey } from './typeGuards'
 
-export const DB_CALIFICACIONES_HISTORICO: { [key: string]: string } = {
-  '2024':
-    'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=0&single=true&output=tsv',
-  '2023':
-    'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=281304072&single=true&output=tsv',
-}
-
 export const CURSOS = {
   '1° año': [
     { curso: '1° 1°', orientacion: 'Ciclo Básico', turno: 'Mañana' },
@@ -388,3 +381,22 @@ export const CURSOS_POR_ANIO = (() => {
   )
 })()
 
+export const DB_CALIFICACIONES_HISTORICO: {
+  [key: string]: { url: string; tag: string }
+} = {
+  '2024': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=0&single=true&output=tsv',
+    tag: 'dbHistorico2024',
+  },
+  '2023': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgBxzIjsnEVhDh_odQ2W3tVJXfp2rVxE0EgqUSjaauXkyeauSv-BrhjSZHCOqjNO5TCiSQoFxMRrSZ/pub?gid=1642145925&single=true&output=tsv',
+    tag: 'dbHistorico2023',
+  },
+}
+
+export const DB_CALIFICACIONES_ACTUALES = {
+  '1° año': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=0&single=true&output=tsv',
+    tag: 'califActuales_1anio',
+  },
+}

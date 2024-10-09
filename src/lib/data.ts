@@ -3,18 +3,14 @@ import { DB_CALIFICACIONES_HISTORICO } from './constants'
 import { Student } from './definitions'
 import { FILTERS_FNS, formatStudentsResponse } from './utils'
 
-const tags: { [key: string]: string } = {
-  '2023': 'dbHistorico2023',
-  '2024': 'dbHistorico2024',
-}
-
 export async function fetchStudentsData(anio: string = '2024') {
-  const response = await fetch(DB_CALIFICACIONES_HISTORICO[anio], {
-    next: { tags: [tags[anio]] },
-    cache: 'force-cache'
+  const { url, tag } = DB_CALIFICACIONES_HISTORICO[anio]
+  const response = await fetch(url, {
+    next: { tags: [tag] },
+    cache: 'force-cache',
   })
   const textData = await response.text()
-  // await new Promise((resolve) => setTimeout(resolve, 2000))
+  // await new Promise((resolve) => setTimeout(resolve, 5000))
 
   return formatStudentsResponse(textData)
 }
