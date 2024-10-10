@@ -5,8 +5,6 @@ import { SearchParams } from '../page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 
-export const dynamic = 'force-dynamic'
-
 export default async function StudentsTable({
   searchParams,
 }: {

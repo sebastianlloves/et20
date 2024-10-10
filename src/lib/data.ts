@@ -6,8 +6,8 @@ import { FILTERS_FNS, formatStudentsResponse } from './utils'
 export async function fetchStudentsData(anio: string = '2024') {
   const { url, tag } = DB_CALIFICACIONES_HISTORICO[anio]
   const response = await fetch(url, {
-    next: { tags: [tag] },
-    cache: 'no-store',
+    next: { tags: [tag]},
+    cache: 'force-cache',
   })
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 5000))
