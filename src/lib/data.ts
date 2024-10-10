@@ -7,7 +7,7 @@ export async function fetchStudentsData(anio: string = '2024') {
   const { url, tag } = DB_CALIFICACIONES_HISTORICO[anio]
   const response = await fetch(url, {
     next: { tags: [tag] },
-    cache: 'force-cache',
+    cache: 'no-store',
   })
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 5000))
