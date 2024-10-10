@@ -389,7 +389,7 @@ export const DB_CALIFICACIONES_HISTORICO: {
     tag: 'dbHistorico2024',
   },
   '2023': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgBxzIjsnEVhDh_odQ2W3tVJXfp2rVxE0EgqUSjaauXkyeauSv-BrhjSZHCOqjNO5TCiSQoFxMRrSZ/pub?gid=1642145925&single=true&output=tsv',
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgBxzIjsnEVhDh_odQ2W3tVJXfp2rVxE0EgqUSjaauXkyeauSv-BrhjSZHCOqjNO5TCiSQoFxMRrSZ/pub?output=tsv',
     tag: 'dbHistorico2023',
   },
 }

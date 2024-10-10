@@ -5,6 +5,8 @@ import { SearchParams } from '../page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 
+export const dynamic = 'force-dynamic'
+
 export default async function StudentsTable({
   searchParams,
 }: {
@@ -19,7 +21,7 @@ export default async function StudentsTable({
       <FiltersPanelMobile>
         <FiltersPanel filterParams={filterParams} data={data} />
       </FiltersPanelMobile>
-      <div className='hidden lg:block'>
+      <div className="hidden lg:block">
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
       <DataTable columns={columns} data={filteredData} />
