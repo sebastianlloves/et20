@@ -95,67 +95,6 @@ export function formatStudentsResponse(textResponse: string): Student[] {
   )
 }
 
-export function formatCalifActualesResponse(response: string) {
-  const [, encabezadoMaterias, , ...data] = response
-    .split('\r\n')
-    .map((row) => {
-      const [, ...data] = row.split('\t')
-      return data
-    })
-  const materias = encabezadoMaterias.filter(Boolean)
-  const dataFilas = data.map((fila) =>
-    Array.from(fila, (_value, index) => {
-      const indiceInicial = index * 13
-      const indiceFinal = index * 13 + 13
-      return fila.slice(indiceInicial, indiceFinal)
-    }),
-  )
-
-  const dataMaterias = encabezadoMaterias
-    .filter(Boolean)
-    .map((materia, index) => {
-      return data.map((filaAlumno) => {
-        const [
-          apellido,
-          nombre,
-          dni,
-          primerBimestre,
-          segundoBimestre,
-          primerCuatrimestre,
-          tercerBimestre,
-          cuartoBimestre,
-          segundoCuatrimestre,
-          anual,
-          diciembre,
-          febrero,
-          definitiva,
-        ] = filaAlumno.slice(index * 13, index * 13 + 13)
-        return {
-          materia,
-          apellido,
-          nombre,
-          dni,
-          primerBimestre,
-          segundoBimestre,
-          primerCuatrimestre,
-          tercerBimestre,
-          cuartoBimestre,
-          segundoCuatrimestre,
-          anual,
-          diciembre,
-          febrero,
-          definitiva,
-        }
-      })
-    })
-  /* const dataMaterias = data.map((infoAlumno) => {
-    return Array.from(infoAlumno, (value, index) => {
-      return [index, index % 13]
-    })
-  }) */
-  return JSON.stringify(dataFilas)
-}
-
 export const FILTERS_FNS = {
   search: {
     filterFn: (student: Student, searchParams: SearchParams) => {
