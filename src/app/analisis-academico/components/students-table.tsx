@@ -1,4 +1,4 @@
-import { fetchStudentsData, getFilteredStudentData } from '@/lib/data'
+import { fetchCalificacionesActuales, fetchStudentsData, getFilteredStudentData } from '@/lib/data'
 import DataTable from '../../../components/ui/data-table'
 import { columns } from './columns'
 import { SearchParams } from '../page'
@@ -13,6 +13,7 @@ export default async function StudentsTable({
   const { anio, ...filterParams } = searchParams
   const data = await fetchStudentsData(anio)
   const filteredData = getFilteredStudentData(data, filterParams)
+  // const calificacionesActuales = await fetchCalificacionesActuales()
 
   return (
     <>
@@ -22,7 +23,11 @@ export default async function StudentsTable({
       <div className="hidden lg:block">
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
-      <DataTable columns={columns} data={filteredData} />
+
+      <div>
+        {/* {calificacionesActuales} */}
+        <DataTable columns={columns} data={filteredData} />
+      </div>
     </>
   )
 }

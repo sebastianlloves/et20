@@ -395,8 +395,8 @@ export const DB_CALIFICACIONES_HISTORICO: {
 }
 
 export const DB_CALIFICACIONES_ACTUALES = {
-  '1° año': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=0&single=true&output=tsv',
-    tag: 'califActuales_1anio',
+  '1° 1°': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1838867340&single=true&output=tsv',
+    tag: 'califActuales_1-1',
   },
 }
