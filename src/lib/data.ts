@@ -1,12 +1,15 @@
 import { SearchParams } from '@/app/analisis-academico/page'
-import { DB_CALIFICACIONES_HISTORICO } from './constants'
+import {
+  DB_CALIFICACIONES_ACTUALES,
+  DB_CALIFICACIONES_HISTORICO,
+} from './constants'
 import { Student } from './definitions'
-import { FILTERS_FNS, formatStudentsResponse } from './utils'
+import { FILTERS_FNS, formatCalifActualesResponse, formatStudentsResponse } from './utils'
 
 export async function fetchStudentsData(anio: string = '2024') {
   const { url, tag } = DB_CALIFICACIONES_HISTORICO[anio]
   const response = await fetch(url, {
-    next: { tags: [tag]},
+    next: { tags: [tag] },
     cache: 'force-cache',
   })
   const textData = await response.text()
@@ -55,4 +58,16 @@ export function getStudentsUniqueValues(
   )
 
   return facetedModel
+}
+
+export async function fetchCalificacionesActuales() {
+  const { url, tag } = DB_CALIFICACIONES_ACTUALES['1° 1°']
+  const response = await fetch(url, {
+    next: {
+      tags: [tag]
+    },
+    cache: 'force-cache'
+  })
+  const text = await response.text()
+  return formatCalifActualesResponse(text)
 }
