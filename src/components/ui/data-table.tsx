@@ -39,8 +39,8 @@ function DataTable<TData, TValue>({
   // const [border] = useState(false)
 
   return (
-    <ScrollArea className="scrollArea bg-table-body h-[80vh] w-full rounded-lg border shadow-sm">
-      <Table className="bg-table-body flex w-full flex-col text-xs lg:text-sm">
+    <ScrollArea className="scrollArea h-[80vh] w-full rounded-lg border bg-table-body shadow-sm">
+      <Table className="flex w-full flex-col bg-table-body text-xs lg:text-sm">
         <TableHeader className="sticky top-0 z-20 border-b border-primary/70 shadow-sm shadow-primary/40">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -84,13 +84,13 @@ function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="flex bg-inherit px-0 hover:bg-muted"
+                className="flex bg-inherit px-0 hover:bg-muted min-h-[86px]"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      'bg-inherit p-0',
+                      'bg-inherit p-0 [content-visibility:auto]',
                       cell.column.columnDef.meta?.stickyProperties /* 
                       cell.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80', */,
@@ -99,7 +99,7 @@ function DataTable<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        'mx-2 my-4 md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
+                        'mx-2 my-4 [content-visibility:auto] md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
                         cell.column.columnDef.meta?.width,
                         // border && 'border',
                       )}
@@ -114,7 +114,7 @@ function DataTable<TData, TValue>({
               </TableRow>
             ))
           ) : (
-            <TableRow className="flex items-center bg-table-body justify-center">
+            <TableRow className="flex items-center justify-center bg-table-body">
               <TableCell
                 colSpan={columns.length}
                 className="h-24 py-6 text-center italic text-muted-foreground"
