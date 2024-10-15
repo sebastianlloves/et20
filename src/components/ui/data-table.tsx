@@ -90,7 +90,7 @@ function DataTable<TData, TValue>({
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      'bg-inherit p-0 [content-visibility:auto]',
+                      'bg-inherit p-0',
                       cell.column.columnDef.meta?.stickyProperties /* 
                       cell.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80', */,
@@ -99,7 +99,7 @@ function DataTable<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        'mx-2 my-4 [content-visibility:auto] md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
+                        'mx-2 my-4 md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
                         cell.column.columnDef.meta?.width,
                         // border && 'border',
                       )}
