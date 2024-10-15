@@ -60,13 +60,13 @@ export function getStudentsUniqueValues(
   return facetedModel
 }
 
-export async function fetchCalificacionesActuales() {
-  const { url, tag } = DB_CALIFICACIONES_ACTUALES['1° 1°']
+export async function fetchCalificacionesActuales(curso:string) {
+  const { url, tag } = DB_CALIFICACIONES_ACTUALES[curso]
   const response = await fetch(url, {
     next: {
-      tags: [tag]
+      tags: [tag],
     },
-    cache: 'force-cache'
+    cache: 'force-cache',
   })
   const text = await response.text()
   return formatCalifActualesResponse(text)

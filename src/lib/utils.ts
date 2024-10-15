@@ -99,31 +99,20 @@ export function formatCalifActualesResponse(response: string) {
   const [, encabezadoMaterias, , ...data] = response
     .split('\r\n')
     .map((row) => {
-      const [, ...data] = row.split('\t') /* .filter(Boolean) */
+      const [, ...data] = row.split('\t')
       return data
     })
-  const materias = encabezadoMaterias.filter(Boolean)
-  const dataFilas = data.map((filaAlumno) =>
-    Array.from(filaAlumno, (_value, index) => {
-      if (Number.isInteger(index / 13)) {
-        const indiceInicial = index * 13
-        const indiceFinal = index * 13 + 13
-        return filaAlumno.slice(indiceInicial, indiceFinal)
-      }
-    }),
-  )
-
-  const dataMaterias = encabezadoMaterias
-    .filter(Boolean)
-    .map((materia, index) => {
-      return data.map((filaAlumno) => {
+  const formatedDatada = data.flatMap((row) =>
+    Array.from(row, (_, index) => {
+      const arrIndex = index / 13
+      if (Number.isInteger(arrIndex)) {
         const [
           apellido,
           nombre,
-          dni,
+          dniValue,
           primerBimestre,
           segundoBimestre,
-          primerCuatrimestre,
+          primerCuatrimeste,
           tercerBimestre,
           cuartoBimestre,
           segundoCuatrimestre,
@@ -131,15 +120,15 @@ export function formatCalifActualesResponse(response: string) {
           diciembre,
           febrero,
           definitiva,
-        ] = filaAlumno.slice(index * 13, index * 13 + 13)
+        ] = row.slice(index, index + 13)
         return {
-          materia,
           apellido,
           nombre,
-          dni,
+          dni: Number(dniValue),
+          materia: encabezadoMaterias[index],
           primerBimestre,
           segundoBimestre,
-          primerCuatrimestre,
+          primerCuatrimeste,
           tercerBimestre,
           cuartoBimestre,
           segundoCuatrimestre,
@@ -148,15 +137,60 @@ export function formatCalifActualesResponse(response: string) {
           febrero,
           definitiva,
         }
-      })
-    })
-  /* const dataMaterias = data.map((infoAlumno) => {
-    return Array.from(infoAlumno, (value, index) => {
-      return [index, index % 13]
-    })
-  }) */
-  return dataFilas
+      }
+      return null
+    }).filter((value) => value !== null),
+  )
+  
+  const groupedData = []
+  formatedDatada.reduce((object) => {
+    const {
+      apellido,
+      nombre,
+      dni,
+      materia,
+      primerBimestre,
+      segundoBimestre,
+      primerCuatrimeste,
+      tercerBimestre,
+      cuartoBimestre,
+      segundoCuatrimestre,
+      anual,
+      diciembre,
+      febrero,
+      definitiva,
+    } = object
+    if(groupedData.find())
+  }, [])
+
+  return formatedDatada
 }
+
+/* 
+[{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Lengua y Literatura","primerBimestre":"Avanzado","segundoBimestre":"En Proceso","primerCuatrimeste":"5","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Inglés","primerBimestre":"Suficiente","segundoBimestre":"Avanzado","primerCuatrimeste":"8","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Historia","primerBimestre":"Avanzado","segundoBimestre":"Avanzado","primerCuatrimeste":"8","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Geografía","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":"7","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Educación Ciudadana","primerBimestre":"Avanzado","segundoBimestre":"Suficiente","primerCuatrimeste":"8","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Educación Física","primerBimestre":"Avanzado","segundoBimestre":"En Proceso","primerCuatrimeste":"5","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Biología","primerBimestre":"En Proceso","segundoBimestre":"Avanzado","primerCuatrimeste":"8","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Educación Artística","primerBimestre":"En Proceso","segundoBimestre":"En Proceso","primerCuatrimeste":"3","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Matemática","primerBimestre":"Avanzado","segundoBimestre":"En Proceso","primerCuatrimeste":"4","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Tecnol. de la Representación","primerBimestre":"Suficiente","segundoBimestre":"En Proceso","primerCuatrimeste":"4","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"ROJAS","nombre":"Simón Joaquín","dni":50417176,"materia":"Taller","primerBimestre":"Suficiente","segundoBimestre":"Avanzado","primerCuatrimeste":"8","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Lengua y Literatura","primerBimestre":"Suficiente","segundoBimestre":"En Proceso","primerCuatrimeste":"5","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Inglés","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":"6","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Historia","primerBimestre":"Avanzado","segundoBimestre":"Suficiente","primerCuatrimeste":"7","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Geografía","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":"7","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Educación Ciudadana","primerBimestre":"Suficiente","segundoBimestre":"Avanzado","primerCuatrimeste":"7","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Educación Física","primerBimestre":"Avanzado","segundoBimestre":"Avanzado","primerCuatrimeste":"10","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Biología","primerBimestre":"Suficiente","segundoBimestre":"Avanzado","primerCuatrimeste":"8","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Educación Artística","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":"6","tercerBimestre":"Suficiente","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Matemática","primerBimestre":"En Proceso","segundoBimestre":"En Proceso","primerCuatrimeste":"3","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Tecnol. de la Representación","primerBimestre":"En Proceso","segundoBimestre":"En Proceso","primerCuatrimeste":"2","tercerBimestre":"En Proceso","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"},
+{"apellido":"URIA ALARO","nombre":"Abdul Leonardo León","dni":51218217,"materia":"Taller","primerBimestre":"Suficiente","segundoBimestre":"Avanzado","primerCuatrimeste":"8","tercerBimestre":"Avanzado","cuartoBimestre":"-","segundoCuatrimestre":"-","anual":"-","diciembre":"-","febrero":"-","definitiva":"-"}
+]
+*/
 
 export const FILTERS_FNS = {
   search: {

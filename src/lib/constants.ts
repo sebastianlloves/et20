@@ -394,9 +394,15 @@ export const DB_CALIFICACIONES_HISTORICO: {
   },
 }
 
-export const DB_CALIFICACIONES_ACTUALES = {
+export const DB_CALIFICACIONES_ACTUALES: {
+  [key: string]: { url: string; tag: string }
+} = {
   '1° 1°': {
     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1838867340&single=true&output=tsv',
     tag: 'califActuales_1-1',
+  },
+  '1° 2°': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1379260424&single=true&output=tsv',
+    tag: 'califActuales_1-2',
   },
 }
