@@ -18,7 +18,7 @@ export default async function StudentsTable({
   const data = await fetchStudentsData(anio)
   const filteredData = getFilteredStudentData(data, filterParams)  
   console.time('Promise.all calificaciones actuales')
-  const calificacionesActuales = await Promise.all(
+  await Promise.all(
     ['1° 1°', '1° 2°'].map((curso) => fetchCalificacionesActuales(curso)),
   )
   console.timeEnd('Promise.all calificaciones actuales')
@@ -33,9 +33,9 @@ export default async function StudentsTable({
       </div>
 
       <div>
-        {calificacionesActuales.map((row, index) => (
+        {/* {calificacionesActuales.map((row, index) => (
           <p key={index}>{JSON.stringify(row)}</p>
-        ))}
+        ))} */}
         <DataTable columns={columns} data={filteredData} />
       </div>
     </>
