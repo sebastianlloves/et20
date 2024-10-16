@@ -84,13 +84,13 @@ function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="flex bg-inherit px-0 hover:bg-muted min-h-[86px]"
+                className="flex min-h-[86px] bg-inherit px-0 hover:bg-muted"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      'bg-inherit p-0',
+                      'tableCell bg-inherit p-0',
                       cell.column.columnDef.meta?.stickyProperties /* 
                       cell.column.id === 'estudiante' &&
                         'border-r-[0.5px] border-border/80', */,
@@ -99,7 +99,7 @@ function DataTable<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        'mx-2 my-4 md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
+                        'tableCell mx-2 my-4 md:mx-3.5 lg:mx-6 lg:my-5 2xl:mx-7',
                         cell.column.columnDef.meta?.width,
                         // border && 'border',
                       )}
