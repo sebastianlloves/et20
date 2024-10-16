@@ -16,10 +16,12 @@ export default async function StudentsTable({
 }) {
   const { anio, ...filterParams } = searchParams
   const data = await fetchStudentsData(anio)
-  const filteredData = getFilteredStudentData(data, filterParams)
+  const filteredData = getFilteredStudentData(data, filterParams)  
+  console.time('Promise.all calificaciones actuales')
   const calificacionesActuales = await Promise.all(
     ['1° 1°', '1° 2°'].map((curso) => fetchCalificacionesActuales(curso)),
   )
+  console.timeEnd('Promise.all calificaciones actuales')
 
   return (
     <>
