@@ -96,6 +96,7 @@ export function formatStudentsResponse(textResponse: string): Student[] {
 }
 
 export function formatCalifActualesResponse(response: string) {
+  console.time('procesamiento calificaciones actuales')
   const [, encabezadoMaterias, , ...data] = response
     .split('\r\n')
     .map((row) => {
@@ -177,7 +178,7 @@ export function formatCalifActualesResponse(response: string) {
     const { apellido, nombre } = formatedObjs[0]
     return { apellido, nombre, dni: uniqueDNI, materias }
   })
-
+  console.timeEnd('procesamiento calificaciones actuales')
   return groupedData
 }
 
