@@ -141,29 +141,44 @@ export function formatCalifActualesResponse(response: string) {
       return null
     }).filter((value) => value !== null),
   )
-  
-  const groupedData = []
-  formatedDatada.reduce((object) => {
-    const {
-      apellido,
-      nombre,
-      dni,
-      materia,
-      primerBimestre,
-      segundoBimestre,
-      primerCuatrimeste,
-      tercerBimestre,
-      cuartoBimestre,
-      segundoCuatrimestre,
-      anual,
-      diciembre,
-      febrero,
-      definitiva,
-    } = object
-    if(groupedData.find())
-  }, [])
 
-  return formatedDatada
+  const uniqueValuesDNI = new Set(formatedDatada.map(({ dni }) => dni))
+  const groupedData = Array.from(uniqueValuesDNI).map((uniqueDNI) => {
+    const formatedObjs = formatedDatada.filter(({ dni }) => uniqueDNI === dni)
+    const materias = formatedObjs.map(
+      ({
+        materia,
+        primerBimestre,
+        segundoBimestre,
+        primerCuatrimeste,
+        tercerBimestre,
+        cuartoBimestre,
+        segundoCuatrimestre,
+        anual,
+        diciembre,
+        febrero,
+        definitiva,
+      }) => {
+        return {
+          nombre: materia,
+          primerBimestre,
+          segundoBimestre,
+          primerCuatrimeste,
+          tercerBimestre,
+          cuartoBimestre,
+          segundoCuatrimestre,
+          anual,
+          diciembre,
+          febrero,
+          definitiva,
+        }
+      },
+    )
+    const { apellido, nombre } = formatedObjs[0]
+    return { apellido, nombre, dni: uniqueDNI, materias }
+  })
+
+  return groupedData
 }
 
 /* 
