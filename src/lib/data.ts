@@ -3,7 +3,7 @@ import {
   DB_CALIFICACIONES_ACTUALES,
   DB_CALIFICACIONES_HISTORICO,
 } from './constants'
-import { Student } from './definitions'
+import { Student, StudentCalifActuales } from './definitions'
 import {
   FILTERS_FNS,
   formatCalifActualesResponse,
@@ -19,7 +19,51 @@ export async function fetchStudentsData(anio: string = '2024') {
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 5000))
 
-  return formatStudentsResponse(textData)
+  return formatStudentsResponse(textData)/* .slice(400, 450) */
+}
+
+export async function fetchCalificacionesActuales(filteredData: Student[]) {
+  console.time('depuracion')
+  const uniqueValuesCursos = new Map<any, number>()
+  FILTERS_FNS.cursos.uniqueValuesFn(filteredData, uniqueValuesCursos)
+  const cursos = Array.from(uniqueValuesCursos.keys())
+  const fetchingData = Object.keys(DB_CALIFICACIONES_ACTUALES)
+    .filter((key) =>
+      cursos.some((curso) => {
+        const [anio, division] = curso
+          .split('')
+          .filter((char: string) => parseInt(char) > 0)
+        const tagCurso = `califActuales_${anio}-${division}`
+        return DB_CALIFICACIONES_ACTUALES[key].tags.includes(tagCurso)
+      }),
+    )
+    .map((key) => DB_CALIFICACIONES_ACTUALES[key])
+  console.timeEnd('depuracion')
+
+  console.time('Tiempo Promise all')
+  const califActuales = await Promise.all(
+    fetchingData.map(async ({ url, tags }) => {
+      console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
+      console.time(`fetch tags: ${JSON.stringify(tags)}`)
+      const response = await fetch(url, {
+        next: {
+          tags: [...tags],
+        },
+        cache: 'force-cache',
+      })
+      const text = await response.text()
+      console.timeEnd(`fetch tags: ${JSON.stringify(tags)}`)
+
+      console.time(`procesamiento tags: ${JSON.stringify(tags)}`)
+      const formatedResponse = formatCalifActualesResponse(text)
+      console.timeEnd(`procesamiento tags: ${JSON.stringify(tags)}`)
+      console.timeEnd(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
+
+      return formatedResponse
+    }),
+  )
+  console.timeEnd('Tiempo Promise all')
+  return califActuales.flat()
 }
 
 export function getFilteredStudentData(
@@ -28,18 +72,18 @@ export function getFilteredStudentData(
   omitedKey?: string,
 ) {
   const paramsWithValue = JSON.parse(JSON.stringify(filterParams))
-  const filteredData = data.filter((student) =>
-    (Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>)
-      .filter(
-        (filterFnKey) =>
-          Object.keys(paramsWithValue).some((key) =>
-            key.includes(filterFnKey),
-          ) && filterFnKey !== omitedKey,
-      )
-      .every((filterFnKey) =>
-        FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
-      ),
-  )
+  const filteredData = data.filter((student) => {
+    const activeFiltersKeys = (
+      Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>
+    ).filter(
+      (filterFnKey) =>
+        Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
+        filterFnKey !== omitedKey,
+    )
+    return activeFiltersKeys.every((filterFnKey) =>
+      FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
+    )
+  })
   return filteredData
 }
 
@@ -64,43 +108,13 @@ export function getStudentsUniqueValues(
   return facetedModel
 }
 
-export async function fetchCalificacionesActuales(filteredData: Student[]) {
-  // Procesar la data para sacar un array de uniqueValues de cursos incluidos
-  const uniqueValuesCursos = new Map<any, number>()
-  FILTERS_FNS.cursos.uniqueValuesFn(filteredData, uniqueValuesCursos)
-  const cursos = Array.from(uniqueValuesCursos.keys())
-  //
-  // const cursos = ['4° 1°', '4° 3°']
-
-  console.time('depuracion')
-  const urlsData = Object.keys(DB_CALIFICACIONES_ACTUALES)
-    .filter((key) =>
-      cursos.some((curso) => {
-        const [anio, division] = curso
-          .split('')
-          .filter((char: string) => parseInt(char) > 0)
-        const tagCurso = `califActuales_${anio}-${division}`
-        return DB_CALIFICACIONES_ACTUALES[key].tags.includes(tagCurso)
-      }),
-    )
-    .map((key) => DB_CALIFICACIONES_ACTUALES[key])
-  console.timeEnd('depuracion')
-  console.log(urlsData.map(({ tags }) => tags))
-
-  const califActuales = await Promise.all(
-    urlsData.map(async (urlData) => {
-      const { url, tags } = urlData
-      const response = await fetch(url, {
-        next: {
-          tags: [...tags],
-        },
-        cache: 'force-cache',
-      })
-      const text = await response.text()
-      return formatCalifActualesResponse(text)
-    }),
-  )
-  return califActuales.flat()
+export const projectCalifActuales = (
+  students: Student[],
+  califActuales: StudentCalifActuales[],
+  instancia: string,
+) => {
+  // Proceso de popular e interpretar la data histórica con las calif actuales
+  return undefined
 }
 
 /* 

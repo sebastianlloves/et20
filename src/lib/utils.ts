@@ -3,37 +3,10 @@ import { twMerge } from 'tailwind-merge'
 import { Student } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
+import { CALIF_ACTUALES_STRINGS } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
-}
-
-const capitalizeWords = (words: string) =>
-  words
-    .toLowerCase()
-    .trim()
-    .split(' ')
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
-    .join(' ')
-
-const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
-  repitenciaArr
-    .filter((repValue) => !Number.isNaN(parseInt(repValue[0])))
-    .map((value) => `${value[0]}° año`)
-    .sort()
-
-const formatDetalleMaterias = (detalle: string): string[] => {
-  const partialString = (
-    detalle.endsWith('.') ? detalle.slice(0, detalle.length - 1) : detalle
-  ).replaceAll('º', '°')
-  const splitedString =
-    partialString.includes('Rep. Mediales, Comunicación y Lenguajes') ||
-    partialString.includes('Arte, Tecnol. y Comunicación')
-      ? partialString
-          .split('), ')
-          .map((string) => (string.endsWith(')') ? string : `${string})`))
-      : partialString.split(', ')
-  return splitedString.filter((value) => value !== 'No adeuda')
 }
 
 export function formatStudentsResponse(textResponse: string): Student[] {
@@ -96,7 +69,6 @@ export function formatStudentsResponse(textResponse: string): Student[] {
 }
 
 export function formatCalifActualesResponse(response: string) {
-  console.time('procesamiento calificaciones actuales')
   const [, encabezadoMaterias, , ...data] = response
     .split('\r\n')
     .map((row) => {
@@ -111,32 +83,32 @@ export function formatCalifActualesResponse(response: string) {
           apellido,
           nombre,
           dniValue,
-          primerBimestre,
-          segundoBimestre,
-          primerCuatrimeste,
-          tercerBimestre,
-          cuartoBimestre,
-          segundoCuatrimestre,
-          anual,
-          diciembre,
-          febrero,
-          definitiva,
+          primerBimestreValue,
+          segundoBimestreValue,
+          primerCuatrimesteValue,
+          tercerBimestreValue,
+          cuartoBimestreValue,
+          segundoCuatrimestreValue,
+          anualValue,
+          diciembreValue,
+          febreroValue,
+          definitivaValue,
         ] = row.slice(index, index + 13)
         return {
           apellido,
           nombre,
           dni: Number(dniValue),
           materia: encabezadoMaterias[index],
-          primerBimestre,
-          segundoBimestre,
-          primerCuatrimeste,
-          tercerBimestre,
-          cuartoBimestre,
-          segundoCuatrimestre,
-          anual,
-          diciembre,
-          febrero,
-          definitiva,
+          primerBimestre: defineCalificacion(primerBimestreValue),
+          segundoBimestre: defineCalificacion(segundoBimestreValue),
+          primerCuatrimeste: defineCalificacion(primerCuatrimesteValue),
+          tercerBimestre: defineCalificacion(tercerBimestreValue),
+          cuartoBimestre: defineCalificacion(cuartoBimestreValue),
+          segundoCuatrimestre: defineCalificacion(segundoCuatrimestreValue),
+          anual: defineCalificacion(anualValue),
+          diciembre: defineCalificacion(diciembreValue),
+          febrero: defineCalificacion(febreroValue),
+          definitiva: defineCalificacion(definitivaValue),
         }
       }
       return null
@@ -175,10 +147,8 @@ export function formatCalifActualesResponse(response: string) {
         }
       },
     )
-    const { apellido, nombre } = formatedObjs[0]
-    return { apellido, nombre, dni: uniqueDNI, materias }
+    return { dni: uniqueDNI, materias }
   })
-  console.timeEnd('procesamiento calificaciones actuales')
   return groupedData
 }
 
@@ -202,8 +172,8 @@ export const FILTERS_FNS = {
       )
     },
     uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
+      _filteredData: Student[],
+      _facetedModel: Map<string, number>,
     ) => undefined,
   },
   cursos: {
@@ -434,3 +404,41 @@ export const FILTERS_FNS = {
     },
   },
 } as const
+
+const capitalizeWords = (words: string) =>
+  words
+    .toLowerCase()
+    .trim()
+    .split(' ')
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(' ')
+
+const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
+  repitenciaArr
+    .filter((repValue) => !Number.isNaN(parseInt(repValue[0])))
+    .map((value) => `${value[0]}° año`)
+    .sort()
+
+const formatDetalleMaterias = (detalle: string): string[] => {
+  const partialString = (
+    detalle.endsWith('.') ? detalle.slice(0, detalle.length - 1) : detalle
+  ).replaceAll('º', '°')
+  const splitedString =
+    partialString.includes('Rep. Mediales, Comunicación y Lenguajes') ||
+    partialString.includes('Arte, Tecnol. y Comunicación')
+      ? partialString
+          .split('), ')
+          .map((string) => (string.endsWith(')') ? string : `${string})`))
+      : partialString.split(', ')
+  return splitedString.filter((value) => value !== 'No adeuda')
+}
+
+const defineCalificacion = (string: string) => {
+  if (!Number.isNaN(parseInt(string))) {
+    const numberCalif = Number(string)
+    if (numberCalif > 0 && numberCalif <= 10) return numberCalif
+  }
+  if (CALIF_ACTUALES_STRINGS.some((califString) => califString === string))
+    return string
+  return null
+}

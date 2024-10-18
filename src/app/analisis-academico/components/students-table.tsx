@@ -18,10 +18,24 @@ export default async function StudentsTable({
   const data = await fetchStudentsData(anio)
   const filteredData = getFilteredStudentData(data, filterParams)
 
-  console.time(`console time ejecución Promise.all`)
   const califActuales = await fetchCalificacionesActuales(filteredData)
-  console.timeEnd(`console time ejecución Promise.all`)
-  // console.log(califActuales.map(obj => obj.apellido))
+  console.log(
+    filteredData
+      .map(({ anio, division, apellido, dni }) => {
+        const calificaciones = califActuales.find(
+          (objCalif) => objCalif.dni === dni,
+        )
+        if (calificaciones)
+          return {
+            anio,
+            division,
+            apellido,
+            materias: JSON.stringify(calificaciones.materias),
+          }
+        return undefined
+      })
+      .filter(Boolean),
+  )
 
   return (
     <>

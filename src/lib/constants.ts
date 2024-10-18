@@ -436,3 +436,5 @@ export const DB_CALIFICACIONES_ACTUALES: {
     tags: ['califActuales_4-1', 'califActuales_4-3'],
   },
 }
+
+export const CALIF_ACTUALES_STRINGS = ['En Proceso', 'Suficiente', 'Avanzado']

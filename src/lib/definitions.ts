@@ -19,3 +19,23 @@ export type StudentsTableFilters = {
   cursos?: string[]
   promocion?: string[]
 }
+
+type Calificacion = string | number | null
+export type StudentCalifActuales = {
+  apellido?: string
+  nombre?: string
+  dni: number
+  materias: {
+    nombre: string
+    primerBimestre: Calificacion
+    segundoBimestre: Calificacion
+    primerCuatrimeste: Calificacion
+    tercerBimestre: Calificacion
+    cuartoBimestre: Calificacion
+    segundoCuatrimestre: Calificacion
+    anual: Calificacion
+    diciembre: Calificacion
+    febrero: Calificacion
+    definitiva: Calificacion
+  }[]
+}
