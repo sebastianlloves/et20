@@ -49,20 +49,24 @@ export function formatStudentsResponse(textResponse: string): Student[] {
           repitencia2Value,
           repitencia3Value,
         ]),
-        cantTroncales: !Number.isNaN(parseInt(troncalesCantValue))
-          ? parseInt(troncalesCantValue)
-          : null,
-        detalleTroncales: formatDetalleMaterias(troncalesDetalleValue.trim()),
-        cantGenerales: !Number.isNaN(parseInt(generalesCantValue))
-          ? parseInt(generalesCantValue)
-          : null,
-        detalleGenerales: formatDetalleMaterias(generalesDetalleValue.trim()),
-        cantEnProceso2020: !Number.isNaN(parseInt(enProceso2020CantidadValue))
-          ? parseInt(enProceso2020CantidadValue)
-          : null,
-        detalleEnProceso2020: formatDetalleMaterias(
-          enProceso2020DetalleValue.trim(),
-        ),
+        troncales: {
+          cantidad: !Number.isNaN(parseInt(troncalesCantValue))
+            ? parseInt(troncalesCantValue)
+            : null,
+          detalle: formatDetalleMaterias(troncalesDetalleValue.trim()),
+        },
+        generales: {
+          cantidad: !Number.isNaN(parseInt(generalesCantValue))
+            ? parseInt(generalesCantValue)
+            : null,
+          detalle: formatDetalleMaterias(generalesDetalleValue.trim()),
+        },
+        enProceso2020: {
+          cantidad: !Number.isNaN(parseInt(enProceso2020CantidadValue))
+            ? parseInt(enProceso2020CantidadValue)
+            : null,
+          detalle: formatDetalleMaterias(enProceso2020DetalleValue.trim()),
+        },
       }
     },
   )
@@ -200,11 +204,11 @@ export const FILTERS_FNS = {
       const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
       const filterValue = materiasParam.split('_')
       const studentMaterias = [
-        ...student.detalleTroncales,
-        ...student.detalleGenerales,
+        ...student.troncales.detalle,
+        ...student.generales.detalle,
       ]
       if (enProceso2020Param)
-        studentMaterias.push(...student.detalleEnProceso2020)
+        studentMaterias.push(...student.enProceso2020.detalle)
       return inclusionEstrictaParam
         ? filterValue.every((materia) => studentMaterias.includes(materia))
         : filterValue.some((materia) => studentMaterias.includes(materia))
@@ -216,11 +220,11 @@ export const FILTERS_FNS = {
     ) => {
       filteredData.forEach((student) => {
         const values = [
-          ...student.detalleTroncales,
-          ...student.detalleGenerales,
+          ...student.troncales.detalle,
+          ...student.generales.detalle,
         ]
         if (filterParams?.enProceso2020 !== 'false')
-          values.push(...student.detalleEnProceso2020)
+          values.push(...student.enProceso2020.detalle)
         values.forEach((value) =>
           facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
         )
@@ -250,21 +254,21 @@ export const FILTERS_FNS = {
       )
 
       const isTroncalesValid =
-        troncalesValue && student.cantTroncales !== null
-          ? student.cantTroncales >= troncalesValue[0] &&
-            student.cantTroncales <= troncalesValue[1]
+        troncalesValue && student.troncales.cantidad !== null
+          ? student.troncales.cantidad >= troncalesValue[0] &&
+            student.troncales.cantidad <= troncalesValue[1]
           : true
       const isGeneralesValid =
-        generalesValue && student.cantGenerales !== null
-          ? student.cantGenerales >= generalesValue[0] &&
-            student.cantGenerales <= generalesValue[1]
+        generalesValue && student.generales.cantidad !== null
+          ? student.generales.cantidad >= generalesValue[0] &&
+            student.generales.cantidad <= generalesValue[1]
           : true
       const isEnProceso2020Valid =
         enProceso2020Value &&
         enProceso2020 !== 'false' &&
-        student.cantEnProceso2020 !== null
-          ? student.cantEnProceso2020 >= enProceso2020Value[0] &&
-            student.cantEnProceso2020 <= enProceso2020Value[1]
+        student.enProceso2020.cantidad !== null
+          ? student.enProceso2020.cantidad >= enProceso2020Value[0] &&
+            student.enProceso2020.cantidad <= enProceso2020Value[1]
           : true
 
       return criterioOptativo
@@ -276,7 +280,11 @@ export const FILTERS_FNS = {
       facetedModel: Map<string, number>,
     ) => {
       filteredData.forEach((student) => {
-        const { cantTroncales, cantGenerales, cantEnProceso2020 } = student
+        const {
+          troncales: { cantidad: cantTroncales },
+          generales: { cantidad: cantGenerales },
+          enProceso2020: { cantidad: cantEnProceso2020 },
+        } = student
         facetedModel.set(
           `troncales_${cantTroncales}`,
           (facetedModel.get(`troncales_${cantTroncales}`) ?? 0) + 1,
@@ -322,18 +330,18 @@ export const FILTERS_FNS = {
       const promocionParam = searchParams.promocion
       if (
         !promocionParam ||
-        student.cantTroncales === null ||
-        student.cantGenerales === null
+        student.troncales.cantidad === null ||
+        student.generales.cantidad === null
       )
         return true
       if (promocionParam === 'solo promocionan')
         return (
-          student.cantTroncales <= 2 &&
-          student.cantTroncales + student.cantGenerales <= 4
+          student.troncales.cantidad <= 2 &&
+          student.troncales.cantidad + student.generales.cantidad <= 4
         )
       return (
-        student.cantTroncales > 2 ||
-        student.cantTroncales + student.cantGenerales > 4
+        student.troncales.cantidad > 2 ||
+        student.troncales.cantidad + student.generales.cantidad > 4
       )
     },
     uniqueValuesFn: (
@@ -342,10 +350,10 @@ export const FILTERS_FNS = {
     ) => {
       filteredData.forEach((student) => {
         const value =
-          student.cantTroncales === null || student.cantGenerales === null
+          student.troncales.cantidad === null || student.generales.cantidad === null
             ? 'faltan datos'
-            : student.cantTroncales <= 2 &&
-                student.cantTroncales + student.cantGenerales <= 4
+            : student.troncales.cantidad <= 2 &&
+                student.troncales.cantidad + student.generales.cantidad <= 4
               ? 'Estudiantes que promocionan'
               : 'Estudiantes que permanecen'
         facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)

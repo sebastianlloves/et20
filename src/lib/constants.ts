@@ -43,6 +43,7 @@ export const CURSOS = {
   ],
 }
 
+
 export const MATERIAS_POR_CURSO = {
   '1° año': [
     {

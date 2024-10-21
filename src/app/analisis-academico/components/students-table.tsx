@@ -21,13 +21,15 @@ export default async function StudentsTable({
   const filteredData = getFilteredStudentData(data, filterParams)
 
   if (includeCalifActuales) {
+    console.time('Tiempo proyeción')
     const califActuales = await fetchCalificacionesActuales(filteredData)
     // Reemplazar filteredData en vez de crear una nueva constante
     const testingFilteredData = projectCalifActuales(
       filteredData,
       califActuales,
-      '',
+      'primerCuatrimeste',
     )
+    console.timeEnd('Tiempo proyeción')
     /* console.log(
     califActuales.map(({ dni, materias }) => {
       return { dni, materias: JSON.stringify(materias) }

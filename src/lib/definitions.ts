@@ -1,3 +1,12 @@
+export type MateriasPendientes = {
+  cantidad: number | null
+  detalle: string[]
+  error?: {
+    type: string,
+    details?: string[]
+  }
+}
+
 export type Student = {
   anio: string | null
   division: string | null
@@ -5,12 +14,9 @@ export type Student = {
   nombre: string | null
   dni: number | null
   repitencia: string[]
-  cantTroncales: number | null
-  detalleTroncales: string[]
-  cantGenerales: number | null
-  detalleGenerales: string[]
-  cantEnProceso2020: number | null
-  detalleEnProceso2020: string[]
+  troncales: MateriasPendientes
+  generales: MateriasPendientes
+  enProceso2020: MateriasPendientes
 }
 
 export type StudentsTableFilters = {
@@ -21,6 +27,7 @@ export type StudentsTableFilters = {
 }
 
 type Calificacion = string | number | null
+
 export type StudentCalifActuales = {
   apellido?: string
   nombre?: string

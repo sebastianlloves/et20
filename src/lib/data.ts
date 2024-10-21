@@ -1,7 +1,9 @@
 import { SearchParams } from '@/app/analisis-academico/page'
 import {
+  CURSOS,
   DB_CALIFICACIONES_ACTUALES,
   DB_CALIFICACIONES_HISTORICO,
+  MATERIAS_POR_CURSO,
 } from './constants'
 import { Student, StudentCalifActuales } from './definitions'
 import {
@@ -114,15 +116,18 @@ export function getStudentsUniqueValues(
 export const projectCalifActuales = (
   students: Student[],
   califActuales: StudentCalifActuales[],
-  instancia: string,
+  instancia: keyof StudentCalifActuales['materias'][number],
 ) => {
   console.time('Proceso de populación')
-  /* const projectedStudents = students.map(student => {
+  const projectedStudents = students.map((student) => {
+    const { anio, division, dni } = student
     const califActual = califActuales.find(
-      ({ dni: dniValue }) => student.dni === dniValue,
+      ({ dni: dniValue }) => dni === dniValue,
     )
-    if(!califActual) {
-      const error = {type: 'No se encontraron calificaciones actuales'}
+    if (!califActual) {
+      const error = {
+        type: 'Error al obtener las calificaciones actuales del estudiante',
+      }
       return {
         ...student,
         troncales: { ...student.troncales, error },
@@ -130,11 +135,89 @@ export const projectCalifActuales = (
       }
     }
 
-  }) */
+    const dataCursos = (
+      Object.keys(CURSOS) as Array<keyof typeof CURSOS>
+    ).flatMap((key) => CURSOS[key])
+    const anioValue = anio && anio[0]
+    const divisionValue = division && division[0]
+    const orientacionCurso = dataCursos.find(
+      ({ curso }) => curso === `${anioValue}° ${divisionValue}°`,
+    )?.orientacion
+
+    if (!orientacionCurso || !anioValue || !divisionValue) {
+      const error = {
+        type: 'Error al obtener información del curso del estudiante',
+      }
+      return {
+        ...student,
+        troncales: { ...student.troncales, error },
+        generales: { ...student.generales, error },
+      }
+    }
+
+    if (!Object.keys(MATERIAS_POR_CURSO).includes(`${anioValue}° año`)) {
+      const error = {
+        type: 'Error al obtener información de las materias del curso del estudiante',
+      }
+      return {
+        ...student,
+        troncales: { ...student.troncales, error },
+        generales: { ...student.generales, error },
+      }
+    }
+
+    const interpretacion = new Map([
+      ['troncales', student.troncales.detalle],
+      ['generales', student.generales.detalle],
+    ])
+    const materiasCurso =
+      MATERIAS_POR_CURSO[`${anioValue}° año` as keyof typeof MATERIAS_POR_CURSO]
+
+    materiasCurso.forEach(
+      ({ nombre, es_troncal: esTroncal, orientacion: orientacionMateria }) => {
+        const isValidOrientacion =
+          orientacionMateria === orientacionCurso ||
+          (orientacionCurso !== 'Ciclo Básico' &&
+            orientacionMateria === 'Ciclo Superior')
+
+        if (isValidOrientacion) {
+          const formatedMateriaName = `${nombre} (${anioValue}°)`
+          const calificacion = califActual.materias.find(
+            (calif) => calif.nombre.split('_')[0] === nombre,
+          )?.[instancia]
+          if (!calificacion) {
+            const prevSinCalificacion =
+              interpretacion.get('sin calificación') || []
+            if (!prevSinCalificacion.includes(formatedMateriaName))
+              interpretacion.set('sin calificación', [
+                ...prevSinCalificacion,
+                formatedMateriaName,
+              ])
+          } else if (esTroncal) {
+            const prevTroncales = interpretacion.get('troncales') || []
+            if (!prevTroncales.includes(formatedMateriaName))
+              interpretacion.set('troncales', [
+                ...prevTroncales,
+                formatedMateriaName,
+              ])
+          } else {
+            const prevGenerales = interpretacion.get('generales') || []
+            if (!prevGenerales.includes(formatedMateriaName))
+              interpretacion.set('generales', [
+                ...prevGenerales,
+                formatedMateriaName,
+              ])
+          }
+        }
+      },
+    )
+
+    return interpretacion
+  })
 
   // Proceso de popular e interpretar la data histórica con las calif actuales
   console.timeEnd('Proceso de populación')
-  return undefined
+  return projectedStudents
 }
 
 /* 
