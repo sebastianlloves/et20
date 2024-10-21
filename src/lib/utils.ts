@@ -68,7 +68,7 @@ export function formatStudentsResponse(textResponse: string): Student[] {
   )
 }
 
-export function formatCalifActualesResponse(response: string) {
+export function formatCalifActualesResponse(response: string, anio: string) {
   const [, encabezadoMaterias, , ...data] = response
     .split('\r\n')
     .map((row) => {
@@ -98,7 +98,7 @@ export function formatCalifActualesResponse(response: string) {
           apellido,
           nombre,
           dni: Number(dniValue),
-          materia: encabezadoMaterias[index],
+          materia: `${encabezadoMaterias[index]}_${anio}`,
           primerBimestre: defineCalificacion(primerBimestreValue),
           segundoBimestre: defineCalificacion(segundoBimestreValue),
           primerCuatrimeste: defineCalificacion(primerCuatrimesteValue),

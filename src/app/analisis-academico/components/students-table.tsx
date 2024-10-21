@@ -2,6 +2,7 @@ import {
   fetchCalificacionesActuales,
   fetchStudentsData,
   getFilteredStudentData,
+  projectCalifActuales,
 } from '@/lib/data'
 import DataTable from '../../../components/ui/data-table'
 import { columns } from './columns'
@@ -15,27 +16,24 @@ export default async function StudentsTable({
   searchParams: SearchParams
 }) {
   const { anio, ...filterParams } = searchParams
+  const includeCalifActuales = true
   const data = await fetchStudentsData(anio)
   const filteredData = getFilteredStudentData(data, filterParams)
 
-  const califActuales = await fetchCalificacionesActuales(filteredData)
-  console.log(
-    filteredData
-      .map(({ anio, division, apellido, dni }) => {
-        const calificaciones = califActuales.find(
-          (objCalif) => objCalif.dni === dni,
-        )
-        if (calificaciones)
-          return {
-            anio,
-            division,
-            apellido,
-            materias: JSON.stringify(calificaciones.materias),
-          }
-        return undefined
-      })
-      .filter(Boolean),
-  )
+  if (includeCalifActuales) {
+    const califActuales = await fetchCalificacionesActuales(filteredData)
+    // Reemplazar filteredData en vez de crear una nueva constante
+    const testingFilteredData = projectCalifActuales(
+      filteredData,
+      califActuales,
+      '',
+    )
+    /* console.log(
+    califActuales.map(({ dni, materias }) => {
+      return { dni, materias: JSON.stringify(materias) }
+    })) */
+    console.log(testingFilteredData)
+  }
 
   return (
     <>

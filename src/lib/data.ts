@@ -19,7 +19,7 @@ export async function fetchStudentsData(anio: string = '2024') {
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 5000))
 
-  return formatStudentsResponse(textData)/* .slice(400, 450) */
+  return formatStudentsResponse(textData).slice(400, 450)
 }
 
 export async function fetchCalificacionesActuales(filteredData: Student[]) {
@@ -37,12 +37,15 @@ export async function fetchCalificacionesActuales(filteredData: Student[]) {
         return DB_CALIFICACIONES_ACTUALES[key].tags.includes(tagCurso)
       }),
     )
-    .map((key) => DB_CALIFICACIONES_ACTUALES[key])
+    .map((key) => {
+      const anio = key[0]
+      return { ...DB_CALIFICACIONES_ACTUALES[key], anio }
+    })
   console.timeEnd('depuracion')
 
   console.time('Tiempo Promise all')
   const califActuales = await Promise.all(
-    fetchingData.map(async ({ url, tags }) => {
+    fetchingData.map(async ({ url, tags, anio }) => {
       console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
       console.time(`fetch tags: ${JSON.stringify(tags)}`)
       const response = await fetch(url, {
@@ -55,7 +58,7 @@ export async function fetchCalificacionesActuales(filteredData: Student[]) {
       console.timeEnd(`fetch tags: ${JSON.stringify(tags)}`)
 
       console.time(`procesamiento tags: ${JSON.stringify(tags)}`)
-      const formatedResponse = formatCalifActualesResponse(text)
+      const formatedResponse = formatCalifActualesResponse(text, anio)
       console.timeEnd(`procesamiento tags: ${JSON.stringify(tags)}`)
       console.timeEnd(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
 
@@ -113,39 +116,43 @@ export const projectCalifActuales = (
   califActuales: StudentCalifActuales[],
   instancia: string,
 ) => {
+  console.time('Proceso de populación')
+  /* const projectedStudents = students.map(student => {
+    const califActual = califActuales.find(
+      ({ dni: dniValue }) => student.dni === dniValue,
+    )
+    if(!califActual) {
+      const error = {type: 'No se encontraron calificaciones actuales'}
+      return {
+        ...student,
+        troncales: { ...student.troncales, error },
+        generales: { ...student.generales, error },
+      }
+    }
+
+  }) */
+
   // Proceso de popular e interpretar la data histórica con las calif actuales
+  console.timeEnd('Proceso de populación')
   return undefined
 }
 
 /* 
-={
 {
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Educación Física!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Inglés!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Ciudadanía y Trabajo!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Lengua y Literatura!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Ciencia y Tecnología!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Matemática!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Representación Sonora!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Representación Visual!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Diseño Web!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Lab. de Postprod. de la Imagen y del Sonido!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Taller de Tecnol. de la Imagen!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/18bfqSrVsvGir15u38f7VSbNzhg5mhIAW1MZm3jkOdSE/";"Taller de Tecnol. del Sonido!C8:O");"SELECT * WHERE Col3 is not null ";0)
-};
-{
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Educación Física!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Inglés!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Ciudadanía y Trabajo!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Lengua y Literatura!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Ciencia y Tecnología!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Matemática!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Representación Sonora!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Representación Visual!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Diseño Web!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Lab. de Postprod. de la Imagen y del Sonido!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Taller de Tecnol. de la Imagen!C8:O");"SELECT * WHERE Col3 is not null ";0)\
-Query(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1Whxwu-QutWiPA5oEtW5e01sSE-YE-iw2G7mH5SyFHBc/";"Taller de Tecnol. del Sonido!C8:O");"SELECT * WHERE Col3 is not null ";0)
-}
-}
+    dni: 49006375,
+    materias: '[
+      {"nombre":"Historia_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"Avanzado","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Geografía_3","primerBimestre":"En Proceso","segundoBimestre":"En Proceso","primerCuatrimeste":4,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Educación Física_3","primerBimestre":"Avanzado","segundoBimestre":"Avanzado","primerCuatrimeste":9,"tercerBimestre":"Avanzado","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Educación Ciudadana_3","primerBimestre":"Avanzado","segundoBimestre":"Avanzado","primerCuatrimeste":8,"tercerBimestre":"Avanzado","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Inglés_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Lengua y Literatura_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Matemática_3","primerBimestre":"En Proceso","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Física_3","primerBimestre":"En Proceso","segundoBimestre":"Suficiente","primerCuatrimeste":5,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Rep. Mediales, Comunicación y Lenguajes_3","primerBimestre":"Avanzado","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Química_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Taller de Tecnol. y del Control_3","primerBimestre":"Avanzado","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
+      {"nombre":"Taller de Prod. Multimedial_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null}
+    ]'
+  }
 */
