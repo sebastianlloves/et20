@@ -45,13 +45,7 @@ export default async function StudentsTable({
       <div className="hidden lg:block">
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
-
-      <div className='w-full'>
-        {/* {calificacionesActuales.map((row, index) => (
-          <p key={index}>{JSON.stringify(row)}</p>
-        ))} */}
-        <DataTable columns={columns} data={filteredData} />
-      </div>
+      <DataTable columns={columns} data={filteredData} />
     </>
   )
 }
