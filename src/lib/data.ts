@@ -22,14 +22,20 @@ export async function fetchStudentsData(anio: string = '2024') {
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 5000))
 
-  return formatStudentsResponse(textData)/* .slice(0, 100) */
+  return formatStudentsResponse(textData, Number(anio)) /* .slice(0, 100) */
 }
 
-export async function fetchCalificacionesActuales(filteredData: Student[]) {
+export async function fetchCalificacionesActuales(
+  data: Student[],
+  anio?: string,
+  cursosFilter?: string[],
+) {
   console.time('depuracion')
-  const uniqueValuesCursos = new Map<any, number>()
-  FILTERS_FNS.cursos.uniqueValuesFn(filteredData, uniqueValuesCursos)
-  const cursos = Array.from(uniqueValuesCursos.keys())
+  // Si hay aplicado filtro de cursos, una optimización posible es sólo fetchear las db de esos cursos
+  const uniqueValuesCursos = new Set<string>(
+    data.map(({ anio, division }) => `${anio} ${division}`),
+  )
+  const cursos = [...uniqueValuesCursos]
   const fetchingData = Object.keys(DB_CALIFICACIONES_ACTUALES)
     .filter((key) =>
       cursos.some((curso) => {
@@ -41,14 +47,14 @@ export async function fetchCalificacionesActuales(filteredData: Student[]) {
       }),
     )
     .map((key) => {
-      const anio = key[0]
-      return { ...DB_CALIFICACIONES_ACTUALES[key], anio }
+      const anioCurso = key[0]
+      return { ...DB_CALIFICACIONES_ACTUALES[key], anioCurso }
     })
   console.timeEnd('depuracion')
 
   console.time('Tiempo Promise all')
   const califActuales = await Promise.all(
-    fetchingData.map(async ({ url, tags, anio }) => {
+    fetchingData.map(async ({ url, tags, anioCurso }) => {
       console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
       console.time(`fetch tags: ${JSON.stringify(tags)}`)
       const response = await fetch(url, {
@@ -61,7 +67,7 @@ export async function fetchCalificacionesActuales(filteredData: Student[]) {
       console.timeEnd(`fetch tags: ${JSON.stringify(tags)}`)
 
       console.time(`procesamiento tags: ${JSON.stringify(tags)}`)
-      const formatedResponse = formatCalifActualesResponse(text, anio)
+      const formatedResponse = formatCalifActualesResponse(text, anioCurso)
       console.timeEnd(`procesamiento tags: ${JSON.stringify(tags)}`)
       console.timeEnd(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
 
@@ -119,7 +125,6 @@ export const projectCalifActuales = (
   califActuales: StudentCalifActuales[],
   instancia: keyof StudentCalifActuales['materias'][number],
 ) => {
-
   console.time('Proceso de populación')
 
   const projectedStudents = students.map((student) => {
@@ -231,5 +236,3 @@ export const projectCalifActuales = (
 
   return projectedStudents
 }
-
-

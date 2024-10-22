@@ -17,29 +17,24 @@ export default async function StudentsTable({
 }) {
   const { anio, ...filterParams } = searchParams
   const includeCalifActuales = true
-  const data = await fetchStudentsData(anio)
-  const filteredData = getFilteredStudentData(data, filterParams)
+  let data = await fetchStudentsData(anio)
 
   if (includeCalifActuales) {
     console.time('Tiempo proyeción')
-    const califActuales = await fetchCalificacionesActuales(filteredData)
+    const califActuales = await fetchCalificacionesActuales(data)
     // Reemplazar filteredData en vez de crear una nueva constante
-    const testingFilteredData = projectCalifActuales(
-      filteredData,
-      califActuales,
-      'primerCuatrimeste',
-    )
+    data = projectCalifActuales(data, califActuales, 'primerCuatrimeste')
+    // const testingFilteredData = projectCalifActuales(
+    //   filteredData,
+    //   califActuales,
+    //   'primerCuatrimeste',
+    // )
+    // console.log(
+    //   JSON.stringify(testingFilteredData.find(({ dni }) => dni === 50156849)),
+    // )
     console.timeEnd('Tiempo proyeción')
-    /* console.log(
-    califActuales.map(({ dni, materias }) => {
-      return { dni, materias: JSON.stringify(materias) }
-    })) */
-    console.log(
-      JSON.stringify(
-        testingFilteredData.find((student) => student.dni === 50156849),
-      ),
-    )
   }
+  const filteredData = getFilteredStudentData(data, filterParams)
 
   return (
     <>

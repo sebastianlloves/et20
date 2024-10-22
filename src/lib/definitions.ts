@@ -2,7 +2,7 @@ export type MateriasPendientes = {
   cantidad: number | null
   detalle: string[]
   error?: {
-    type: string,
+    type: string
     details?: string[]
   }
 }
@@ -16,7 +16,7 @@ export type Student = {
   repitencia: string[]
   troncales: MateriasPendientes
   generales: MateriasPendientes
-  enProceso2020: MateriasPendientes
+  enProceso2020: Omit<MateriasPendientes, 'detalle'> & {detalle: string[] | 'No corresponde'}
 }
 
 export type StudentsTableFilters = {

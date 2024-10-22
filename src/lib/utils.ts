@@ -9,7 +9,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatStudentsResponse(textResponse: string): Student[] {
+export function formatStudentsResponse(
+  textResponse: string,
+  anioDB: number,
+): Student[] {
   const [, ...data] = textResponse.split('\r\n').map((row) => row.split('\t'))
   return data.map(
     ([
@@ -28,8 +31,17 @@ export function formatStudentsResponse(textResponse: string): Student[] {
       repitencia2Value,
       repitencia3Value,
     ]) => {
+      const anio = anioValue.length ? `${anioValue[0]}º` : null
+      const repitencia = defineRepitencia([
+        repitencia1Value,
+        repitencia2Value,
+        repitencia3Value,
+      ])
+      const curso202enSecundaria = anio
+        ? anioDB + 1 - Number(anio[0]) - repitencia.length <= 2020
+        : true
       return {
-        anio: anioValue.length ? `${anioValue[0]}º` : null,
+        anio,
         division: divisionValue.length ? `${divisionValue[0]}º` : null,
         apellido: apellidoValue.length
           ? capitalizeWords(apellidoValue)
@@ -44,11 +56,7 @@ export function formatStudentsResponse(textResponse: string): Student[] {
               .replace(/[\u0300-\u036f]/g, '')
           : null,
         dni: parseInt(dniValue) || null,
-        repitencia: defineRepitencia([
-          repitencia1Value,
-          repitencia2Value,
-          repitencia3Value,
-        ]),
+        repitencia,
         troncales: {
           cantidad: !Number.isNaN(parseInt(troncalesCantValue))
             ? parseInt(troncalesCantValue)
@@ -65,7 +73,9 @@ export function formatStudentsResponse(textResponse: string): Student[] {
           cantidad: !Number.isNaN(parseInt(enProceso2020CantidadValue))
             ? parseInt(enProceso2020CantidadValue)
             : null,
-          detalle: formatDetalleMaterias(enProceso2020DetalleValue.trim()),
+          detalle: curso202enSecundaria
+            ? formatDetalleMaterias(enProceso2020DetalleValue.trim())
+            : 'No corresponde',
         },
       }
     },
@@ -207,7 +217,10 @@ export const FILTERS_FNS = {
         ...student.troncales.detalle,
         ...student.generales.detalle,
       ]
-      if (enProceso2020Param)
+      if (
+        enProceso2020Param &&
+        student.enProceso2020.detalle !== 'No corresponde'
+      )
         studentMaterias.push(...student.enProceso2020.detalle)
       return inclusionEstrictaParam
         ? filterValue.every((materia) => studentMaterias.includes(materia))
@@ -223,7 +236,10 @@ export const FILTERS_FNS = {
           ...student.troncales.detalle,
           ...student.generales.detalle,
         ]
-        if (filterParams?.enProceso2020 !== 'false')
+        if (
+          filterParams?.enProceso2020 !== 'false' &&
+          student.enProceso2020.detalle !== 'No corresponde'
+        )
           values.push(...student.enProceso2020.detalle)
         values.forEach((value) =>
           facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
