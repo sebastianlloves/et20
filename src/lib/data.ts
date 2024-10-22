@@ -1,10 +1,5 @@
 import { SearchParams } from '@/app/analisis-academico/page'
-import {
-  CURSOS,
-  DB_CALIFICACIONES_ACTUALES,
-  DB_CALIFICACIONES_HISTORICO,
-  MATERIAS_POR_CURSO,
-} from './constants'
+import { CURSOS, DB_CALIFICACIONES, MATERIAS_POR_CURSO } from './constants'
 import { Student, StudentCalifActuales } from './definitions'
 import {
   evaluarCalificacion,
@@ -14,7 +9,8 @@ import {
 } from './utils'
 
 export async function fetchStudentsData(anio: string = '2024') {
-  const { url, tags } = DB_CALIFICACIONES_HISTORICO[anio]
+  if (!(anio in DB_CALIFICACIONES)) throw new Error()
+  const { url, tags } = DB_CALIFICACIONES[anio].historico
   const response = await fetch(url, {
     next: { tags: [...tags] },
     cache: 'force-cache',
@@ -27,12 +23,13 @@ export async function fetchStudentsData(anio: string = '2024') {
 
 export async function fetchCalificacionesActuales(
   data: Student[],
-  anio?: string,
+  anio: string = '2024',
   cursosFilter?: string[],
 ) {
   console.time('depuracion')
+  if (!(anio in DB_CALIFICACIONES)) throw new Error()
   // Si hay aplicado filtro de cursos, una optimización posible es sólo fetchear las db de esos cursos
-  const uniqueValuesCursos = new Set<string>(
+  /* const uniqueValuesCursos = new Set<string>(
     data.map(({ anio, division }) => `${anio} ${division}`),
   )
   const cursos = [...uniqueValuesCursos]
@@ -49,7 +46,15 @@ export async function fetchCalificacionesActuales(
     .map((key) => {
       const anioCurso = key[0]
       return { ...DB_CALIFICACIONES_ACTUALES[key], anioCurso }
-    })
+    }) */
+  const anioData = DB_CALIFICACIONES[anio].calificacionesEnCurso
+  if (!anioData) return []
+
+  const fetchingData = Object.entries(anioData).map(
+    ([anioKey, { url, tags }]) => {
+      return { url, tags, anioCurso: anioKey[0] }
+    },
+  )
   console.timeEnd('depuracion')
 
   console.time('Tiempo Promise all')

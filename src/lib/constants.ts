@@ -381,61 +381,74 @@ export const CURSOS_POR_ANIO = (() => {
   )
 })()
 
-export const DB_CALIFICACIONES_HISTORICO: {
-  [key: string]: { url: string; tags: string[] }
+export const DB_CALIFICACIONES: {
+  [key: string]: {
+    historico: {
+      url: string
+      tags: string[]
+    }
+    calificacionesEnCurso?: {
+      [key: string]: {
+        url: string
+        tags: string[]
+      }
+    }
+  }
 } = {
   '2024': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=0&single=true&output=tsv',
-    tags: ['dbHistorico2024'],
+    historico: {
+      url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRFM0_HRdLzWPQjgMU7_6dUfm6LWNYyQAckFT-EKb6aCAgwvUzZZsCTr8KS_Legk1_2Fe1U00tF-gWA/pub?gid=0&single=true&output=tsv',
+      tags: ['dbHistorico2024'],
+    },
+    calificacionesEnCurso: {
+      '1° año': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=0&single=true&output=tsv',
+        tags: [
+          'califActuales_1-1',
+          'califActuales_1-2',
+          'califActuales_1-3',
+          'califActuales_1-4',
+          'califActuales_1-5',
+          'califActuales_1-6',
+        ],
+      },
+      '2° año': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1699780358&single=true&output=tsv',
+        tags: [
+          'califActuales_2-1',
+          'califActuales_2-2',
+          'califActuales_2-3',
+          'califActuales_2-4',
+          'califActuales_2-5',
+          'califActuales_2-6',
+        ],
+      },
+      '3° año_TICS': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=202943222&single=true&output=tsv',
+        tags: ['califActuales_3-2', 'califActuales_3-3', 'califActuales_3-6'],
+      },
+      '3° año_MULTIMEDIA': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1989201134&single=true&output=tsv',
+        tags: ['califActuales_3-1', 'califActuales_3-4', 'califActuales_3-5'],
+      },
+      '4° año_TICS': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=2056764536&single=true&output=tsv',
+        tags: ['califActuales_4-2', 'califActuales_4-4'],
+      },
+      '4° año_MULTIMEDIA': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1517146940&single=true&output=tsv',
+        tags: ['califActuales_4-1', 'califActuales_4-3'],
+      },
+    },
   },
   '2023': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgBxzIjsnEVhDh_odQ2W3tVJXfp2rVxE0EgqUSjaauXkyeauSv-BrhjSZHCOqjNO5TCiSQoFxMRrSZ/pub?output=tsv',
-    tags: ['dbHistorico2023'],
+    historico: {
+      url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgBxzIjsnEVhDh_odQ2W3tVJXfp2rVxE0EgqUSjaauXkyeauSv-BrhjSZHCOqjNO5TCiSQoFxMRrSZ/pub?output=tsv',
+      tags: ['dbHistorico2023'],
+    },
   },
 }
 
-export const DB_CALIFICACIONES_ACTUALES: {
-  [key: string]: { url: string; tags: string[] }
-} = {
-  '1° año': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=0&single=true&output=tsv',
-    tags: [
-      'califActuales_1-1',
-      'califActuales_1-2',
-      'califActuales_1-3',
-      'califActuales_1-4',
-      'califActuales_1-5',
-      'califActuales_1-6',
-    ],
-  },
-  '2° año': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1699780358&single=true&output=tsv',
-    tags: [
-      'califActuales_2-1',
-      'califActuales_2-2',
-      'califActuales_2-3',
-      'califActuales_2-4',
-      'califActuales_2-5',
-      'califActuales_2-6',
-    ],
-  },
-  '3° año_TICS': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=202943222&single=true&output=tsv',
-    tags: ['califActuales_3-2', 'califActuales_3-3', 'califActuales_3-6'],
-  },
-  '3° año_MULTIMEDIA': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1989201134&single=true&output=tsv',
-    tags: ['califActuales_3-1', 'califActuales_3-4', 'califActuales_3-5'],
-  },
-  '4° año_TICS': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=2056764536&single=true&output=tsv',
-    tags: ['califActuales_4-2', 'califActuales_4-4'],
-  },
-  '4° año_MULTIMEDIA': {
-    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1517146940&single=true&output=tsv',
-    tags: ['califActuales_4-1', 'califActuales_4-3'],
-  },
-}
 
 export const CALIFICACIONES_STRINGS = {
   desaprueba: ['En Proceso', 'Adeuda'],
