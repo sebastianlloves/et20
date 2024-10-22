@@ -34,7 +34,11 @@ export default async function StudentsTable({
     califActuales.map(({ dni, materias }) => {
       return { dni, materias: JSON.stringify(materias) }
     })) */
-    console.log(testingFilteredData)
+    console.log(
+      JSON.stringify(
+        testingFilteredData.find((student) => student.dni === 50156849),
+      ),
+    )
   }
 
   return (

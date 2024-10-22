@@ -7,6 +7,7 @@ import {
 } from './constants'
 import { Student, StudentCalifActuales } from './definitions'
 import {
+  evaluarCalificacion,
   FILTERS_FNS,
   formatCalifActualesResponse,
   formatStudentsResponse,
@@ -21,7 +22,7 @@ export async function fetchStudentsData(anio: string = '2024') {
   const textData = await response.text()
   // await new Promise((resolve) => setTimeout(resolve, 5000))
 
-  return formatStudentsResponse(textData).slice(400, 450)
+  return formatStudentsResponse(textData)/* .slice(0, 100) */
 }
 
 export async function fetchCalificacionesActuales(filteredData: Student[]) {
@@ -118,7 +119,9 @@ export const projectCalifActuales = (
   califActuales: StudentCalifActuales[],
   instancia: keyof StudentCalifActuales['materias'][number],
 ) => {
+
   console.time('Proceso de populación')
+
   const projectedStudents = students.map((student) => {
     const { anio, division, dni } = student
     const califActual = califActuales.find(
@@ -138,8 +141,8 @@ export const projectCalifActuales = (
     const dataCursos = (
       Object.keys(CURSOS) as Array<keyof typeof CURSOS>
     ).flatMap((key) => CURSOS[key])
-    const anioValue = anio && anio[0]
-    const divisionValue = division && division[0]
+    const anioValue = anio?.[0]
+    const divisionValue = division?.[0]
     const orientacionCurso = dataCursos.find(
       ({ curso }) => curso === `${anioValue}° ${divisionValue}°`,
     )?.orientacion
@@ -174,32 +177,28 @@ export const projectCalifActuales = (
     const materiasCurso =
       MATERIAS_POR_CURSO[`${anioValue}° año` as keyof typeof MATERIAS_POR_CURSO]
 
-    materiasCurso.forEach(
-      ({ nombre, es_troncal: esTroncal, orientacion: orientacionMateria }) => {
-        const isValidOrientacion =
-          orientacionMateria === orientacionCurso ||
-          (orientacionCurso !== 'Ciclo Básico' &&
-            orientacionMateria === 'Ciclo Superior')
-        if (!isValidOrientacion) return
+    materiasCurso.forEach(({ nombre, esTroncal, orientacion }) => {
+      const isValidOrientacion =
+        orientacion === orientacionCurso ||
+        (orientacionCurso !== 'Ciclo Básico' &&
+          orientacion === 'Ciclo Superior')
+      if (!isValidOrientacion) return
 
-        const formatedMateriaName = `${nombre} (${anioValue}°)`
-        const calificacion = califActual.materias.find(
-          (calif) => calif.nombre.split('_')[0] === nombre,
-        )?.[instancia]
+      const formatedMateriaName = `${nombre} (${anioValue}°)`
+      const calificacion = califActual.materias.find(
+        (calif) => calif.nombre.split('_')[0] === nombre,
+      )?.[instancia]
 
-        const desaprobo = true
-
-        if (esTroncal) {
-          calificacion
-            ? desaprobo && troncalesSet.add(formatedMateriaName)
-            : troncalesSinCalificar.add(formatedMateriaName)
-        } else {
-          calificacion
-            ? desaprobo && generalesSet.add(formatedMateriaName)
-            : generalesSinCalificar.add(formatedMateriaName)
-        }
-      },
-    )
+      const evaluacion = evaluarCalificacion(calificacion)
+      if (evaluacion === 'desaprueba')
+        esTroncal
+          ? troncalesSet.add(formatedMateriaName)
+          : generalesSet.add(formatedMateriaName)
+      if (evaluacion === 'sin calificar')
+        esTroncal
+          ? troncalesSinCalificar.add(formatedMateriaName)
+          : generalesSinCalificar.add(formatedMateriaName)
+    })
 
     return {
       ...student,
@@ -209,7 +208,7 @@ export const projectCalifActuales = (
         error:
           troncalesSinCalificar.size > 0
             ? {
-                type: 'Hay materias que no tienen calificación para la instancia solicitada',
+                type: 'Hay materias sin calificar',
                 details: [...troncalesSinCalificar],
               }
             : undefined,
@@ -220,7 +219,7 @@ export const projectCalifActuales = (
         error:
           generalesSinCalificar.size > 0
             ? {
-                type: 'Hay materias que no tienen calificación para la instancia solicitada',
+                type: 'Hay materias sin calificar',
                 details: [...generalesSinCalificar],
               }
             : undefined,
@@ -228,27 +227,9 @@ export const projectCalifActuales = (
     }
   })
 
-  // Proceso de popular e interpretar la data histórica con las calif actuales
   console.timeEnd('Proceso de populación')
+
   return projectedStudents
 }
 
-/* 
-{
-    dni: 49006375,
-    materias: '[
-      {"nombre":"Historia_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"Avanzado","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Geografía_3","primerBimestre":"En Proceso","segundoBimestre":"En Proceso","primerCuatrimeste":4,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Educación Física_3","primerBimestre":"Avanzado","segundoBimestre":"Avanzado","primerCuatrimeste":9,"tercerBimestre":"Avanzado","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Educación Ciudadana_3","primerBimestre":"Avanzado","segundoBimestre":"Avanzado","primerCuatrimeste":8,"tercerBimestre":"Avanzado","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Inglés_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Lengua y Literatura_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Matemática_3","primerBimestre":"En Proceso","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Física_3","primerBimestre":"En Proceso","segundoBimestre":"Suficiente","primerCuatrimeste":5,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Rep. Mediales, Comunicación y Lenguajes_3","primerBimestre":"Avanzado","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Química_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Taller de Tecnol. y del Control_3","primerBimestre":"Avanzado","segundoBimestre":"Suficiente","primerCuatrimeste":7,"tercerBimestre":"Suficiente","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null},
-      {"nombre":"Taller de Prod. Multimedial_3","primerBimestre":"Suficiente","segundoBimestre":"Suficiente","primerCuatrimeste":6,"tercerBimestre":"En Proceso","cuartoBimestre":null,"segundoCuatrimestre":null,"anual":null,"diciembre":null,"febrero":null,"definitiva":null}
-    ]'
-  }
-*/
+

@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge'
 import { Calificacion, Student } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
-import { CALIF_ACTUALES_STRINGS } from './constants'
+import { CALIFICACIONES_STRINGS } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -350,7 +350,8 @@ export const FILTERS_FNS = {
     ) => {
       filteredData.forEach((student) => {
         const value =
-          student.troncales.cantidad === null || student.generales.cantidad === null
+          student.troncales.cantidad === null ||
+          student.generales.cantidad === null
             ? 'faltan datos'
             : student.troncales.cantidad <= 2 &&
                 student.troncales.cantidad + student.generales.cantidad <= 4
@@ -446,14 +447,19 @@ const defineCalificacion = (string: string) => {
     const numberCalif = Number(string)
     if (numberCalif > 0 && numberCalif <= 10) return numberCalif
   }
-  if (CALIF_ACTUALES_STRINGS.some((califString) => califString === string))
+  const califStringsValidas = Object.values(CALIFICACIONES_STRINGS).flat()
+  if (califStringsValidas.some((califString) => califString === string))
     return string
   return null
 }
 
-const evaluarCalificacion = (calificacion?: Calificacion) => {  
-  if(Number(calificacion) > 0){
-    return Number(calificacion) >= 6 ? 'aprobado' : 'desaprobado'
+export const evaluarCalificacion = (calificacion?: Calificacion) => {
+  if (CALIFICACIONES_STRINGS.desaprueba.some((value) => value === calificacion))
+    return 'desaprueba'
+  if (CALIFICACIONES_STRINGS.aprueba.some((value) => value === calificacion))
+    return 'aprueba'
+  if (Number(calificacion) > 0) {
+    return Number(calificacion) >= 6 ? 'aprueba' : 'desaprueba'
   }
-  
+  return 'sin calificar'
 }
