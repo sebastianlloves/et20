@@ -39,7 +39,7 @@ function DataTable<TData, TValue>({
   // const [border] = useState(false)
 
   return (
-    <ScrollArea className="scrollArea h-[80vh] w-full rounded-lg border bg-table-body shadow-sm">
+    <ScrollArea className="h-[80vh] w-full rounded-lg border bg-table-body shadow-sm">
       <Table className="flex w-full flex-col bg-table-body text-xs lg:text-sm">
         <TableHeader className="sticky top-0 z-20 border-b border-primary/70 shadow-sm shadow-primary/40">
           {table.getHeaderGroups().map((headerGroup) => (

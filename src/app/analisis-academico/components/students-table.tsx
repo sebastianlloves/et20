@@ -46,7 +46,7 @@ export default async function StudentsTable({
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
 
-      <div>
+      <div className='w-full'>
         {/* {calificacionesActuales.map((row, index) => (
           <p key={index}>{JSON.stringify(row)}</p>
         ))} */}
