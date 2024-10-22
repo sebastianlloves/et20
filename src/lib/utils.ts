@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Student } from './definitions'
+import { Calificacion, Student } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
 import { CALIF_ACTUALES_STRINGS } from './constants'
@@ -449,4 +449,11 @@ const defineCalificacion = (string: string) => {
   if (CALIF_ACTUALES_STRINGS.some((califString) => califString === string))
     return string
   return null
+}
+
+const evaluarCalificacion = (calificacion?: Calificacion) => {  
+  if(Number(calificacion) > 0){
+    return Number(calificacion) >= 6 ? 'aprobado' : 'desaprobado'
+  }
+  
 }

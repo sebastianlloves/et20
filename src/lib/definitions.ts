@@ -26,7 +26,7 @@ export type StudentsTableFilters = {
   promocion?: string[]
 }
 
-type Calificacion = string | number | null
+export type Calificacion = string | number | null
 
 export type StudentCalifActuales = {
   apellido?: string

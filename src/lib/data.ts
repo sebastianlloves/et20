@@ -166,10 +166,11 @@ export const projectCalifActuales = (
       }
     }
 
-    const interpretacion = new Map([
-      ['troncales', student.troncales.detalle],
-      ['generales', student.generales.detalle],
-    ])
+    const troncalesSet = new Set(student.troncales.detalle)
+    const generalesSet = new Set(student.generales.detalle)
+    const troncalesSinCalificar = new Set<string>([])
+    const generalesSinCalificar = new Set<string>([])
+
     const materiasCurso =
       MATERIAS_POR_CURSO[`${anioValue}° año` as keyof typeof MATERIAS_POR_CURSO]
 
@@ -179,40 +180,52 @@ export const projectCalifActuales = (
           orientacionMateria === orientacionCurso ||
           (orientacionCurso !== 'Ciclo Básico' &&
             orientacionMateria === 'Ciclo Superior')
+        if (!isValidOrientacion) return
 
-        if (isValidOrientacion) {
-          const formatedMateriaName = `${nombre} (${anioValue}°)`
-          const calificacion = califActual.materias.find(
-            (calif) => calif.nombre.split('_')[0] === nombre,
-          )?.[instancia]
-          if (!calificacion) {
-            const prevSinCalificacion =
-              interpretacion.get('sin calificación') || []
-            if (!prevSinCalificacion.includes(formatedMateriaName))
-              interpretacion.set('sin calificación', [
-                ...prevSinCalificacion,
-                formatedMateriaName,
-              ])
-          } else if (esTroncal) {
-            const prevTroncales = interpretacion.get('troncales') || []
-            if (!prevTroncales.includes(formatedMateriaName))
-              interpretacion.set('troncales', [
-                ...prevTroncales,
-                formatedMateriaName,
-              ])
-          } else {
-            const prevGenerales = interpretacion.get('generales') || []
-            if (!prevGenerales.includes(formatedMateriaName))
-              interpretacion.set('generales', [
-                ...prevGenerales,
-                formatedMateriaName,
-              ])
-          }
+        const formatedMateriaName = `${nombre} (${anioValue}°)`
+        const calificacion = califActual.materias.find(
+          (calif) => calif.nombre.split('_')[0] === nombre,
+        )?.[instancia]
+
+        const desaprobo = true
+
+        if (esTroncal) {
+          calificacion
+            ? desaprobo && troncalesSet.add(formatedMateriaName)
+            : troncalesSinCalificar.add(formatedMateriaName)
+        } else {
+          calificacion
+            ? desaprobo && generalesSet.add(formatedMateriaName)
+            : generalesSinCalificar.add(formatedMateriaName)
         }
       },
     )
 
-    return interpretacion
+    return {
+      ...student,
+      troncales: {
+        cantidad: troncalesSet.size,
+        detalle: [...troncalesSet],
+        error:
+          troncalesSinCalificar.size > 0
+            ? {
+                type: 'Hay materias que no tienen calificación para la instancia solicitada',
+                details: [...troncalesSinCalificar],
+              }
+            : undefined,
+      },
+      generales: {
+        cantidad: generalesSet.size,
+        detalle: [...generalesSet],
+        error:
+          generalesSinCalificar.size > 0
+            ? {
+                type: 'Hay materias que no tienen calificación para la instancia solicitada',
+                details: [...generalesSinCalificar],
+              }
+            : undefined,
+      },
+    }
   })
 
   // Proceso de popular e interpretar la data histórica con las calif actuales
