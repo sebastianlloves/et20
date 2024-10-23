@@ -120,7 +120,7 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'basic',
     meta: {
       title: 'Troncales',
-      width: 'w-32 lg:w-44',
+      width: 'w-36 lg:w-44',
     },
   },
   {
@@ -138,7 +138,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 190,
     meta: {
       title: 'Generales',
-      width: 'w-32 lg:w-44',
+      width: 'w-36 lg:w-44',
     },
   },
   {
@@ -156,7 +156,7 @@ export const columns: ColumnDef<Student>[] = [
     size: 190,
     meta: {
       title: 'En Proceso (2020)',
-      width: 'w-32 lg:w-44',
+      width: 'w-36 lg:w-44',
     },
   },
   {

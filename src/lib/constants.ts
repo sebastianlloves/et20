@@ -439,6 +439,22 @@ export const DB_CALIFICACIONES: {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1517146940&single=true&output=tsv',
         tags: ['califActuales_4-1', 'califActuales_4-3'],
       },
+      '5° año_TICS': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=140249657&single=true&output=tsv',
+        tags: ['califActuales_5-2', 'califActuales_5-4'],
+      },
+      '5° año_MULTIMEDIA': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=2005552135&single=true&output=tsv',
+        tags: ['califActuales_5-1', 'califActuales_5-3'],
+      },/* 
+      '6° año_TICS': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=677971158&single=true&output=tsv',
+        tags: ['califActuales_6-2'],
+      },
+      '6° año_MULTIMEDIA': {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1992535574&single=true&output=tsv',
+        tags: ['califActuales_6-1'],
+      }, */
     },
   },
   '2023': {

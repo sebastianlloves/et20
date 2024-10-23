@@ -9,16 +9,20 @@ import {
 } from './utils'
 
 export async function fetchStudentsData(anio: string = '2024') {
-  if (!(anio in DB_CALIFICACIONES)) throw new Error()
-  const { url, tags } = DB_CALIFICACIONES[anio].historico
-  const response = await fetch(url, {
-    next: { tags: [...tags] },
-    cache: 'force-cache',
-  })
-  const textData = await response.text()
-  // await new Promise((resolve) => setTimeout(resolve, 5000))
-
-  return formatStudentsResponse(textData, Number(anio)) /* .slice(0, 100) */
+  if (!(anio in DB_CALIFICACIONES))
+    throw new Error(`No hay datos para el año ${anio}`)
+  try {
+    const { url, tags } = DB_CALIFICACIONES[anio].historico
+    const response = await fetch(url, {
+      next: { tags: [...tags] },
+      cache: 'force-cache',
+    })
+    const textData = await response.text()
+    // await new Promise((resolve) => setTimeout(resolve, 5000))
+    return formatStudentsResponse(textData, Number(anio)) /* .slice(0, 100) */
+  } catch (error) {
+    return error
+  }
 }
 
 export async function fetchCalificacionesActuales(
@@ -27,7 +31,8 @@ export async function fetchCalificacionesActuales(
   cursosFilter?: string[],
 ) {
   console.time('depuracion')
-  if (!(anio in DB_CALIFICACIONES)) throw new Error()
+  if (!(anio in DB_CALIFICACIONES))
+    throw new Error(`No hay datos para el año ${anio}`)
   // Si hay aplicado filtro de cursos, una optimización posible es sólo fetchear las db de esos cursos
   /* const uniqueValuesCursos = new Set<string>(
     data.map(({ anio, division }) => `${anio} ${division}`),
@@ -48,7 +53,10 @@ export async function fetchCalificacionesActuales(
       return { ...DB_CALIFICACIONES_ACTUALES[key], anioCurso }
     }) */
   const anioData = DB_CALIFICACIONES[anio].calificacionesEnCurso
-  if (!anioData) return []
+  if (!anioData)
+    throw new Error(
+      `No hay datos de las calificaciones en curso para el año ${anio}`,
+    )
 
   const fetchingData = Object.entries(anioData).map(
     ([anioKey, { url, tags }]) => {
