@@ -38,7 +38,7 @@ export type StudentCalifActuales = {
     nombre: string
     primerBimestre: Calificacion
     segundoBimestre: Calificacion
-    primerCuatrimeste: Calificacion
+    primerCuatrimestre: Calificacion
     tercerBimestre: Calificacion
     cuartoBimestre: Calificacion
     segundoCuatrimestre: Calificacion

@@ -23,7 +23,7 @@ export default async function StudentsTable({
     console.time('Tiempo proyeción')
     const califActuales = await fetchCalificacionesActuales(data, anio)
     // Reemplazar filteredData en vez de crear una nueva constante
-    data = projectCalifActuales(data, califActuales, 'primerCuatrimeste')
+    data = projectCalifActuales(data, califActuales, 'primerCuatrimestre')
     // const testingFilteredData = projectCalifActuales(
     //   filteredData,
     //   califActuales,

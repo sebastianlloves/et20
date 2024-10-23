@@ -118,7 +118,7 @@ function CantidadesFilter({
           max={cantidadesMinMaxValues?.troncalesMinMax[1] || 0}
         />
       </DropdownMenuItem>
-      <DropdownMenuSeparator />
+      <DropdownMenuSeparator className='mx-1' />
       <DropdownMenuItem
         onSelect={(e) => e.preventDefault()}
         disabled={
@@ -136,7 +136,7 @@ function CantidadesFilter({
       </DropdownMenuItem>
       {showEnProceso2020 && (
         <>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className='mx-1' />
           <DropdownMenuItem
             onSelect={(e) => e.preventDefault()}
             disabled={

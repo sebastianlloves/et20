@@ -19,9 +19,9 @@ export async function fetchStudentsData(anio: string = '2024') {
     })
     const textData = await response.text()
     // await new Promise((resolve) => setTimeout(resolve, 5000))
-    return formatStudentsResponse(textData, Number(anio)) /* .slice(0, 100) */
+    return formatStudentsResponse(textData, Number(anio)).slice(0, 40)
   } catch (error) {
-    return error
+    throw new Error(`Error al obtener los datos histórico para el año ${anio}`)
   }
 }
 

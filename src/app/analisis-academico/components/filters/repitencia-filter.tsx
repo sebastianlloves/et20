@@ -130,7 +130,7 @@ function RepitenciaFilter({
           </DropdownMenuCheckboxItem>
         ))}
       </>
-      <DropdownMenuSeparator />
+      <DropdownMenuSeparator className='mx-1'/>
       <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={false}>
         <SliderItem
           title="Cantidad"

@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Calificacion, Student } from './definitions'
+import { Calificacion, Student, StudentCalifActuales } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
 import { CALIFICACIONES_STRINGS } from './constants'
@@ -82,7 +82,10 @@ export function formatStudentsResponse(
   )
 }
 
-export function formatCalifActualesResponse(response: string, anio: string) {
+export function formatCalifActualesResponse(
+  response: string,
+  anio: string,
+): Pick<StudentCalifActuales, 'dni' | 'materias'>[] {
   const [, encabezadoMaterias, , ...data] = response
     .split('\r\n')
     .map((row) => {
@@ -99,7 +102,7 @@ export function formatCalifActualesResponse(response: string, anio: string) {
           dniValue,
           primerBimestreValue,
           segundoBimestreValue,
-          primerCuatrimesteValue,
+          primerCuatrimestreValue,
           tercerBimestreValue,
           cuartoBimestreValue,
           segundoCuatrimestreValue,
@@ -115,7 +118,7 @@ export function formatCalifActualesResponse(response: string, anio: string) {
           materia: `${encabezadoMaterias[index]}_${anio}`,
           primerBimestre: defineCalificacion(primerBimestreValue),
           segundoBimestre: defineCalificacion(segundoBimestreValue),
-          primerCuatrimeste: defineCalificacion(primerCuatrimesteValue),
+          primerCuatrimestre: defineCalificacion(primerCuatrimestreValue),
           tercerBimestre: defineCalificacion(tercerBimestreValue),
           cuartoBimestre: defineCalificacion(cuartoBimestreValue),
           segundoCuatrimestre: defineCalificacion(segundoCuatrimestreValue),
@@ -130,14 +133,14 @@ export function formatCalifActualesResponse(response: string, anio: string) {
   )
 
   const uniqueValuesDNI = new Set(formatedDatada.map(({ dni }) => dni))
-  const groupedData = Array.from(uniqueValuesDNI).map((uniqueDNI) => {
+  const groupedData = [...uniqueValuesDNI].map((uniqueDNI) => {
     const formatedObjs = formatedDatada.filter(({ dni }) => uniqueDNI === dni)
     const materias = formatedObjs.map(
       ({
         materia,
         primerBimestre,
         segundoBimestre,
-        primerCuatrimeste,
+        primerCuatrimestre,
         tercerBimestre,
         cuartoBimestre,
         segundoCuatrimestre,
@@ -150,7 +153,7 @@ export function formatCalifActualesResponse(response: string, anio: string) {
           nombre: materia,
           primerBimestre,
           segundoBimestre,
-          primerCuatrimeste,
+          primerCuatrimestre,
           tercerBimestre,
           cuartoBimestre,
           segundoCuatrimestre,

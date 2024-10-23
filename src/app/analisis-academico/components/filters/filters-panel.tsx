@@ -9,6 +9,7 @@ import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
 import { FILTERS_FNS } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
+import ProyeccionFilter from './proyeccion-filter'
 // import Filter from './filter'
 
 function FiltersPanel({
@@ -68,7 +69,6 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
-        {/* <Filter title="Proyección" maxTags={3}></Filter> */}
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter materiasUniqueValues={materiasUniqueValues} />
         <CantidadesFilter
@@ -80,6 +80,7 @@ function FiltersPanel({
           repitenciaCantUniqueValues={repitenciaCantUniqueValues}
           repitenciaCantMinMaxValues={repitenciaCantMinMaxValues}
         />
+        <ProyeccionFilter />
         <PromocionFilter uniqueValues={promocionUniqueValues} />
       </div>
     </ScrollArea>
