@@ -18,6 +18,7 @@ export interface SearchParams {
   cantOptativo?: string
   repitenciaAnios?: string
   repitenciaCant?: string
+  proyeccion?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

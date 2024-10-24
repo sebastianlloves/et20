@@ -1,3 +1,5 @@
+import { INSTANCIAS_ANIO } from './constants'
+
 export type MateriasPendientes = {
   cantidad: number | null
   detalle: string[]
@@ -34,17 +36,7 @@ export type StudentCalifActuales = {
   apellido?: string
   nombre?: string
   dni: number
-  materias: {
+  materias: ({
     nombre: string
-    primerBimestre: Calificacion
-    segundoBimestre: Calificacion
-    primerCuatrimestre: Calificacion
-    tercerBimestre: Calificacion
-    cuartoBimestre: Calificacion
-    segundoCuatrimestre: Calificacion
-    anual: Calificacion
-    diciembre: Calificacion
-    febrero: Calificacion
-    definitiva: Calificacion
-  }[]
+  } & Record<(typeof INSTANCIAS_ANIO)[number], Calificacion>)[]
 }

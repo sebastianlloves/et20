@@ -9,21 +9,21 @@ import { columns } from './columns'
 import { SearchParams } from '../page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
+import { INSTANCIAS_ANIO } from '@/lib/constants'
 
 export default async function StudentsTable({
   searchParams,
 }: {
   searchParams: SearchParams
 }) {
-  const { anio, ...filterParams } = searchParams
-  const includeCalifActuales = true
+  const { anio, proyeccion, ...filterParams } = searchParams
   let data = await fetchStudentsData(anio)
 
-  if (includeCalifActuales) {
+  if (proyeccion && isValidInstancia(proyeccion)) {
     console.time('Tiempo proyeción')
     const califActuales = await fetchCalificacionesActuales(data, anio)
     // Reemplazar filteredData en vez de crear una nueva constante
-    data = projectCalifActuales(data, califActuales, 'primerCuatrimestre')
+    data = projectCalifActuales(data, califActuales, proyeccion)
     // const testingFilteredData = projectCalifActuales(
     //   filteredData,
     //   califActuales,
@@ -46,5 +46,14 @@ export default async function StudentsTable({
       </div>
       <DataTable columns={columns} data={filteredData} />
     </>
+  )
+}
+
+function isValidInstancia(
+  instancia: string,
+): instancia is (typeof INSTANCIAS_ANIO)[number] {
+  return (
+    instancia === 'acreditacion' ||
+    INSTANCIAS_ANIO.includes(instancia as (typeof INSTANCIAS_ANIO)[number])
   )
 }

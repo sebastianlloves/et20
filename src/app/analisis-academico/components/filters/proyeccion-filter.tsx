@@ -1,3 +1,5 @@
+'use client'
+
 import { ChartSpline } from 'lucide-react'
 import Filter from './filter'
 import { CARACTER_GRADO } from '@/lib/constants'
@@ -9,52 +11,110 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import useParamsState from '@/hooks/useParamsState'
 
 const periodos: {
-  title: string
-  keys: (keyof StudentCalifActuales['materias'][number])[]
+  itemTitle: string
+  tagTitle: string
+  value: keyof StudentCalifActuales['materias'][number] | 'acreditacion'
 }[] = [
-  { title: `1${CARACTER_GRADO} Bimestre`, keys: ['primerBimestre'] },
-  { title: `2${CARACTER_GRADO} Bimestre`, keys: ['segundoBimestre'] },
-  { title: `3${CARACTER_GRADO} Bimestre`, keys: ['tercerBimestre'] },
-  { title: `4${CARACTER_GRADO} Bimestre`, keys: ['cuartoBimestre'] },
-  { title: `1${CARACTER_GRADO} Cuatrimestre`, keys: ['primerCuatrimestre'] },
-  { title: `2${CARACTER_GRADO} Cuatrimestre`, keys: ['segundoCuatrimestre'] },
-  { title: `Anual`, keys: ['anual'] },
   {
-    title: `Período de acreditación`,
-    keys: ['anual', 'diciembre', 'febrero', 'definitiva'],
+    itemTitle: `1${CARACTER_GRADO} Bimestre`,
+    value: 'primerBimestre',
+    tagTitle: `Incluir calificaciones del 1${CARACTER_GRADO} Bimestre`,
+  },
+  {
+    itemTitle: `2${CARACTER_GRADO} Bimestre`,
+    value: 'segundoBimestre',
+    tagTitle: `Incluir calificaciones del 2${CARACTER_GRADO} Bimestre`,
+  },
+  {
+    itemTitle: `3${CARACTER_GRADO} Bimestre`,
+    value: 'tercerBimestre',
+    tagTitle: `Incluir calificaciones del 3${CARACTER_GRADO} Bimestre`,
+  },
+  {
+    itemTitle: `4${CARACTER_GRADO} Bimestre`,
+    value: 'cuartoBimestre',
+    tagTitle: `Incluir calificaciones del 4${CARACTER_GRADO} Bimestre`,
+  },
+  {
+    itemTitle: `1${CARACTER_GRADO} Cuatrimestre`,
+    value: 'primerCuatrimestre',
+    tagTitle: `Incluir calificaciones del 1${CARACTER_GRADO} Cuatrimestre`,
+  },
+  {
+    itemTitle: `2${CARACTER_GRADO} Cuatrimestre`,
+    value: 'segundoCuatrimestre',
+    tagTitle: `Incluir calificaciones del 2${CARACTER_GRADO} Cuatrimestre`,
+  },
+  {
+    itemTitle: `Anual`,
+    value: 'anual',
+    tagTitle: `Incluir calificaciones del período Anual`,
+  },
+  {
+    itemTitle: `Período de acreditación`,
+    value: 'acreditacion',
+    tagTitle: `Incluir calificaciones del período de Acreditación`,
   },
 ]
 
 function ProyeccionFilter() {
+  const { pathname, replace, searchParams } = useParamsState()
+
+  const filterValue = searchParams.get('proyeccion')
+  const filterValueObj = periodos.find(({ value }) => value === filterValue)
+  const proyeccionTags = filterValueObj
+    ? [
+        {
+          value: filterValueObj.tagTitle,
+          quantity: null,
+        },
+      ]
+    : []
+
+  const updateParams = (value: string) => {
+    filterValue === value
+      ? searchParams.delete('proyeccion')
+      : searchParams.set('proyeccion', value)
+    replace(`${pathname}?${searchParams}`)
+  }
+
+  const handleRemoveAll = () => {
+    searchParams.delete('proyeccion')
+    replace(`${pathname}?${searchParams}`)
+  }
+
   return (
     <Filter
       title="Proyección"
       icon={<ChartSpline strokeWidth={1.4} className="w-[16px] lg:w-[17px]" />}
       maxTags={3}
+      filterTags={proyeccionTags}
+      handleRemoveTag={handleRemoveAll}
+      handleRemoveAll={handleRemoveAll}
     >
       <>
-        <DropdownMenuRadioGroup>
-          <DropdownMenuLabel
-            inset
-            className="max-w-[calc(var(--radix-dropdown-menu-trigger-width)-20px)] text-pretty"
-          >
+        <DropdownMenuRadioGroup
+          value={filterValue || undefined}
+          onValueChange={updateParams}
+        >
+          <DropdownMenuLabel className="max-w-[calc(var(--radix-dropdown-menu-trigger-width)-20px)] text-pretty pl-3">
             Incluir calificaciones del año en curso
           </DropdownMenuLabel>
-          {periodos.map(({ title }) => (
+          {periodos.map(({ itemTitle, value }) => (
             <>
-              {(title === `1${CARACTER_GRADO} Cuatrimestre` ||
-                title === `Período de acreditación`) && (
+              {(itemTitle === `1${CARACTER_GRADO} Cuatrimestre` ||
+                itemTitle === `Período de acreditación`) && (
                 <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
               )}
               <DropdownMenuRadioItem
-                key={title}
-                value={title}
+                key={itemTitle}
+                value={value}
                 className="cursor-pointer"
               >
-                <MenuItem value={title} />
+                <MenuItem value={itemTitle} />
               </DropdownMenuRadioItem>
             </>
           ))}

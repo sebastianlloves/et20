@@ -44,15 +44,13 @@ function PromocionFilter({
     replace(`${pathname}?${searchParams}`)
   }
 
-  const handleRemoveTag = handleRemoveAll
-
   return (
     <Filter
       title="Promoción"
       maxTags={2}
       icon={<BadgeCheck strokeWidth={1.0} className="w-[16px] lg:w-[18px]" />}
       filterTags={promocionTags}
-      handleRemoveTag={handleRemoveTag}
+      handleRemoveTag={handleRemoveAll}
       handleRemoveAll={handleRemoveAll}
     >
       <DropdownMenuRadioGroup

@@ -136,7 +136,7 @@ export function getStudentsUniqueValues(
 export const projectCalifActuales = (
   students: Student[],
   califActuales: StudentCalifActuales[],
-  instancia: keyof StudentCalifActuales['materias'][number],
+  instancia: keyof StudentCalifActuales['materias'][number] | 'acreditacion',
 ) => {
   console.time('Proceso de populación')
 
@@ -203,9 +203,12 @@ export const projectCalifActuales = (
       if (!isValidOrientacion) return
 
       const formatedMateriaName = `${nombre} (${anioValue}°)`
-      const calificacion = califActual.materias.find(
-        (calif) => calif.nombre.split('_')[0] === nombre,
-      )?.[instancia]
+      const calificacion =
+        instancia !== 'acreditacion'
+          ? califActual.materias.find(
+              (calif) => calif.nombre.split('_')[0] === nombre,
+            )?.[instancia]
+          : undefined
 
       const evaluacion = evaluarCalificacion(calificacion)
       if (evaluacion === 'desaprueba')

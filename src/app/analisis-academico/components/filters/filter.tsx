@@ -56,7 +56,7 @@ function Filter({
           className="rounded-md p-1 text-[length:inherit]"
         >
           <ScrollArea className="pr-1">
-            <div className="max-h-[max(80vh,calc(var(--radix-dropdown-menu-content-available-height)-20px))]">
+            <div className="max-h-[calc(var(--radix-dropdown-menu-content-available-height)-20px)] sm:max-h-[80vh]">
               {children}
             </div>
           </ScrollArea>
