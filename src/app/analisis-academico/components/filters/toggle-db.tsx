@@ -1,21 +1,19 @@
 'use client'
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import useParamsState from '@/hooks/useParamsState'
 
 function ToggleDB() {
-  const searchParams = useSearchParams()
+  const { pathname, searchParams, replace } = useParamsState()
   const prevValue = searchParams.get('anio') || '2024'
-  const pathname = usePathname()
-  const { replace } = useRouter()
 
   const handleChange = (value: string) => {
-    const params = new URLSearchParams(searchParams)
     // Borrar esta línea al acomodar la db de califActuales del 2023
-    if (value === '2023') params.delete('proyeccion')
-      
-    params.set('anio', value)
-    replace(`${pathname}?${params.toString()}`)
+    if (value === '2023') searchParams.delete('proyeccion')
+
+    searchParams.set('anio', value)
+    if (searchParams.has('page')) searchParams.delete('page')
+    replace(`${pathname}?${searchParams.toString()}`)
   }
 
   return (

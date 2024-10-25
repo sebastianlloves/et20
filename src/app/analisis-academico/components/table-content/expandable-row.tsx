@@ -24,11 +24,8 @@ function ExpandableRow({
     </Badge>
   ) : (
     <>
-      <Collapsible
-        open={open}
-        className="text-[length:inherit]"
-      >
-        <div className="flex gap-x-3 items-center">
+      <Collapsible open={open} className="text-[length:inherit]">
+        <div className="flex items-center gap-x-3">
           {cantidad === 0 ? (
             <Badge
               variant="success"
@@ -45,9 +42,7 @@ function ExpandableRow({
               {cantidad}
             </Badge>
           )}
-          {error && (
-            <CalificacionesTooltip  errorCalif={error} />
-          )}
+          {error && <CalificacionesTooltip errorCalif={error} />}
         </div>
 
         <CollapsibleContent className="ml-0.5 mt-3 flex flex-col items-start space-y-3 lg:mt-4">

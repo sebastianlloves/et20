@@ -78,11 +78,13 @@ function ProyeccionFilter() {
     filterValue === value
       ? searchParams.delete('proyeccion')
       : searchParams.set('proyeccion', value)
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('proyeccion')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 

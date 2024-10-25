@@ -67,6 +67,7 @@ function RepitenciaFilter({
     newRepitenciaState.length
       ? searchParams.set('repitenciaAnios', newRepitenciaState.join('_'))
       : searchParams.delete('repitenciaAnios')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -74,6 +75,7 @@ function RepitenciaFilter({
     value[0] === min && value[1] === max
       ? searchParams.delete('repitenciaCant')
       : searchParams.set('repitenciaCant', value.join('_'))
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -89,12 +91,14 @@ function RepitenciaFilter({
     } else {
       searchParams.delete('repitenciaCant')
     }
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('repitenciaAnios')
     searchParams.delete('repitenciaCant')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -130,7 +134,7 @@ function RepitenciaFilter({
           </DropdownMenuCheckboxItem>
         ))}
       </>
-      <DropdownMenuSeparator className='mx-1'/>
+      <DropdownMenuSeparator className="mx-1" />
       <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={false}>
         <SliderItem
           title="Cantidad"

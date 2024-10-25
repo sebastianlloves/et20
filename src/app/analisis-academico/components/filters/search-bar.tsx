@@ -2,19 +2,17 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import useParamsState from '@/hooks/useParamsState'
 import { Search, X } from 'lucide-react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
 
 function SearchBar() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const { replace } = useRouter()
+  const { pathname, searchParams, replace } = useParamsState()
 
   const updateUrlParams = useDebouncedCallback((term?: string) => {
-    const params = new URLSearchParams(searchParams)
-    term ? params.set('search', term) : params.delete('search')
-    replace(`${pathname}?${params.toString()}`)
+    term ? searchParams.set('search', term) : searchParams.delete('search')
+    if (searchParams.has('page')) searchParams.delete('page')
+    replace(`${pathname}?${searchParams.toString()}`)
   }, 500)
 
   return (
@@ -29,8 +27,8 @@ function SearchBar() {
       <Input
         key={searchParams.get('search')}
         name="search"
-        className="peer block bg-popover pl-10 lg:pl-12 pr-9 text-xs lg:text-sm"
-        placeholder='Buscar por nombre o DNI'
+        className="peer block bg-popover pl-10 pr-9 text-xs lg:pl-12 lg:text-sm"
+        placeholder="Buscar por nombre o DNI"
         defaultValue={searchParams.get('search')?.toString()}
         onChange={(e) => updateUrlParams(e.target.value)}
       />

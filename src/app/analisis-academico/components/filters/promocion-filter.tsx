@@ -36,11 +36,13 @@ function PromocionFilter({
     promocionValue === newPromocionValue
       ? searchParams.delete('promocion')
       : searchParams.set('promocion', newPromocionValue)
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('promocion')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 

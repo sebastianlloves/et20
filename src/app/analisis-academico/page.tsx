@@ -1,5 +1,5 @@
 import StudentsTable from './components/students-table'
-import ToggleDB from './components/toggle-db'
+import ToggleDB from './components/filters/toggle-db'
 import { Suspense } from 'react'
 import SearchBar from './components/filters/search-bar'
 import SkeletonStudentsTable from './components/skeleton-students-table'
@@ -19,6 +19,7 @@ export interface SearchParams {
   repitenciaAnios?: string
   repitenciaCant?: string
   proyeccion?: string
+  page?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {

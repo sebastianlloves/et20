@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge'
 import { Calificacion, Student, StudentCalifActuales } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
-import { CALIFICACIONES_STRINGS } from './constants'
+import { CALIFICACIONES_STRINGS, INSTANCIAS_ANIO } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -481,4 +481,13 @@ export const evaluarCalificacion = (calificacion?: Calificacion) => {
     return Number(calificacion) >= 6 ? 'aprueba' : 'desaprueba'
   }
   return 'sin calificar'
+}
+
+export function isValidInstancia(
+  instancia: string,
+): instancia is (typeof INSTANCIAS_ANIO)[number] {
+  return (
+    instancia === 'acreditacion' ||
+    INSTANCIAS_ANIO.includes(instancia as (typeof INSTANCIAS_ANIO)[number])
+  )
 }

@@ -31,11 +31,13 @@ function CursosFilter({
     newCursosState.length
       ? searchParams.set('cursos', newCursosState.join('_'))
       : searchParams.delete('cursos')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('cursos')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -44,6 +46,7 @@ function CursosFilter({
     newState.length
       ? searchParams.set('cursos', newState.join('_'))
       : searchParams.delete('cursos')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 

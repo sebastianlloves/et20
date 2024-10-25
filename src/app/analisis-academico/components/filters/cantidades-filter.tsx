@@ -74,6 +74,7 @@ function CantidadesFilter({
       value[0] === min && value[1] === max
         ? searchParams.delete(paramKey)
         : searchParams.set(paramKey, value.join('_'))
+      if (searchParams.has('page')) searchParams.delete('page')
       replace(`${pathname}?${searchParams}`)
     }
 
@@ -81,6 +82,7 @@ function CantidadesFilter({
     searchParams.delete('cantidadesTroncales')
     searchParams.delete('cantidadesGenerales')
     searchParams.delete('cantidadesEnProceso2020')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -91,6 +93,7 @@ function CantidadesFilter({
       searchParams.delete('cantidadesGenerales')
     if (value.split(' ').at(-1)?.includes('2020'))
       searchParams.delete('cantidadesEnProceso2020')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -118,7 +121,7 @@ function CantidadesFilter({
           max={cantidadesMinMaxValues?.troncalesMinMax[1] || 0}
         />
       </DropdownMenuItem>
-      <DropdownMenuSeparator className='mx-1' />
+      <DropdownMenuSeparator className="mx-1" />
       <DropdownMenuItem
         onSelect={(e) => e.preventDefault()}
         disabled={
@@ -136,7 +139,7 @@ function CantidadesFilter({
       </DropdownMenuItem>
       {showEnProceso2020 && (
         <>
-          <DropdownMenuSeparator className='mx-1' />
+          <DropdownMenuSeparator className="mx-1" />
           <DropdownMenuItem
             onSelect={(e) => e.preventDefault()}
             disabled={

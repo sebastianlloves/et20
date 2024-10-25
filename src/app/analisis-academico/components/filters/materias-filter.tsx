@@ -50,6 +50,7 @@ function MateriasFilter({
     newMateriasState.length
       ? searchParams.set('materias', newMateriasState.join('_'))
       : searchParams.delete('materias')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -57,6 +58,7 @@ function MateriasFilter({
     strictInclusion === 'true'
       ? searchParams.delete('inclusionEstricta')
       : searchParams.set('inclusionEstricta', 'true')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -69,12 +71,14 @@ function MateriasFilter({
         ? searchParams.set('materias', newState.join('_'))
         : searchParams.delete('materias')
     }
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('materias')
     if (strictInclusion === 'true') searchParams.delete('inclusionEstricta')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 

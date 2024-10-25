@@ -19,7 +19,7 @@ export async function fetchStudentsData(anio: string = '2024') {
     })
     const textData = await response.text()
     // await new Promise((resolve) => setTimeout(resolve, 5000))
-    return formatStudentsResponse(textData, Number(anio)).slice(0, 40)
+    return formatStudentsResponse(textData, Number(anio))
   } catch (error) {
     throw new Error(`Error al obtener los datos histórico para el año ${anio}`)
   }
@@ -229,7 +229,7 @@ export const projectCalifActuales = (
         error:
           troncalesSinCalificar.size > 0
             ? {
-                type: 'Hay materias sin calificar',
+                type: 'Materia/s troncal/es sin calificación',
                 details: [...troncalesSinCalificar],
               }
             : undefined,
@@ -240,7 +240,7 @@ export const projectCalifActuales = (
         error:
           generalesSinCalificar.size > 0
             ? {
-                type: 'Hay materias sin calificar',
+                type: 'Materia/s general/es sin calificación',
                 details: [...generalesSinCalificar],
               }
             : undefined,
@@ -251,4 +251,33 @@ export const projectCalifActuales = (
   console.timeEnd('Proceso de populación')
 
   return projectedStudents
+}
+
+export const getPagination = (
+  filteredData: Student[],
+  rowsCount: number,
+  pageParam?: string,
+) => {
+  const lastPage = Math.ceil(filteredData.length / rowsCount)
+  const pageIndex =
+    Number(pageParam) >= 1 && Number(pageParam) <= lastPage
+      ? Number(pageParam) - 1
+      : 0
+  const firstPage = 1
+  const currentPage = pageIndex + 1
+  const data = filteredData.slice(
+    pageIndex * rowsCount,
+    pageIndex * rowsCount + rowsCount,
+  )
+  const canNextPage = currentPage + 1 <= lastPage
+  const canPreviousPage = currentPage - 1 >= firstPage
+
+  return {
+    firstPage,
+    currentPage,
+    lastPage,
+    canNextPage,
+    canPreviousPage,
+    data,
+  }
 }

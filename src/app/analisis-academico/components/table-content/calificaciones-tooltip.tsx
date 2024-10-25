@@ -27,11 +27,11 @@ function CalificacionesTooltip({ errorCalif }: CalificacionesTooltipProps) {
           align="start"
           className="max-w-[calc(var(--radix-tooltip-content-available-width)-40px)]"
         >
-          {errorCalif.type === 'Hay materias sin calificar' ? (
+          {errorCalif.details ? (
             <div className="grid gap-1">
-              <p className="text-xs">Materia/s sin calificación:</p>
+              <p className="text-xs">{`${errorCalif.type}:`}</p>
               <ul>
-                {errorCalif.details?.map((materia) => (
+                {errorCalif.details.map((materia) => (
                   <li key={materia} className="-ml-1 p-0">
                     <div className="flex items-start justify-start gap-1">
                       <ChevronRight

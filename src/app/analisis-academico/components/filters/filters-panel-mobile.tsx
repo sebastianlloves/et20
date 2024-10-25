@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/sheet'
 import { ListFilter } from 'lucide-react'
 import React, { ReactNode } from 'react'
-import ToggleDB from '../toggle-db'
+import ToggleDB from './toggle-db'
 import SearchBar from './search-bar'
 
 function FiltersPanelMobile({ children }: { children: ReactNode }) {
