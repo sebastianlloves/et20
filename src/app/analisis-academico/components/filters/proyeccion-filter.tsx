@@ -86,6 +86,8 @@ function ProyeccionFilter() {
     replace(`${pathname}?${searchParams}`)
   }
 
+  if (searchParams.get('anio') === '2023') return false
+
   return (
     <Filter
       title="Proyección"
