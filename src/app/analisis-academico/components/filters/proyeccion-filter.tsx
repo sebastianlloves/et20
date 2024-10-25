@@ -95,31 +95,25 @@ function ProyeccionFilter() {
       handleRemoveTag={handleRemoveAll}
       handleRemoveAll={handleRemoveAll}
     >
-      <>
-        <DropdownMenuRadioGroup
-          value={filterValue || undefined}
-          onValueChange={updateParams}
-        >
-          <DropdownMenuLabel className="max-w-[calc(var(--radix-dropdown-menu-trigger-width)-20px)] text-pretty pl-3">
-            Incluir calificaciones del año en curso
-          </DropdownMenuLabel>
-          {periodos.map(({ itemTitle, value }) => (
-            <>
-              {(itemTitle === `1${CARACTER_GRADO} Cuatrimestre` ||
-                itemTitle === `Período de acreditación`) && (
-                <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
-              )}
-              <DropdownMenuRadioItem
-                key={itemTitle}
-                value={value}
-                className="cursor-pointer"
-              >
-                <MenuItem value={itemTitle} />
-              </DropdownMenuRadioItem>
-            </>
-          ))}
-        </DropdownMenuRadioGroup>
-      </>
+      <DropdownMenuRadioGroup
+        value={filterValue || undefined}
+        onValueChange={updateParams}
+      >
+        <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] text-pretty pl-3">
+          Incluir calificaciones del año en curso
+        </DropdownMenuLabel>
+        {periodos.map(({ itemTitle, value }) => (
+          <div key={itemTitle}>
+            {(itemTitle === `1${CARACTER_GRADO} Cuatrimestre` ||
+              itemTitle === `Período de acreditación`) && (
+              <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+            )}
+            <DropdownMenuRadioItem value={value} className="cursor-pointer">
+              <MenuItem value={itemTitle} />
+            </DropdownMenuRadioItem>
+          </div>
+        ))}
+      </DropdownMenuRadioGroup>
     </Filter>
   )
 }

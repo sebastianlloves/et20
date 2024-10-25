@@ -11,22 +11,25 @@ function ToggleDB() {
 
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams)
+    // Borrar esta línea al acomodar la db de califActuales del 2023
+    if (value === '2023') params.delete('proyeccion')
+      
     params.set('anio', value)
     replace(`${pathname}?${params.toString()}`)
   }
 
   return (
     <Tabs defaultValue={prevValue} onValueChange={handleChange}>
-      <TabsList className="w-full h-fit rounded-lg shadow-sm p-1">
+      <TabsList className="h-fit w-full rounded-lg p-1 shadow-sm">
         <TabsTrigger
           value={'2023'}
-          className="w-full text-sm lg:text-base rounded-md data-[state=active]:bg-card"
+          className="w-full rounded-md text-sm data-[state=active]:bg-card lg:text-base"
         >
           2023
         </TabsTrigger>
         <TabsTrigger
           value={'2024'}
-          className="w-full text-sm lg:text-base rounded-md data-[state=active]:bg-card"
+          className="w-full rounded-md text-sm data-[state=active]:bg-card lg:text-base"
         >
           2024
         </TabsTrigger>
