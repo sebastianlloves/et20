@@ -258,26 +258,58 @@ export const getPagination = (
   rowsCount: number,
   pageParam?: string,
 ) => {
-  const lastPage = Math.ceil(filteredData.length / rowsCount)
-  const pageIndex =
-    Number(pageParam) >= 1 && Number(pageParam) <= lastPage
-      ? Number(pageParam) - 1
-      : 0
   const firstPage = 1
-  const currentPage = pageIndex + 1
+  const lastPage = Math.ceil((filteredData.length || 1) / rowsCount)
+  const currentPage =
+    Number(pageParam) >= firstPage && Number(pageParam) <= lastPage
+      ? Number(pageParam)
+      : 1
+  const pageIndex = currentPage - 1
   const data = filteredData.slice(
     pageIndex * rowsCount,
     pageIndex * rowsCount + rowsCount,
   )
-  const canNextPage = currentPage + 1 <= lastPage
-  const canPreviousPage = currentPage - 1 >= firstPage
+
+  const allPagesNumbers = Array.from(
+    { length: lastPage },
+    (_, index) => index + 1,
+  )
+  const cantConsecutiveNumbers = 1
+  const fixedElements = 2
+  const smallerPrevNumber = currentPage - cantConsecutiveNumbers
+  const biggerNextNumber = currentPage + cantConsecutiveNumbers
+  const bonusNextSpots =
+    smallerPrevNumber - firstPage < fixedElements
+      ? fixedElements - (smallerPrevNumber - firstPage)
+      : 0
+  const bonusPrevSpots =
+    lastPage - biggerNextNumber <= fixedElements
+      ? fixedElements - (lastPage - biggerNextNumber)
+      : 0
+  /* console.log(
+    `Paginación: bonusNextSpots ${bonusNextSpots}. smallerPrevNumber ${smallerPrevNumber}`,
+  )
+  console.log(
+    `Paginación: bonusPrevSpots ${bonusPrevSpots}. biggerNextNumber ${biggerNextNumber}`,
+  ) */
+
+  const setNumbers = new Set<number>()
+  allPagesNumbers.forEach((pageNumber) => {
+    const diferencia = pageNumber - currentPage
+    if (
+      pageNumber === firstPage ||
+      pageNumber === lastPage ||
+      (diferencia <= cantConsecutiveNumbers + bonusNextSpots &&
+        diferencia >= -cantConsecutiveNumbers - bonusPrevSpots)
+    )
+      setNumbers.add(pageNumber)
+  })
+  const pagesButtons = Array.from([...setNumbers].sort((a, b) => a - b))
 
   return {
-    firstPage,
+    data,
     currentPage,
     lastPage,
-    canNextPage,
-    canPreviousPage,
-    data,
+    pagesButtons,
   }
 }

@@ -11,7 +11,7 @@ import { SearchParams } from '../page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 import { isValidInstancia } from '@/lib/utils'
-import Pagination from './pagination'
+import TablePagination from './table-pagination'
 
 const ROWS_COUNT = 50
 
@@ -50,9 +50,6 @@ export default async function StudentsTable({
 
   return (
     <>
-      <div className="col-span-full">
-        <Pagination paginationUtils={paginationUtils} />
-      </div>
       <FiltersPanelMobile>
         <FiltersPanel filterParams={filterParams} data={data} />
       </FiltersPanelMobile>
@@ -60,6 +57,7 @@ export default async function StudentsTable({
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
       <DataTable columns={columns} data={paginatedData} />
+      <TablePagination paginationUtils={paginationUtils} />
     </>
   )
 }
