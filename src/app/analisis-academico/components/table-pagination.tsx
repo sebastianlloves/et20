@@ -38,20 +38,22 @@ function TablePagination({
   }
 
   return (
-    <div className="relative col-start-2 flex items-center justify-center">
-      <div className="absolute left-4 w-fit justify-self-start">
+    <div className="relative -mt-2 flex flex-col items-center justify-end gap-y-1 px-2 md:flex-row lg:col-start-2 xl:px-4">
+      <div className="left-2 flex h-8 w-fit items-center self-start md:absolute md:self-center lg:left-4 lg:h-10">
         {totalSize === undefined ? (
           <Skeleton className="h-3 w-56 rounded-full bg-muted-foreground/20" />
         ) : (
           totalSize > 0 && (
-            <p className="text-sm">
-              {`Mostrando ${indexFirstElement}-${indexLastElement} de`}{' '}
-              <span className='font-medium'>{` ${totalSize}`}</span> {'resultados'}
+            <p className="text-xs text-foreground/90 lg:text-sm">
+              <span className="hidden xl:inline">{'Mostrando '}</span>
+              {`${indexFirstElement}-${indexLastElement} de`}{' '}
+              <span className="font-medium">{` ${totalSize}`}</span>{' '}
+              {'resultados'}
             </p>
           )
         )}
       </div>
-      <Pagination className="w-fit">
+      <Pagination className="mx-0 w-fit">
         <PaginationContent>
           <PaginationPrevious
             href={{
@@ -59,23 +61,24 @@ function TablePagination({
               query: getPageLink(currentPage - 1),
             }}
             isDisabled={currentPage === 1 || !pagesButtons.length}
-            className="mr-2"
+            className="mr-1 h-7 px-3 lg:px-4 py-0 text-xs lg:mr-2 lg:h-9 lg:text-sm"
           />
           {pagesButtons.length > 0 ? (
             pagesButtons.map((buttonNumber, index) => (
               <>
                 <PaginationLink
-                  key={buttonNumber}
+                  key={index}
                   href={{
                     pathname: '/analisis-academico',
                     query: getPageLink(buttonNumber),
                   }}
                   isActive={buttonNumber === currentPage}
+                  className="h-7 w-7 text-xs lg:h-9 lg:w-9 lg:text-sm"
                 >
                   {buttonNumber}
                 </PaginationLink>
                 {pagesButtons[index + 1] - buttonNumber > 1 && (
-                  <PaginationEllipsis />
+                  <PaginationEllipsis className="h-7 w-7 lg:h-9 lg:w-9" />
                 )}
               </>
             ))
@@ -88,7 +91,7 @@ function TablePagination({
               query: getPageLink(currentPage + 1),
             }}
             isDisabled={currentPage === lastPage || !pagesButtons.length}
-            className="ml-2"
+            className="ml-1 text-xs lg:ml-2 lg:text-sm"
           />
         </PaginationContent>
       </Pagination>

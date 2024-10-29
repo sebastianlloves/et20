@@ -33,12 +33,8 @@ function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
 
   return (
     <>
-      <FiltersPanelMobile>
-        <FiltersPanel />
-      </FiltersPanelMobile>
-      <div className="hidden lg:block">
-        <FiltersPanel />
-      </div>
+      <FiltersPanelMobile className="block lg:hidden" />
+      <FiltersPanel className="hidden lg:block" />
       <DataTable columns={skeletonColumns} data={skeletonData} />
       <TablePagination
         paginationUtils={{ currentPage, lastPage, totalSize: undefined }}

@@ -7,7 +7,7 @@ import MateriasFilter from './materias-filter'
 import { Student } from '@/lib/definitions'
 import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
-import { FILTERS_FNS } from '@/lib/utils'
+import { cn, FILTERS_FNS } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
 import ProyeccionFilter from './proyeccion-filter'
 // import Filter from './filter'
@@ -15,9 +15,11 @@ import ProyeccionFilter from './proyeccion-filter'
 function FiltersPanel({
   filterParams = {},
   data,
+  className,
 }: {
   filterParams?: Omit<SearchParams, 'anio'>
   data?: Student[]
+  className?: string
 }) {
   const cursosUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cursos')
@@ -61,7 +63,12 @@ function FiltersPanel({
     data && FILTERS_FNS.repitencia.getMinMaxCant(data)
 
   return (
-    <ScrollArea className="h-full rounded-md bg-card lg:h-[80vh] lg:border lg:shadow-sm">
+    <ScrollArea
+      className={cn(
+        'h-full rounded-md bg-card lg:h-[75vh] lg:border lg:shadow-sm',
+        className,
+      )}
+    >
       <div className="flex flex-col items-start justify-start gap-y-4 p-1 text-xs lg:px-2 lg:py-4 lg:text-sm">
         <div className="mb-6 hidden w-1/2 items-center justify-start gap-6 px-2 lg:flex">
           <ListFilter size={16} className="min-w-6" />

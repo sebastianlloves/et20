@@ -3,7 +3,7 @@ import {
   fetchStudentsData,
   getFilteredStudentData,
   getPagination,
-  getSortedData,
+  // getSortedData,
   projectCalifActuales,
 } from '@/lib/data'
 import DataTable from '../../../components/ui/data-table'
@@ -31,7 +31,7 @@ export default async function StudentsTable({
     console.timeEnd('Tiempo proyeción')
   }
   const filteredData = getFilteredStudentData(data, filterParams)
-  const sortedData = getSortedData(filteredData, searchParams.sort)
+  // const sortedData = getSortedData(filteredData, searchParams.sort)
   // console.log(sortedData)
 
   const { paginatedData, ...paginationUtils } = getPagination(
@@ -42,12 +42,16 @@ export default async function StudentsTable({
 
   return (
     <>
-      <FiltersPanelMobile>
-        <FiltersPanel filterParams={filterParams} data={data} />
-      </FiltersPanelMobile>
-      <div className="hidden lg:block">
-        <FiltersPanel filterParams={filterParams} data={data} />
-      </div>
+      <FiltersPanelMobile
+        filterParams={filterParams}
+        data={data}
+        className="block lg:hidden"
+      />
+      <FiltersPanel
+        filterParams={filterParams}
+        data={data}
+        className="hidden lg:block"
+      />
       <DataTable columns={columns} data={paginatedData} />
       <TablePagination
         paginationUtils={paginationUtils}

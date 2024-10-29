@@ -2,7 +2,7 @@ import { Column } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { ArrowUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import useParamsState from '@/hooks/useParamsState'
+// import useParamsState from '@/hooks/useParamsState'
 
 interface ColumnHeadProps<TData, TValue> {
   column: Column<TData, TValue>
@@ -13,7 +13,7 @@ function ColumnHead<TData, TValue>({
   column,
   className,
 }: ColumnHeadProps<TData, TValue>) {
-  const { pathname, searchParams, replace } = useParamsState()
+  // const { pathname, searchParams, replace } = useParamsState()
   return (
     <Button
       variant="link"

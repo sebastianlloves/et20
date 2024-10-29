@@ -19,7 +19,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" className="min-w-full">
       <body
         className={cn(
           /* inter.className,  */ openSans.className,
@@ -32,12 +32,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <header className="flex justify-end pb-0 p-1 lg:p-2">
+          <header className="flex justify-end p-1 pb-0 lg:p-2">
             <ModeToggle />
           </header>
-          <main>
-            {children}
-          </main>
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>

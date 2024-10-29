@@ -69,8 +69,12 @@ const PaginationPrevious = ({
   ...props
 }: React.ComponentProps<typeof PaginationLink>) =>
   isDisabled ? (
-    <Button disabled variant="ghost" className={cn('gap-1.5 pl-2.5', className)}>
-      <ChevronLeft className="h-4 w-4" />
+    <Button
+      disabled
+      variant="ghost"
+      className={cn('gap-1.5 pl-2.5', className)}
+    >
+      <ChevronLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
       <span>Anterior</span>
     </Button>
   ) : (
@@ -80,7 +84,7 @@ const PaginationPrevious = ({
       className={cn('gap-1.5 pl-2.5', className)}
       {...props}
     >
-      <ChevronLeft className="h-4 w-4" />
+      <ChevronLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
       <span>Anterior</span>
     </PaginationLink>
   )
@@ -92,9 +96,13 @@ const PaginationNext = ({
   ...props
 }: React.ComponentProps<typeof PaginationLink>) =>
   isDisabled ? (
-    <Button disabled variant="ghost" className={cn('gap-1.5 pr-2.5', className)}>
+    <Button
+      disabled
+      variant="ghost"
+      className={cn('gap-1.5 pr-2.5', className)}
+    >
       <span>Siguiente</span>
-      <ChevronRight className="h-4 w-4" />
+      <ChevronRight className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
     </Button>
   ) : (
     <PaginationLink
@@ -104,7 +112,7 @@ const PaginationNext = ({
       {...props}
     >
       <span>Siguiente</span>
-      <ChevronRight className="h-4 w-4" />
+      <ChevronRight className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
     </PaginationLink>
   )
 PaginationNext.displayName = 'PaginationNext'
@@ -120,7 +128,7 @@ const PaginationEllipsis = ({
         variant: 'ghost',
         size: 'icon',
       }),
-      'flex items-end justify-center hover:bg-[inherit] pb-1.5',
+      'flex items-end justify-center pb-1 lg:pb-1.5 hover:bg-[inherit]',
       className,
     )}
     {...props}
