@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPagesNumbers } from '@/lib/utils'
-import { SearchParams } from '../page'
+import { SearchParams } from '../../app/analisis-academico/page'
 
 interface TablePaginationProps {
   paginationUtils: {
@@ -61,7 +61,7 @@ function TablePagination({
               query: getPageLink(currentPage - 1),
             }}
             isDisabled={currentPage === 1 || !pagesButtons.length}
-            className="mr-1 h-7 px-3 lg:px-4 py-0 text-xs lg:mr-2 lg:h-9 lg:text-sm"
+            className="mr-1 h-7 px-3 py-0 text-xs lg:mr-2 lg:h-9 lg:px-4 lg:text-sm"
           />
           {pagesButtons.length > 0 ? (
             pagesButtons.map((buttonNumber, index) => (

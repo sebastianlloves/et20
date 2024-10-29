@@ -3,12 +3,12 @@
 import { Column } from '@tanstack/react-table'
 import { Student } from '@/lib/definitions'
 import { Skeleton } from '@/components/ui/skeleton'
-import { columns } from './columns'
+import { columns } from '../../app/analisis-academico/columns'
 import FiltersPanel from './filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 import TablePagination from './table-pagination'
-import { SearchParams } from '../page'
+import { SearchParams } from '../../app/analisis-academico/page'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams

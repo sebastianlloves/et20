@@ -11,7 +11,10 @@ import {
 import MenuItem from './menu-item'
 import SliderItem from './slider-item'
 import useParamsState from '@/hooks/useParamsState'
-import { getCantRepitenciasString, getSliderFilterData } from '../../utils'
+import {
+  getCantRepitenciasString,
+  getSliderFilterData,
+} from '../../../app/analisis-academico/utils'
 
 function RepitenciaFilter({
   repitenciaAniosUniqueValues,

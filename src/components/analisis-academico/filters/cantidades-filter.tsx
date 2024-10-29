@@ -8,7 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import { getCantMateriasString, getSliderFilterData } from '../../utils'
+import {
+  getCantMateriasString,
+  getSliderFilterData,
+} from '../../../app/analisis-academico/utils'
 
 function CantidadesFilter({
   cantidadesUniqueValues,

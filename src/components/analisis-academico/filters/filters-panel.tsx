@@ -1,6 +1,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
-import { SearchParams } from '../../page'
+import { SearchParams } from '../../../app/analisis-academico/page'
 import CursosFilter from './cursos-filter'
 import PromocionFilter from './promocion-filter'
 import MateriasFilter from './materias-filter'
