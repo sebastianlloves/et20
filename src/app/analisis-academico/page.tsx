@@ -20,6 +20,7 @@ export interface SearchParams {
   repitenciaCant?: string
   proyeccion?: string
   page?: string
+  sort?: string
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
@@ -33,7 +34,7 @@ export default function Page({ searchParams }: { searchParams: SearchParams }) {
       </div>
       <Suspense
         key={JSON.stringify(searchParams)}
-        fallback={<SkeletonStudentsTable />}
+        fallback={<SkeletonStudentsTable searchParams={searchParams} />}
       >
         <StudentsTable searchParams={searchParams} />
       </Suspense>

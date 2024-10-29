@@ -133,6 +133,10 @@ export function getStudentsUniqueValues(
   return facetedModel
 }
 
+export const getSortedData = (filteredData: Student[], sortParam?: string) => {
+  return { filteredData, sortParam }
+}
+
 export const projectCalifActuales = (
   students: Student[],
   califActuales: StudentCalifActuales[],
@@ -260,56 +264,27 @@ export const getPagination = (
 ) => {
   const firstPage = 1
   const lastPage = Math.ceil((filteredData.length || 1) / rowsCount)
+  const currentPageParam = Number(pageParam?.split('_')[0])
   const currentPage =
-    Number(pageParam) >= firstPage && Number(pageParam) <= lastPage
-      ? Number(pageParam)
+    currentPageParam >= firstPage && currentPageParam <= lastPage
+      ? currentPageParam
       : 1
   const pageIndex = currentPage - 1
   const data = filteredData.slice(
     pageIndex * rowsCount,
     pageIndex * rowsCount + rowsCount,
   )
-
-  const allPagesNumbers = Array.from(
-    { length: lastPage },
-    (_, index) => index + 1,
-  )
-  const cantConsecutiveNumbers = 1
-  const fixedElements = 2
-  const smallerPrevNumber = currentPage - cantConsecutiveNumbers
-  const biggerNextNumber = currentPage + cantConsecutiveNumbers
-  const bonusNextSpots =
-    smallerPrevNumber - firstPage < fixedElements
-      ? fixedElements - (smallerPrevNumber - firstPage)
-      : 0
-  const bonusPrevSpots =
-    lastPage - biggerNextNumber <= fixedElements
-      ? fixedElements - (lastPage - biggerNextNumber)
-      : 0
-  /* console.log(
-    `Paginación: bonusNextSpots ${bonusNextSpots}. smallerPrevNumber ${smallerPrevNumber}`,
-  )
-  console.log(
-    `Paginación: bonusPrevSpots ${bonusPrevSpots}. biggerNextNumber ${biggerNextNumber}`,
-  ) */
-
-  const setNumbers = new Set<number>()
-  allPagesNumbers.forEach((pageNumber) => {
-    const diferencia = pageNumber - currentPage
-    if (
-      pageNumber === firstPage ||
-      pageNumber === lastPage ||
-      (diferencia <= cantConsecutiveNumbers + bonusNextSpots &&
-        diferencia >= -cantConsecutiveNumbers - bonusPrevSpots)
-    )
-      setNumbers.add(pageNumber)
-  })
-  const pagesButtons = Array.from([...setNumbers].sort((a, b) => a - b))
+  const indexFirstElement =
+    filteredData.findIndex(({ dni }) => dni === data.at(0)?.dni) + 1
+  const indexLastElement =
+    filteredData.findIndex(({ dni }) => dni === data.at(-1)?.dni) + 1
 
   return {
-    data,
+    paginatedData: data,
     currentPage,
     lastPage,
-    pagesButtons,
+    indexFirstElement,
+    indexLastElement,
+    totalSize: filteredData.length,
   }
 }

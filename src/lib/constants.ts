@@ -425,11 +425,19 @@ export const DB_CALIFICACIONES: {
       },
       '3° año_TICS': {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=202943222&single=true&output=tsv',
-        tags: ['califActuales_3-2_2024', 'califActuales_3-3_2024', 'califActuales_3-6_2024'],
+        tags: [
+          'califActuales_3-2_2024',
+          'califActuales_3-3_2024',
+          'califActuales_3-6_2024',
+        ],
       },
       '3° año_MULTIMEDIA': {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1989201134&single=true&output=tsv',
-        tags: ['califActuales_3-1_2024', 'califActuales_3-4_2024', 'califActuales_3-5_2024'],
+        tags: [
+          'califActuales_3-1_2024',
+          'califActuales_3-4_2024',
+          'califActuales_3-5_2024',
+        ],
       },
       '4° año_TICS': {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=2056764536&single=true&output=tsv',
@@ -446,7 +454,7 @@ export const DB_CALIFICACIONES: {
       '5° año_MULTIMEDIA': {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=2005552135&single=true&output=tsv',
         tags: ['califActuales_5-1_2024', 'califActuales_5-3_2024'],
-      } /* 
+      },
       '6° año_TICS': {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=677971158&single=true&output=tsv',
         tags: ['califActuales_6-2_2024'],
@@ -454,7 +462,7 @@ export const DB_CALIFICACIONES: {
       '6° año_MULTIMEDIA': {
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPaEYIoQsDMJpM5X2Cm1thaN3GGnVyGtywuHKuKi2_Vd7DKgRplNjh5XbvfwIPXy4k7nAiPfeiurSw/pub?gid=1992535574&single=true&output=tsv',
         tags: ['califActuales_6-1_2024'],
-      }, */,
+      },
     },
   },
   '2023': {

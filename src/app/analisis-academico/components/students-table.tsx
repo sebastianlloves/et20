@@ -3,6 +3,7 @@ import {
   fetchStudentsData,
   getFilteredStudentData,
   getPagination,
+  getSortedData,
   projectCalifActuales,
 } from '@/lib/data'
 import DataTable from '../../../components/ui/data-table'
@@ -26,27 +27,18 @@ export default async function StudentsTable({
   if (proyeccion && isValidInstancia(proyeccion)) {
     console.time('Tiempo proyeción')
     const califActuales = await fetchCalificacionesActuales(data, anio)
-    // Reemplazar filteredData en vez de crear una nueva constante
     data = projectCalifActuales(data, califActuales, proyeccion)
-    // const testingFilteredData = projectCalifActuales(
-    //   filteredData,
-    //   califActuales,
-    //   'primerCuatrimeste',
-    // )
-    // console.log(
-    //   JSON.stringify(testingFilteredData.find(({ dni }) => dni === 50156849)),
-    // )
     console.timeEnd('Tiempo proyeción')
   }
   const filteredData = getFilteredStudentData(data, filterParams)
+  const sortedData = getSortedData(filteredData, searchParams.sort)
+  // console.log(sortedData)
 
-  console.time('Paginación')
-  const { data: paginatedData, ...paginationUtils } = getPagination(
+  const { paginatedData, ...paginationUtils } = getPagination(
     filteredData,
     ROWS_COUNT,
     page,
   )
-  console.timeEnd('Paginación')
 
   return (
     <>
@@ -57,7 +49,10 @@ export default async function StudentsTable({
         <FiltersPanel filterParams={filterParams} data={data} />
       </div>
       <DataTable columns={columns} data={paginatedData} />
-      <TablePagination paginationUtils={paginationUtils} />
+      <TablePagination
+        paginationUtils={paginationUtils}
+        searchParams={searchParams}
+      />
     </>
   )
 }

@@ -491,3 +491,38 @@ export function isValidInstancia(
     INSTANCIAS_ANIO.includes(instancia as (typeof INSTANCIAS_ANIO)[number])
   )
 }
+
+export const getPagesNumbers = (currentPage: number, lastPage: number) => {
+  const firstPage = 1
+  const allPagesNumbers = Array.from(
+    { length: lastPage },
+    (_, index) => index + 1,
+  )
+  const cantConsecutiveNumbers = 1
+  const fixedElements = 2
+  const smallerPrevNumber = currentPage - cantConsecutiveNumbers
+  const biggerNextNumber = currentPage + cantConsecutiveNumbers
+  const bonusNextSpots =
+    smallerPrevNumber - firstPage < fixedElements
+      ? fixedElements - (smallerPrevNumber - firstPage)
+      : 0
+  const bonusPrevSpots =
+    lastPage - biggerNextNumber <= fixedElements
+      ? fixedElements - (lastPage - biggerNextNumber)
+      : 0
+
+  const setNumbers = new Set<number>()
+  allPagesNumbers.forEach((pageNumber) => {
+    const diferencia = pageNumber - currentPage
+    if (
+      pageNumber === firstPage ||
+      pageNumber === lastPage ||
+      (diferencia <= cantConsecutiveNumbers + bonusNextSpots &&
+        diferencia >= -cantConsecutiveNumbers - bonusPrevSpots)
+    )
+      setNumbers.add(pageNumber)
+  })
+  const pagesButtons = Array.from([...setNumbers].sort((a, b) => a - b))
+  
+  return pagesButtons
+}

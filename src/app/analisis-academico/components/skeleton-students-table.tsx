@@ -7,8 +7,14 @@ import { columns } from './columns'
 import FiltersPanel from './filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
+import TablePagination from './table-pagination'
+import { SearchParams } from '../page'
 
-function SkeletonStudentsTable() {
+interface SkeletonStudentsTableProps {
+  searchParams: SearchParams
+}
+
+function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
   const skeletonData = Array(30).fill({})
   const skeletonColumns = columns.map((column) => {
     return {
@@ -22,6 +28,8 @@ function SkeletonStudentsTable() {
       ),
     }
   })
+  const [currentPage, lastPage] =
+    searchParams?.page?.split('_').map((value) => Number(value)) || []
 
   return (
     <>
@@ -32,6 +40,10 @@ function SkeletonStudentsTable() {
         <FiltersPanel />
       </div>
       <DataTable columns={skeletonColumns} data={skeletonData} />
+      <TablePagination
+        paginationUtils={{ currentPage, lastPage, totalSize: undefined }}
+        searchParams={searchParams}
+      />
     </>
   )
 }
