@@ -3,10 +3,11 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import useParamsState from '@/hooks/useParamsState'
+import { cn } from '@/lib/utils'
 import { Search, X } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
 
-function SearchBar() {
+function SearchBar({ className }: { className?: string }) {
   const { pathname, searchParams, replace } = useParamsState()
 
   const updateUrlParams = useDebouncedCallback((term?: string) => {
@@ -16,7 +17,7 @@ function SearchBar() {
   }, 500)
 
   return (
-    <div className="relative flex p-1 lg:w-1/3 lg:min-w-64 lg:p-0">
+    <div className={cn("relative flex p-1 lg:w-1/3 lg:min-w-64 lg:p-0", className)}>
       <label htmlFor="search" className="sr-only">
         Search
       </label>

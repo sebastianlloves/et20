@@ -6,9 +6,10 @@ import {
   FILTERS_FNS,
   formatCalifActualesResponse,
   formatStudentsResponse,
+  SORTING_FNS,
 } from './utils'
 
-export async function fetchStudentsData(anio: string = '2024') {
+export async function fetchCalificacionesHistoricas(anio: string = '2024') {
   if (!(anio in DB_CALIFICACIONES))
     throw new Error(`No hay datos para el año ${anio}`)
   try {
@@ -26,9 +27,9 @@ export async function fetchStudentsData(anio: string = '2024') {
 }
 
 export async function fetchCalificacionesActuales(
-  data: Student[],
+  // data: Student[],
   anio: string = '2024',
-  cursosFilter?: string[],
+  // cursosFilter?: string[],
 ) {
   console.time('depuracion')
   if (!(anio in DB_CALIFICACIONES))
@@ -133,8 +134,33 @@ export function getStudentsUniqueValues(
   return facetedModel
 }
 
-export const getSortedData = (filteredData: Student[], sortParam?: string) => {
-  return { filteredData, sortParam }
+export const getSortedData = (filteredData: Student[], sortParam: string) => {
+  const columnsParams = sortParam.split('_').map((value) => {
+    const [columnIdParam, order] = value.split('-')
+    return { columnIdParam, order }
+  })
+  const sortData = columnsParams
+    .map(({ columnIdParam, order }) => {
+      const sortObj = SORTING_FNS.find(
+        ({ columnId }) => columnId === columnIdParam,
+      )
+      if (sortObj) return { ...sortObj, order }
+      return null
+    })
+    .filter((value) => value !== null)
+  console.log(sortData)
+
+  const sortedData = filteredData.sort((a, b) => {
+    for (const sortingData of sortData) {
+      const { fn, order } = sortingData
+      const firstEl = order === 'desc' ? b : a
+      const secondEl = order === 'desc' ? a : b
+      const sortResult = fn(firstEl, secondEl)
+      if (sortResult !== 0) return sortResult
+    }
+    return 0
+  })
+  return sortedData
 }
 
 export const projectCalifActuales = (

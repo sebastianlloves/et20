@@ -1,9 +1,9 @@
 import {
   fetchCalificacionesActuales,
-  fetchStudentsData,
+  fetchCalificacionesHistoricas,
   getFilteredStudentData,
   getPagination,
-  // getSortedData,
+  getSortedData,
   projectCalifActuales,
 } from '@/lib/data'
 import DataTable from '../ui/data-table'
@@ -21,18 +21,19 @@ export default async function StudentsTable({
 }: {
   searchParams: SearchParams
 }) {
-  const { anio, proyeccion, page, ...filterParams } = searchParams
-  let data = await fetchStudentsData(anio)
+  const { anio, proyeccion, page, sort, ...filterParams } = searchParams
+  const califHistoricas = await fetchCalificacionesHistoricas(anio)
+  let data
 
   if (proyeccion && isValidInstancia(proyeccion)) {
     console.time('Tiempo proyeción')
-    const califActuales = await fetchCalificacionesActuales(data, anio)
-    data = projectCalifActuales(data, califActuales, proyeccion)
+    const califActuales = await fetchCalificacionesActuales(anio)
+    data = projectCalifActuales(califHistoricas, califActuales, proyeccion)
     console.timeEnd('Tiempo proyeción')
-  }
+  } else data = califHistoricas
+
   const filteredData = getFilteredStudentData(data, filterParams)
-  // const sortedData = getSortedData(filteredData, searchParams.sort)
-  // console.log(sortedData)
+  if (sort) data = getSortedData(filteredData, sort)
 
   const { paginatedData, ...paginationUtils } = getPagination(
     filteredData,

@@ -65,9 +65,8 @@ function TablePagination({
           />
           {pagesButtons.length > 0 ? (
             pagesButtons.map((buttonNumber, index) => (
-              <>
+              <div key={index} className='flex'>
                 <PaginationLink
-                  key={index}
                   href={{
                     pathname: '/analisis-academico',
                     query: getPageLink(buttonNumber),
@@ -80,7 +79,7 @@ function TablePagination({
                 {pagesButtons[index + 1] - buttonNumber > 1 && (
                   <PaginationEllipsis className="h-7 w-7 lg:h-9 lg:w-9" />
                 )}
-              </>
+              </div>
             ))
           ) : (
             <Skeleton className="h-6 w-52 rounded-md bg-muted-foreground/15" />

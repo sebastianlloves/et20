@@ -3,7 +3,11 @@ import { twMerge } from 'tailwind-merge'
 import { Calificacion, Student, StudentCalifActuales } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
-import { CALIFICACIONES_STRINGS, INSTANCIAS_ANIO } from './constants'
+import {
+  CALIFICACIONES_STRINGS,
+  CARACTER_GRADO,
+  INSTANCIAS_ANIO,
+} from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -433,6 +437,52 @@ export const FILTERS_FNS = {
   },
 } as const
 
+export const SORTING_FNS = [
+  {
+    columnId: 'curso',
+    fn: (a: Student, b: Student) => {
+      const cursoA = `${a.anio}${CARACTER_GRADO} ${a.division}${CARACTER_GRADO}`
+      const cursoB = `${b.anio}${CARACTER_GRADO} ${b.division}${CARACTER_GRADO}`
+      return cursoA.localeCompare(cursoB)
+    },
+  },
+  {
+    columnId: 'estudiante',
+    fn: (a: Student, b: Student) => {
+      const estudianteA = `${a.apellido} ${a.nombre}`
+      const estudianteB = `${b.apellido} ${b.nombre}`
+      return estudianteA.localeCompare(estudianteB)
+    },
+  },
+  {
+    columnId: 'dni',
+    fn: (a: Student, b: Student) => {
+      if (a.dni === null || b.dni === null) return -1
+      return a.dni - b.dni
+    },
+  },
+  {
+    columnId: 'troncales',
+    fn: (a: Student, b: Student) => {
+      const {cantidad: cantidadA, error: errorA} = a.troncales
+      const {cantidad: cantidadB, error: errorB} = b.troncales
+      if (cantidadA === null || (errorA && !errorB)) return 1
+      if (cantidadB === null || (errorB && !errorA)) return -1
+      return cantidadA - cantidadB
+    },
+  },
+  {
+    columnId: 'generales',
+    fn: (a: Student, b: Student) => {
+      const {cantidad: cantidadA, error: errorA} = a.generales
+      const {cantidad: cantidadB, error: errorB} = b.generales
+      if (cantidadA === null || (errorA && !errorB)) return 1
+      if (cantidadB === null || (errorB && !errorA)) return -1
+      return cantidadA - cantidadB
+    },
+  },
+]
+
 const capitalizeWords = (words: string) =>
   words
     .toLowerCase()
@@ -523,6 +573,6 @@ export const getPagesNumbers = (currentPage: number, lastPage: number) => {
       setNumbers.add(pageNumber)
   })
   const pagesButtons = Array.from([...setNumbers].sort((a, b) => a - b))
-  
+
   return pagesButtons
 }
