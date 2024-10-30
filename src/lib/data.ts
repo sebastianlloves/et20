@@ -144,8 +144,7 @@ export const getSortedData = (filteredData: Student[], sortParam: string) => {
       const sortObj = SORTING_FNS.find(
         ({ columnId }) => columnId === columnIdParam,
       )
-      if (sortObj) return { ...sortObj, order }
-      return null
+      return sortObj ? { ...sortObj, order } : null
     })
     .filter((value) => value !== null)
   console.log(sortData)
@@ -160,6 +159,7 @@ export const getSortedData = (filteredData: Student[], sortParam: string) => {
     }
     return 0
   })
+  
   return sortedData
 }
 
