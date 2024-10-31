@@ -2,13 +2,13 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
 import { SearchParams } from '../../../app/analisis-academico/page'
 import CursosFilter from './cursos-filter'
-import PromocionFilter from './promocion-filter'
 import MateriasFilter from './materias-filter'
 import { Student } from '@/lib/definitions'
 import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
 import { cn, FILTERS_FNS } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
+import CalifParcialesFilter from './calif-parciales-filter'
 import ProyeccionFilter from './proyeccion-filter'
 // import Filter from './filter'
 
@@ -31,8 +31,8 @@ function FiltersPanel({
       'materias',
       filterParams.inclusionEstricta === 'true',
     )
-  const promocionUniqueValues =
-    data && getStudentsUniqueValues(data, filterParams, 'promocion')
+  const proyeccionUniqueValues =
+    data && getStudentsUniqueValues(data, filterParams, 'proyeccion')
   const cantidadesUniqueValues =
     data && getStudentsUniqueValues(data, filterParams, 'cantidades', true)
   const cantidadesMinMaxValues =
@@ -76,6 +76,7 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
+        <CalifParcialesFilter />
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter materiasUniqueValues={materiasUniqueValues} />
         <CantidadesFilter
@@ -87,8 +88,7 @@ function FiltersPanel({
           repitenciaCantUniqueValues={repitenciaCantUniqueValues}
           repitenciaCantMinMaxValues={repitenciaCantMinMaxValues}
         />
-        <ProyeccionFilter />
-        <PromocionFilter uniqueValues={promocionUniqueValues} />
+        <ProyeccionFilter uniqueValues={proyeccionUniqueValues} />
       </div>
     </ScrollArea>
   )

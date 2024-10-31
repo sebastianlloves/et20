@@ -2,6 +2,7 @@ import { SearchParams } from '@/app/analisis-academico/page'
 import { CURSOS, DB_CALIFICACIONES, MATERIAS_POR_CURSO } from './constants'
 import { Student, StudentCalifActuales } from './definitions'
 import {
+  defineProyeccion,
   evaluarCalificacion,
   FILTERS_FNS,
   formatCalifActualesResponse,
@@ -20,7 +21,10 @@ export async function fetchCalificacionesHistoricas(anio: string = '2024') {
     })
     const textData = await response.text()
     // await new Promise((resolve) => setTimeout(resolve, 5000))
-    return formatStudentsResponse(textData, Number(anio))
+    console.time('formatStudentsResponse')
+    const studentsResponse = formatStudentsResponse(textData, Number(anio))
+    console.timeEnd('formatStudentsResponse')
+    return studentsResponse
   } catch (error) {
     throw new Error(`Error al obtener los datos histórico para el año ${anio}`)
   }
@@ -159,7 +163,7 @@ export const getSortedData = (filteredData: Student[], sortParam: string) => {
     }
     return 0
   })
-  
+
   return sortedData
 }
 
@@ -169,6 +173,11 @@ export const projectCalifActuales = (
   instancia: keyof StudentCalifActuales['materias'][number] | 'acreditacion',
 ) => {
   console.time('Proceso de populación')
+  const ultimoAnio =
+    Object.keys(CURSOS)
+      .map((key) => Number(key[0]))
+      .sort()
+      .at(-1) || 0
 
   const projectedStudents = students.map((student) => {
     const { anio, division, dni } = student
@@ -251,30 +260,41 @@ export const projectCalifActuales = (
           : generalesSinCalificar.add(formatedMateriaName)
     })
 
+    const troncales = {
+      cantidad: troncalesSet.size,
+      detalle: [...troncalesSet],
+      error:
+        troncalesSinCalificar.size > 0
+          ? {
+              type: 'Materia/s troncal/es sin calificación',
+              details: [...troncalesSinCalificar],
+            }
+          : undefined,
+    }
+    const generales = {
+      cantidad: generalesSet.size,
+      detalle: [...generalesSet],
+      error:
+        generalesSinCalificar.size > 0
+          ? {
+              type: 'Materia/s general/es sin calificación',
+              details: [...generalesSinCalificar],
+            }
+          : undefined,
+    }
+
     return {
       ...student,
-      troncales: {
-        cantidad: troncalesSet.size,
-        detalle: [...troncalesSet],
-        error:
-          troncalesSinCalificar.size > 0
-            ? {
-                type: 'Materia/s troncal/es sin calificación',
-                details: [...troncalesSinCalificar],
-              }
-            : undefined,
-      },
-      generales: {
-        cantidad: generalesSet.size,
-        detalle: [...generalesSet],
-        error:
-          generalesSinCalificar.size > 0
-            ? {
-                type: 'Materia/s general/es sin calificación',
-                details: [...generalesSinCalificar],
-              }
-            : undefined,
-      },
+      troncales,
+      generales,
+      proyeccion: defineProyeccion(
+        student.anio,
+        ultimoAnio,
+        troncales,
+        generales,
+        student.enProceso2020,
+        true,
+      ),
     }
   })
 

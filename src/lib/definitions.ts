@@ -18,9 +18,10 @@ export type Student = {
   repitencia: string[]
   troncales: MateriasPendientes
   generales: MateriasPendientes
-  enProceso2020: Omit<MateriasPendientes, 'detalle'> & {
+  enProceso2020: Omit<MateriasPendientes, 'detalle' | 'error'> & {
     detalle: string[] | 'No corresponde'
   }
+  proyeccion: 'Promociona' | 'Permanece' | 'Egresa' | 'Egresa (titula)' | 'Egresa (NO titula)' | 'Faltan datos'
 }
 
 export type StudentsTableFilters = {

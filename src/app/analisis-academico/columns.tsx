@@ -3,7 +3,7 @@
 import ColumnHead from '../../components/analisis-academico/table-content/column-head'
 import ExpandButton from '../../components/analisis-academico/table-content/expand-button'
 import ExpandableRow from '../../components/analisis-academico/table-content/expandable-row'
-import PromocionContent from '../../components/analisis-academico/table-content/promocion-content'
+import ProyeccionContent from '../../components/analisis-academico/table-content/proyeccion-content'
 import RepitenciaContent from '../../components/analisis-academico/table-content/repitencia-content'
 import { Badge } from '@/components/ui/badge'
 import { Student } from '@/lib/definitions'
@@ -119,7 +119,7 @@ export const columns: ColumnDef<Student>[] = [
     ),
     sortingFn: 'basic',
     meta: {
-      title: 'Troncales',
+      title: 'Materias Troncales',
       width: 'w-36 lg:w-44',
     },
   },
@@ -137,7 +137,7 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'basic',
     size: 190,
     meta: {
-      title: 'Generales',
+      title: 'Materias Generales',
       width: 'w-36 lg:w-44',
     },
   },
@@ -155,7 +155,7 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'basic',
     size: 190,
     meta: {
-      title: 'En Proceso (2020)',
+      title: 'Materias En Proceso (2020)',
       width: 'w-36 lg:w-44',
     },
   },
@@ -172,27 +172,15 @@ export const columns: ColumnDef<Student>[] = [
     },
   },
   {
-    id: 'promocion',
-    accessorFn: (row) => {
-      const {
-        troncales: { cantidad: cantTroncales },
-        generales: { cantidad: cantGenerales },
-      } = row
-      if (cantTroncales === null || cantGenerales === null)
-        return 'faltan datos'
-      return cantTroncales <= 2 && cantTroncales + cantGenerales <= 4
-        ? 'promociona'
-        : 'permanece'
-    },
+    id: 'proyeccion',
+    accessorKey: 'proyeccion',
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ getValue }) => (
-      <PromocionContent
-        value={getValue<'faltan datos' | 'promociona' | 'permanece'>()}
-      />
+      <ProyeccionContent value={getValue<Student['proyeccion']>()} />
     ),
     size: 150,
     meta: {
-      title: 'Promoción',
+      title: 'Proyección',
       width: 'w-[110px]',
     },
     sortingFn: 'text',

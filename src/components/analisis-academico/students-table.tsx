@@ -21,22 +21,22 @@ export default async function StudentsTable({
 }: {
   searchParams: SearchParams
 }) {
-  const { anio, proyeccion, page, sort, ...filterParams } = searchParams
+  const { anio, califParciales: califParcialesParam, page, sort, ...filterParams } = searchParams
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
-  let data
+  let allData
 
-  if (proyeccion && isValidInstancia(proyeccion)) {
+  if (califParcialesParam && isValidInstancia(califParcialesParam)) {
     console.time('Tiempo proyeción')
     const califActuales = await fetchCalificacionesActuales(anio)
-    data = projectCalifActuales(califHistoricas, califActuales, proyeccion)
+    allData = projectCalifActuales(califHistoricas, califActuales, califParcialesParam)
     console.timeEnd('Tiempo proyeción')
-  } else data = califHistoricas
+  } else allData = califHistoricas
 
-  const filteredData = getFilteredStudentData(data, filterParams)
-  if (sort) data = getSortedData(filteredData, sort)
+  const filteredData = getFilteredStudentData(allData, filterParams)
+  const sortedData = sort ? getSortedData(filteredData, sort) : filteredData
 
   const { paginatedData, ...paginationUtils } = getPagination(
-    filteredData,
+    sortedData,
     ROWS_COUNT,
     page,
   )
@@ -45,12 +45,12 @@ export default async function StudentsTable({
     <>
       <FiltersPanelMobile
         filterParams={filterParams}
-        data={data}
+        data={allData}
         className="block lg:hidden"
       />
       <FiltersPanel
         filterParams={filterParams}
-        data={data}
+        data={allData}
         className="hidden lg:block"
       />
       <DataTable columns={columns} data={paginatedData} />

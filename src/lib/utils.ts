@@ -6,6 +6,7 @@ import { getStudentsUniqueValues } from './data'
 import {
   CALIFICACIONES_STRINGS,
   CARACTER_GRADO,
+  CURSOS,
   INSTANCIAS_ANIO,
 } from './constants'
 
@@ -18,6 +19,11 @@ export function formatStudentsResponse(
   anioDB: number,
 ): Student[] {
   const [, ...data] = textResponse.split('\r\n').map((row) => row.split('\t'))
+  const ultimoAnio =
+    Object.keys(CURSOS)
+      .map((key) => Number(key[0]))
+      .sort()
+      .at(-1) || 0
   return data.map(
     ([
       anioValue,
@@ -41,9 +47,37 @@ export function formatStudentsResponse(
         repitencia2Value,
         repitencia3Value,
       ])
-      const curso202enSecundaria = anio
+      const troncales = {
+        cantidad: !Number.isNaN(parseInt(troncalesCantValue))
+          ? parseInt(troncalesCantValue)
+          : null,
+        detalle: formatDetalleMaterias(troncalesDetalleValue.trim()),
+      }
+      const generales = {
+        cantidad: !Number.isNaN(parseInt(generalesCantValue))
+          ? parseInt(generalesCantValue)
+          : null,
+        detalle: formatDetalleMaterias(generalesDetalleValue.trim()),
+      }
+      const curso2020enSecundaria = anio
         ? anioDB + 1 - Number(anio[0]) - repitencia.length <= 2020
         : true
+      const enProceso2020 = {
+        cantidad: !Number.isNaN(parseInt(enProceso2020CantidadValue))
+          ? parseInt(enProceso2020CantidadValue)
+          : null,
+        detalle: curso2020enSecundaria
+          ? formatDetalleMaterias(enProceso2020DetalleValue.trim())
+          : 'No corresponde',
+      } as const
+      const proyeccion = defineProyeccion(
+        anio,
+        ultimoAnio,
+        troncales,
+        generales,
+        enProceso2020,
+      )
+
       return {
         anio,
         division: divisionValue.length ? `${divisionValue[0]}º` : null,
@@ -61,26 +95,10 @@ export function formatStudentsResponse(
           : null,
         dni: parseInt(dniValue) || null,
         repitencia,
-        troncales: {
-          cantidad: !Number.isNaN(parseInt(troncalesCantValue))
-            ? parseInt(troncalesCantValue)
-            : null,
-          detalle: formatDetalleMaterias(troncalesDetalleValue.trim()),
-        },
-        generales: {
-          cantidad: !Number.isNaN(parseInt(generalesCantValue))
-            ? parseInt(generalesCantValue)
-            : null,
-          detalle: formatDetalleMaterias(generalesDetalleValue.trim()),
-        },
-        enProceso2020: {
-          cantidad: !Number.isNaN(parseInt(enProceso2020CantidadValue))
-            ? parseInt(enProceso2020CantidadValue)
-            : null,
-          detalle: curso202enSecundaria
-            ? formatDetalleMaterias(enProceso2020DetalleValue.trim())
-            : 'No corresponde',
-        },
+        troncales,
+        generales,
+        enProceso2020,
+        proyeccion,
       }
     },
   )
@@ -348,16 +366,16 @@ export const FILTERS_FNS = {
       return { troncalesMinMax, generalesMinMax, enProceso2020MinMax }
     },
   },
-  promocion: {
+  proyeccion: {
     filterFn: (student: Student, searchParams: SearchParams) => {
-      const promocionParam = searchParams.promocion
+      const proyeccionParam = searchParams.proyeccion
       if (
-        !promocionParam ||
+        !proyeccionParam ||
         student.troncales.cantidad === null ||
         student.generales.cantidad === null
       )
         return true
-      if (promocionParam === 'solo promocionan')
+      if (proyeccionParam === 'solo promocionan')
         return (
           student.troncales.cantidad <= 2 &&
           student.troncales.cantidad + student.generales.cantidad <= 4
@@ -464,8 +482,8 @@ export const SORTING_FNS = [
   {
     columnId: 'troncales',
     fn: (a: Student, b: Student) => {
-      const {cantidad: cantidadA, error: errorA} = a.troncales
-      const {cantidad: cantidadB, error: errorB} = b.troncales
+      const { cantidad: cantidadA, error: errorA } = a.troncales
+      const { cantidad: cantidadB, error: errorB } = b.troncales
       if (cantidadA === null || (errorA && !errorB)) return 1
       if (cantidadB === null || (errorB && !errorA)) return -1
       return cantidadA - cantidadB
@@ -474,11 +492,43 @@ export const SORTING_FNS = [
   {
     columnId: 'generales',
     fn: (a: Student, b: Student) => {
-      const {cantidad: cantidadA, error: errorA} = a.generales
-      const {cantidad: cantidadB, error: errorB} = b.generales
+      const { cantidad: cantidadA, error: errorA } = a.generales
+      const { cantidad: cantidadB, error: errorB } = b.generales
       if (cantidadA === null || (errorA && !errorB)) return 1
       if (cantidadB === null || (errorB && !errorA)) return -1
       return cantidadA - cantidadB
+    },
+  },
+  {
+    columnId: 'enProceso2020',
+    fn: (a: Student, b: Student) => {
+      const { cantidad: cantidadA, detalle: detalleA } = a.enProceso2020
+      const { cantidad: cantidadB, detalle: detalleB } = b.enProceso2020
+      if (cantidadA === null || detalleB === 'No corresponde') return 1
+      if (cantidadB === null || detalleA === 'No corresponde') return -1
+      return cantidadA - cantidadB
+    },
+  },
+  {
+    columnId: 'repitencia',
+    fn: (a: Student, b: Student) => {
+      const repA = a.repitencia
+      const repB = b.repitencia
+      if (repA.length !== repB.length) return repA.length - repB.length
+      for (const [index, anioRepetidoA] of repA.entries()) {
+        const anioRepA = Number(anioRepetidoA[0])
+        const anioRepB = Number(repB[index][0])
+        if (anioRepA !== anioRepB) return anioRepA - anioRepB
+      }
+      return 0
+    },
+  },
+  {
+    columnId: 'proyeccion',
+    fn: (a: Student, b: Student) => {
+      const proyeccionA = a.proyeccion
+      const proyeccionB = b.proyeccion
+      return proyeccionB.localeCompare(proyeccionA)
     },
   },
 ]
@@ -520,6 +570,39 @@ const defineCalificacion = (string: string) => {
   if (califStringsValidas.some((califString) => califString === string))
     return string
   return null
+}
+
+export const defineProyeccion = (
+  anioString: string | null,
+  ultimoAnio: number,
+  troncales: Student['troncales'],
+  generales: Student['generales'],
+  enProceso2020: Student['enProceso2020'],
+  includeCalifActuales: boolean = false,
+): Student['proyeccion'] => {
+  const { cantidad: cantTroncales, error: errorTroncales } = troncales
+  const { cantidad: cantGenerales, error: errorGenerales } = generales
+  const { cantidad: cantEnProceso2020 } = enProceso2020
+  if (
+    anioString === null ||
+    cantTroncales === null ||
+    cantGenerales === null ||
+    errorTroncales ||
+    errorGenerales
+  )
+    return 'Faltan datos'
+  const anioActual = Number(anioString[0])
+  if (anioActual === ultimoAnio) {
+    if (!includeCalifActuales) return 'Egresa'
+    if (cantEnProceso2020 === null || cantEnProceso2020 === undefined)
+      return 'Faltan datos'
+    return cantTroncales + cantGenerales + cantEnProceso2020 === 0
+      ? 'Egresa (titula)'
+      : 'Egresa (NO titula)'
+  }
+  return cantTroncales <= 2 && cantTroncales + cantGenerales <= 4
+    ? 'Promociona'
+    : 'Permanece'
 }
 
 export const evaluarCalificacion = (calificacion?: Calificacion) => {

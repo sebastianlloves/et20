@@ -9,7 +9,7 @@ export interface SearchParams {
   search?: string
   cursos?: string
   materias?: string
-  promocion?: string
+  proyeccion?: string
   enProceso2020?: string
   inclusionEstricta?: string
   cantidadesTroncales?: string
@@ -18,7 +18,7 @@ export interface SearchParams {
   cantOptativo?: string
   repitenciaAnios?: string
   repitenciaCant?: string
-  proyeccion?: string
+  califParciales?: string
   page?: string
   sort?: string
 }

@@ -1,123 +1,103 @@
 'use client'
 
-import { ChartSpline } from 'lucide-react'
+import { Rocket } from 'lucide-react'
 import Filter from './filter'
-import { CARACTER_GRADO } from '@/lib/constants'
-import { StudentCalifActuales } from '@/lib/definitions'
-import {
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 import useParamsState from '@/hooks/useParamsState'
 
-const periodos: {
-  itemTitle: string
-  tagTitle: string
-  value: keyof StudentCalifActuales['materias'][number] | 'acreditacion'
-}[] = [
+const proyeccionFilterData = [
+  { value: 'Promociona' },
+  { value: 'Permanece' },
   {
-    itemTitle: `1${CARACTER_GRADO} Bimestre`,
-    value: 'primerBimestre',
-    tagTitle: `Incluir calificaciones del 1${CARACTER_GRADO} Bimestre`,
+    value: 'Egresa',
+    show: (califParcialesFilter: string | null) => !califParcialesFilter,
   },
   {
-    itemTitle: `2${CARACTER_GRADO} Bimestre`,
-    value: 'segundoBimestre',
-    tagTitle: `Incluir calificaciones del 2${CARACTER_GRADO} Bimestre`,
+    value: 'Egresa (titula)',
+    show: (califParcialesFilter: string | null) =>
+      Boolean(califParcialesFilter),
   },
   {
-    itemTitle: `3${CARACTER_GRADO} Bimestre`,
-    value: 'tercerBimestre',
-    tagTitle: `Incluir calificaciones del 3${CARACTER_GRADO} Bimestre`,
+    value: 'Egresa (NO titula)',
+    show: (califParcialesFilter: string | null) =>
+      Boolean(califParcialesFilter),
   },
-  {
-    itemTitle: `4${CARACTER_GRADO} Bimestre`,
-    value: 'cuartoBimestre',
-    tagTitle: `Incluir calificaciones del 4${CARACTER_GRADO} Bimestre`,
-  },
-  {
-    itemTitle: `1${CARACTER_GRADO} Cuatrimestre`,
-    value: 'primerCuatrimestre',
-    tagTitle: `Incluir calificaciones del 1${CARACTER_GRADO} Cuatrimestre`,
-  },
-  {
-    itemTitle: `2${CARACTER_GRADO} Cuatrimestre`,
-    value: 'segundoCuatrimestre',
-    tagTitle: `Incluir calificaciones del 2${CARACTER_GRADO} Cuatrimestre`,
-  },
-  {
-    itemTitle: `Anual`,
-    value: 'anual',
-    tagTitle: `Incluir calificaciones del período Anual`,
-  },
-  {
-    itemTitle: `Período de acreditación`,
-    value: 'acreditacion',
-    tagTitle: `Incluir calificaciones del período de Acreditación`,
-  },
+  { value: 'Faltan datos' },
 ]
 
-function ProyeccionFilter() {
-  const { pathname, replace, searchParams } = useParamsState()
+function ProyeccionFilter({
+  uniqueValues,
+}: {
+  uniqueValues?: Map<string, number>
+}) {
+  const { pathname, searchParams, replace } = useParamsState()
+  const califParcialFilter = searchParams.get('califParciales')
+  const proyeccionFilter =
+    searchParams
+      .get('proyeccion')
+      ?.split('_')
+      .filter((valueItem) =>
+        proyeccionFilterData.find(({ value }) => value === valueItem),
+      ) || []
+  const proyeccionTags = proyeccionFilter.map((string) => {
+    return { value: string, quantity: null }
+  })
 
-  const filterValue = searchParams.get('proyeccion')
-  const filterValueObj = periodos.find(({ value }) => value === filterValue)
-  const proyeccionTags = filterValueObj
-    ? [
-        {
-          value: filterValueObj.tagTitle,
-          quantity: null,
-        },
-      ]
-    : []
+  const updateProyeccionParam = (value: string) => {
+    const debuggedFilterValue = proyeccionFilter.filter((valueItem) => {
+      const filterData = proyeccionFilterData.find(
+        ({ value }) => value === valueItem,
+      )
+      return !filterData?.show || filterData.show(califParcialFilter)
+    })
+    const newFilterValue = debuggedFilterValue.includes(value)
+      ? debuggedFilterValue.filter((filterValue) => filterValue !== value)
+      : [...debuggedFilterValue, value]
+    newFilterValue.length
+      ? searchParams.set('proyeccion', newFilterValue.join('_'))
+      : searchParams.delete('proyeccion')
 
-  const updateParams = (value: string) => {
-    filterValue === value
-      ? searchParams.delete('proyeccion')
-      : searchParams.set('proyeccion', value)
-    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('proyeccion')
-    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
-
-  if (searchParams.get('anio') === '2023') return false
+  const handleRemoveTag = (tagValue: string) => {
+    const newFilterValue = proyeccionFilter.filter(
+      (value) => value !== tagValue,
+    )
+    newFilterValue.length
+      ? searchParams.set('proyeccion', newFilterValue.join('_'))
+      : searchParams.delete('proyeccion')
+    replace(`${pathname}?${searchParams}`)
+  }
 
   return (
     <Filter
       title="Proyección"
-      icon={<ChartSpline strokeWidth={1.4} className="w-[16px] lg:w-[17px]" />}
       maxTags={3}
+      icon={<Rocket strokeWidth={1.0} className="w-[13px] lg:w-[15px]" />}
       filterTags={proyeccionTags}
-      handleRemoveTag={handleRemoveAll}
+      handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
     >
-      <DropdownMenuRadioGroup
-        value={filterValue || undefined}
-        onValueChange={updateParams}
-      >
-        <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] text-pretty pl-3">
-          Incluir calificaciones del año en curso
-        </DropdownMenuLabel>
-        {periodos.map(({ itemTitle, value }) => (
-          <div key={itemTitle}>
-            {(itemTitle === `1${CARACTER_GRADO} Cuatrimestre` ||
-              itemTitle === `Período de acreditación`) && (
-              <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
-            )}
-            <DropdownMenuRadioItem value={value} className="cursor-pointer">
-              <MenuItem value={itemTitle} />
-            </DropdownMenuRadioItem>
-          </div>
-        ))}
-      </DropdownMenuRadioGroup>
+      {proyeccionFilterData
+        .filter(({ show }) => !show || show(califParcialFilter))
+        .map(({ value }) => {
+          return (
+            <DropdownMenuCheckboxItem
+              key={value}
+              className="cursor-pointer sm:w-full"
+              checked={proyeccionFilter.includes(value)}
+              onCheckedChange={() => updateProyeccionParam(value)}
+            >
+              <MenuItem value={value} quantity={undefined} />
+            </DropdownMenuCheckboxItem>
+          )
+        })}
     </Filter>
   )
 }
