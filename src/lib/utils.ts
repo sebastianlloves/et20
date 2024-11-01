@@ -369,36 +369,17 @@ export const FILTERS_FNS = {
   proyeccion: {
     filterFn: (student: Student, searchParams: SearchParams) => {
       const proyeccionParam = searchParams.proyeccion
-      if (
-        !proyeccionParam ||
-        student.troncales.cantidad === null ||
-        student.generales.cantidad === null
-      )
-        return true
-      if (proyeccionParam === 'solo promocionan')
-        return (
-          student.troncales.cantidad <= 2 &&
-          student.troncales.cantidad + student.generales.cantidad <= 4
-        )
-      return (
-        student.troncales.cantidad > 2 ||
-        student.troncales.cantidad + student.generales.cantidad > 4
-      )
+      if (!proyeccionParam) return true
+      const { proyeccion } = student
+      return proyeccionParam.split('_').some((value) => proyeccion === value)
     },
     uniqueValuesFn: (
       filteredData: Student[],
       facetedModel: Map<string, number>,
     ) => {
       filteredData.forEach((student) => {
-        const value =
-          student.troncales.cantidad === null ||
-          student.generales.cantidad === null
-            ? 'faltan datos'
-            : student.troncales.cantidad <= 2 &&
-                student.troncales.cantidad + student.generales.cantidad <= 4
-              ? 'Estudiantes que promocionan'
-              : 'Estudiantes que permanecen'
-        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+        const { proyeccion } = student
+        facetedModel.set(proyeccion, (facetedModel.get(proyeccion) ?? 0) + 1)
       })
     },
   },

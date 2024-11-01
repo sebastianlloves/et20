@@ -7,7 +7,6 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getPagesNumbers } from '@/lib/utils'
 import { SearchParams } from '../../app/analisis-academico/page'
 
 interface TablePaginationProps {
@@ -100,3 +99,46 @@ function TablePagination({
 }
 
 export default TablePagination
+
+const getPagesNumbers = (currentPage: number, lastPage: number) => {
+  if (lastPage <= 7) return Array.from({ length: lastPage }, (_, i) => i + 1)
+  if (currentPage <= 5)
+    return [...Array.from({ length: 5 }, (_, i) => i + 1), lastPage]
+  if (lastPage - currentPage <= 5)
+    return [1, ...Array.from({ length: 5 }, (_, i) => lastPage - i), lastPage]
+}
+
+/* 
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  // If the total number of pages is 7 or less,
+  // display all pages without any ellipsis.
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  // If the current page is among the first 3 pages,
+  // show the first 3, an ellipsis, and the last 2 pages.
+  if (currentPage <= 3) {
+    return [1, 2, 3, '...', totalPages - 1, totalPages];
+  }
+
+  // If the current page is among the last 3 pages,
+  // show the first 2, an ellipsis, and the last 3 pages.
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  // If the current page is somewhere in the middle,
+  // show the first page, an ellipsis, the current page and its neighbors,
+  // another ellipsis, and the last page.
+  return [
+    1,
+    '...',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    '...',
+    totalPages,
+  ];
+};
+*/

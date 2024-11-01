@@ -2,7 +2,7 @@
 
 import { Rocket } from 'lucide-react'
 import Filter from './filter'
-import { DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu'
+import { DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 import useParamsState from '@/hooks/useParamsState'
 
@@ -41,7 +41,10 @@ function ProyeccionFilter({
         proyeccionFilterData.find(({ value }) => value === valueItem),
       ) || []
   const proyeccionTags = proyeccionFilter.map((string) => {
-    return { value: string, quantity: null }
+    return {
+      value: string,
+      quantity: uniqueValues && (uniqueValues.get(string) ?? 0),
+    }
   })
 
   const updateProyeccionParam = (value: string) => {
@@ -87,15 +90,21 @@ function ProyeccionFilter({
       {proyeccionFilterData
         .filter(({ show }) => !show || show(califParcialFilter))
         .map(({ value }) => {
+          const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
           return (
-            <DropdownMenuCheckboxItem
-              key={value}
-              className="cursor-pointer sm:w-full"
-              checked={proyeccionFilter.includes(value)}
-              onCheckedChange={() => updateProyeccionParam(value)}
-            >
-              <MenuItem value={value} quantity={undefined} />
-            </DropdownMenuCheckboxItem>
+            <div key={value}>
+              {value === 'Faltan datos' && (
+                <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+              )}
+              <DropdownMenuCheckboxItem
+                className="cursor-pointer sm:w-full"
+                disabled={quantity === 0}
+                checked={proyeccionFilter.includes(value)}
+                onCheckedChange={() => updateProyeccionParam(value)}
+              >
+                <MenuItem value={value} quantity={quantity} />
+              </DropdownMenuCheckboxItem>
+            </div>
           )
         })}
     </Filter>
