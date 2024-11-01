@@ -370,8 +370,9 @@ export const FILTERS_FNS = {
     filterFn: (student: Student, searchParams: SearchParams) => {
       const proyeccionParam = searchParams.proyeccion
       if (!proyeccionParam) return true
-      const { proyeccion } = student
-      return proyeccionParam.split('_').some((value) => proyeccion === value)
+      return proyeccionParam
+        .split('_')
+        .some((value) => student.proyeccion === value)
     },
     uniqueValuesFn: (
       filteredData: Student[],
@@ -606,37 +607,37 @@ export function isValidInstancia(
   )
 }
 
-export const getPagesNumbers = (currentPage: number, lastPage: number) => {
-  const firstPage = 1
-  const allPagesNumbers = Array.from(
-    { length: lastPage },
-    (_, index) => index + 1,
-  )
-  const cantConsecutiveNumbers = 1
-  const fixedElements = 2
-  const smallerPrevNumber = currentPage - cantConsecutiveNumbers
-  const biggerNextNumber = currentPage + cantConsecutiveNumbers
-  const bonusNextSpots =
-    smallerPrevNumber - firstPage < fixedElements
-      ? fixedElements - (smallerPrevNumber - firstPage)
-      : 0
-  const bonusPrevSpots =
-    lastPage - biggerNextNumber <= fixedElements
-      ? fixedElements - (lastPage - biggerNextNumber)
-      : 0
-
-  const setNumbers = new Set<number>()
-  allPagesNumbers.forEach((pageNumber) => {
-    const diferencia = pageNumber - currentPage
-    if (
-      pageNumber === firstPage ||
-      pageNumber === lastPage ||
-      (diferencia <= cantConsecutiveNumbers + bonusNextSpots &&
-        diferencia >= -cantConsecutiveNumbers - bonusPrevSpots)
-    )
-      setNumbers.add(pageNumber)
-  })
-  const pagesButtons = Array.from([...setNumbers].sort((a, b) => a - b))
-
-  return pagesButtons
+export const getPagesNumbers = (
+  currentPage: number | null,
+  lastPage: number | null,
+) => {
+  if (!currentPage || !lastPage) return []
+  const maxCantButtons = 7
+  const maxConsecutiveButtons = maxCantButtons - 2
+  if (lastPage <= maxCantButtons)
+    return Array.from({ length: lastPage }, (_, i) => i + 1)
+  if (currentPage <= maxConsecutiveButtons - 1)
+    return [
+      ...Array.from({ length: maxConsecutiveButtons }, (_, i) => i + 1),
+      '...',
+      lastPage,
+    ]
+  if (lastPage - currentPage < maxConsecutiveButtons - 1)
+    return [
+      1,
+      '...',
+      ...Array.from(
+        { length: maxConsecutiveButtons },
+        (_, i) => lastPage - i,
+      ).sort(),
+    ]
+  return [
+    1,
+    '...',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    '...',
+    lastPage,
+  ]
 }

@@ -21,9 +21,9 @@ export async function fetchCalificacionesHistoricas(anio: string = '2024') {
     })
     const textData = await response.text()
     // await new Promise((resolve) => setTimeout(resolve, 5000))
-    console.time('formatStudentsResponse')
+    // console.time('formatStudentsResponse')
     const studentsResponse = formatStudentsResponse(textData, Number(anio))
-    console.timeEnd('formatStudentsResponse')
+    // console.timeEnd('formatStudentsResponse')
     return studentsResponse
   } catch (error) {
     throw new Error(`Error al obtener los datos histórico para el año ${anio}`)

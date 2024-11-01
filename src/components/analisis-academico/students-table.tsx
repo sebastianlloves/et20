@@ -21,15 +21,26 @@ export default async function StudentsTable({
 }: {
   searchParams: SearchParams
 }) {
-  const { anio, califParciales: califParcialesParam, page, sort, ...filterParams } = searchParams
+  console.time('fetching + paginación en students-table')
+  const {
+    anio,
+    califParciales: califParcialesParam,
+    page,
+    sort,
+    ...filterParams
+  } = searchParams
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
   let allData
 
   if (califParcialesParam && isValidInstancia(califParcialesParam)) {
-    console.time('Tiempo proyeción')
+    // console.time('Tiempo proyeción')
     const califActuales = await fetchCalificacionesActuales(anio)
-    allData = projectCalifActuales(califHistoricas, califActuales, califParcialesParam)
-    console.timeEnd('Tiempo proyeción')
+    allData = projectCalifActuales(
+      califHistoricas,
+      califActuales,
+      califParcialesParam,
+    )
+    // console.timeEnd('Tiempo proyeción')
   } else allData = califHistoricas
 
   const filteredData = getFilteredStudentData(allData, filterParams)
@@ -40,6 +51,7 @@ export default async function StudentsTable({
     ROWS_COUNT,
     page,
   )
+  console.timeEnd('fetching + paginación en students-table')
 
   return (
     <>

@@ -19,6 +19,7 @@ declare module '@tanstack/react-table' {
   }
 }
 
+
 export const columns: ColumnDef<Student>[] = [
   {
     id: 'expand',
@@ -178,10 +179,9 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ getValue }) => (
       <ProyeccionContent value={getValue<Student['proyeccion']>()} />
     ),
-    size: 150,
     meta: {
       title: 'Proyección',
-      width: 'w-[110px]',
+      width: 'w-[140px] lg:w-[155px]',
     },
     sortingFn: 'text',
   },

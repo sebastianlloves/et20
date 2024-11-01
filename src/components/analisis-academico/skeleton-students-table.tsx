@@ -28,9 +28,8 @@ function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
       ),
     }
   })
-  const [currentPage, lastPage] =
-    searchParams?.page?.split('_').map((value) => Number(value)) || []
-
+  const pageParam = searchParams.page
+  const [currentPage, lastPage] = pageParam ? pageParam.split('_').map((value) => Number(value)) : [null, null]
   return (
     <>
       <FiltersPanelMobile className="block lg:hidden" />
