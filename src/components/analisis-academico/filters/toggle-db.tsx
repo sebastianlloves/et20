@@ -10,7 +10,10 @@ function ToggleDB({ className }: { className?: string }) {
 
   const handleChange = (value: string) => {
     // Borrar esta línea al acomodar la db de califActuales del 2023
-    if (value === '2023') searchParams.delete('califParciales')
+    if (value === '2023') {
+      searchParams.delete('califParciales')
+      searchParams.delete('proyeccion')
+    }
 
     searchParams.set('anio', value)
     if (searchParams.has('page')) searchParams.delete('page')

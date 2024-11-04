@@ -2,7 +2,7 @@ import { Check, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
-import { MateriasPendientes, Student } from '@/lib/definitions'
+import { MateriasPendientes } from '@/lib/definitions'
 import CalificacionesTooltip from './calificaciones-tooltip'
 
 function ExpandableRow({
@@ -10,7 +10,9 @@ function ExpandableRow({
   open,
   iconColor,
 }: {
-  subjects: MateriasPendientes & Student['enProceso2020']
+  subjects: Omit<MateriasPendientes, 'detalle'> & {
+    detalle: string[] | 'No corresponde'
+  }
   open: boolean
   iconColor?: string
 }) {
