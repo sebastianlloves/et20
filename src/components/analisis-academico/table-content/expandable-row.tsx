@@ -10,7 +10,7 @@ function ExpandableRow({
   open,
   iconColor,
 }: {
-  subjects: MateriasPendientes | Student['enProceso2020']
+  subjects: MateriasPendientes & Student['enProceso2020']
   open: boolean
   iconColor?: string
 }) {
