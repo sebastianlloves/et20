@@ -1,43 +1,29 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Student } from './definitions'
+import { Calificacion, Student, StudentCalifActuales } from './definitions'
 import { SearchParams } from '@/app/analisis-academico/page'
 import { getStudentsUniqueValues } from './data'
+import {
+  CALIFICACIONES_STRINGS,
+  CARACTER_GRADO,
+  CURSOS,
+  INSTANCIAS_ANIO,
+} from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const capitalizeWords = (words: string) =>
-  words
-    .toLowerCase()
-    .trim()
-    .split(' ')
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
-    .join(' ')
-
-const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
-  repitenciaArr
-    .filter((repValue) => !Number.isNaN(parseInt(repValue[0])))
-    .map((value) => `${value[0]}° año`)
-    .sort()
-
-const formatDetalleMaterias = (detalle: string): string[] => {
-  const partialString = (
-    detalle.endsWith('.') ? detalle.slice(0, detalle.length - 1) : detalle
-  ).replaceAll('º', '°')
-  const splitedString =
-    partialString.includes('Rep. Mediales, Comunicación y Lenguajes') ||
-    partialString.includes('Arte, Tecnol. y Comunicación')
-      ? partialString
-          .split('), ')
-          .map((string) => (string.endsWith(')') ? string : `${string})`))
-      : partialString.split(', ')
-  return splitedString.filter((value) => value !== 'No adeuda')
-}
-
-export function formatStudentsResponse(textResponse: string): Student[] {
+export function formatStudentsResponse(
+  textResponse: string,
+  anioDB: number,
+): Student[] {
   const [, ...data] = textResponse.split('\r\n').map((row) => row.split('\t'))
+  const ultimoAnio =
+    Object.keys(CURSOS)
+      .map((key) => Number(key[0]))
+      .sort()
+      .at(-1) || 0
   return data.map(
     ([
       anioValue,
@@ -55,8 +41,45 @@ export function formatStudentsResponse(textResponse: string): Student[] {
       repitencia2Value,
       repitencia3Value,
     ]) => {
+      const anio = anioValue.length ? `${anioValue[0]}º` : null
+      const repitencia = defineRepitencia([
+        repitencia1Value,
+        repitencia2Value,
+        repitencia3Value,
+      ])
+      const troncales = {
+        cantidad: !Number.isNaN(parseInt(troncalesCantValue))
+          ? parseInt(troncalesCantValue)
+          : null,
+        detalle: formatDetalleMaterias(troncalesDetalleValue.trim()),
+      }
+      const generales = {
+        cantidad: !Number.isNaN(parseInt(generalesCantValue))
+          ? parseInt(generalesCantValue)
+          : null,
+        detalle: formatDetalleMaterias(generalesDetalleValue.trim()),
+      }
+      const curso2020enSecundaria = anio
+        ? anioDB + 1 - Number(anio[0]) - repitencia.length <= 2020
+        : true
+      const enProceso2020 = {
+        cantidad: !Number.isNaN(parseInt(enProceso2020CantidadValue))
+          ? parseInt(enProceso2020CantidadValue)
+          : null,
+        detalle: curso2020enSecundaria
+          ? formatDetalleMaterias(enProceso2020DetalleValue.trim())
+          : 'No corresponde',
+      } as const
+      const proyeccion = defineProyeccion(
+        anio,
+        ultimoAnio,
+        troncales,
+        generales,
+        enProceso2020,
+      )
+
       return {
-        anio: anioValue.length ? `${anioValue[0]}º` : null,
+        anio,
         division: divisionValue.length ? `${divisionValue[0]}º` : null,
         apellido: apellidoValue.length
           ? capitalizeWords(apellidoValue)
@@ -71,28 +94,101 @@ export function formatStudentsResponse(textResponse: string): Student[] {
               .replace(/[\u0300-\u036f]/g, '')
           : null,
         dni: parseInt(dniValue) || null,
-        repitencia: defineRepitencia([
-          repitencia1Value,
-          repitencia2Value,
-          repitencia3Value,
-        ]),
-        cantTroncales: !Number.isNaN(parseInt(troncalesCantValue))
-          ? parseInt(troncalesCantValue)
-          : null,
-        detalleTroncales: formatDetalleMaterias(troncalesDetalleValue.trim()),
-        cantGenerales: !Number.isNaN(parseInt(generalesCantValue))
-          ? parseInt(generalesCantValue)
-          : null,
-        detalleGenerales: formatDetalleMaterias(generalesDetalleValue.trim()),
-        cantEnProceso2020: !Number.isNaN(parseInt(enProceso2020CantidadValue))
-          ? parseInt(enProceso2020CantidadValue)
-          : null,
-        detalleEnProceso2020: formatDetalleMaterias(
-          enProceso2020DetalleValue.trim(),
-        ),
+        repitencia,
+        troncales,
+        generales,
+        enProceso2020,
+        proyeccion,
       }
     },
   )
+}
+
+export function formatCalifActualesResponse(
+  response: string,
+  anio: string,
+): Pick<StudentCalifActuales, 'dni' | 'materias'>[] {
+  const [, encabezadoMaterias, , ...data] = response
+    .split('\r\n')
+    .map((row) => {
+      const [, ...data] = row.split('\t')
+      return data
+    })
+  const formatedDatada = data.flatMap((row) =>
+    Array.from(row, (_, index) => {
+      const arrIndex = index / 13
+      if (Number.isInteger(arrIndex)) {
+        const [
+          apellido,
+          nombre,
+          dniValue,
+          primerBimestreValue,
+          segundoBimestreValue,
+          primerCuatrimestreValue,
+          tercerBimestreValue,
+          cuartoBimestreValue,
+          segundoCuatrimestreValue,
+          anualValue,
+          diciembreValue,
+          febreroValue,
+          definitivaValue,
+        ] = row.slice(index, index + 13)
+        return {
+          apellido,
+          nombre,
+          dni: Number(dniValue),
+          materia: `${encabezadoMaterias[index]}_${anio}`,
+          primerBimestre: defineCalificacion(primerBimestreValue),
+          segundoBimestre: defineCalificacion(segundoBimestreValue),
+          primerCuatrimestre: defineCalificacion(primerCuatrimestreValue),
+          tercerBimestre: defineCalificacion(tercerBimestreValue),
+          cuartoBimestre: defineCalificacion(cuartoBimestreValue),
+          segundoCuatrimestre: defineCalificacion(segundoCuatrimestreValue),
+          anual: defineCalificacion(anualValue),
+          diciembre: defineCalificacion(diciembreValue),
+          febrero: defineCalificacion(febreroValue),
+          definitiva: defineCalificacion(definitivaValue),
+        }
+      }
+      return null
+    }).filter((value) => value !== null),
+  )
+
+  const uniqueValuesDNI = new Set(formatedDatada.map(({ dni }) => dni))
+  const groupedData = [...uniqueValuesDNI].map((uniqueDNI) => {
+    const formatedObjs = formatedDatada.filter(({ dni }) => uniqueDNI === dni)
+    const materias = formatedObjs.map(
+      ({
+        materia,
+        primerBimestre,
+        segundoBimestre,
+        primerCuatrimestre,
+        tercerBimestre,
+        cuartoBimestre,
+        segundoCuatrimestre,
+        anual,
+        diciembre,
+        febrero,
+        definitiva,
+      }) => {
+        return {
+          nombre: materia,
+          primerBimestre,
+          segundoBimestre,
+          primerCuatrimestre,
+          tercerBimestre,
+          cuartoBimestre,
+          segundoCuatrimestre,
+          anual,
+          diciembre,
+          febrero,
+          definitiva,
+        }
+      },
+    )
+    return { dni: uniqueDNI, materias }
+  })
+  return groupedData
 }
 
 export const FILTERS_FNS = {
@@ -115,8 +211,8 @@ export const FILTERS_FNS = {
       )
     },
     uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
+      _filteredData: Student[],
+      _facetedModel: Map<string, number>,
     ) => undefined,
   },
   cursos: {
@@ -143,11 +239,14 @@ export const FILTERS_FNS = {
       const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
       const filterValue = materiasParam.split('_')
       const studentMaterias = [
-        ...student.detalleTroncales,
-        ...student.detalleGenerales,
+        ...student.troncales.detalle,
+        ...student.generales.detalle,
       ]
-      if (enProceso2020Param)
-        studentMaterias.push(...student.detalleEnProceso2020)
+      if (
+        enProceso2020Param &&
+        student.enProceso2020.detalle !== 'No corresponde'
+      )
+        studentMaterias.push(...student.enProceso2020.detalle)
       return inclusionEstrictaParam
         ? filterValue.every((materia) => studentMaterias.includes(materia))
         : filterValue.some((materia) => studentMaterias.includes(materia))
@@ -159,11 +258,14 @@ export const FILTERS_FNS = {
     ) => {
       filteredData.forEach((student) => {
         const values = [
-          ...student.detalleTroncales,
-          ...student.detalleGenerales,
+          ...student.troncales.detalle,
+          ...student.generales.detalle,
         ]
-        if (filterParams?.enProceso2020 !== 'false')
-          values.push(...student.detalleEnProceso2020)
+        if (
+          filterParams?.enProceso2020 !== 'false' &&
+          student.enProceso2020.detalle !== 'No corresponde'
+        )
+          values.push(...student.enProceso2020.detalle)
         values.forEach((value) =>
           facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
         )
@@ -193,21 +295,21 @@ export const FILTERS_FNS = {
       )
 
       const isTroncalesValid =
-        troncalesValue && student.cantTroncales !== null
-          ? student.cantTroncales >= troncalesValue[0] &&
-            student.cantTroncales <= troncalesValue[1]
+        troncalesValue && student.troncales.cantidad !== null
+          ? student.troncales.cantidad >= troncalesValue[0] &&
+            student.troncales.cantidad <= troncalesValue[1]
           : true
       const isGeneralesValid =
-        generalesValue && student.cantGenerales !== null
-          ? student.cantGenerales >= generalesValue[0] &&
-            student.cantGenerales <= generalesValue[1]
+        generalesValue && student.generales.cantidad !== null
+          ? student.generales.cantidad >= generalesValue[0] &&
+            student.generales.cantidad <= generalesValue[1]
           : true
       const isEnProceso2020Valid =
         enProceso2020Value &&
         enProceso2020 !== 'false' &&
-        student.cantEnProceso2020 !== null
-          ? student.cantEnProceso2020 >= enProceso2020Value[0] &&
-            student.cantEnProceso2020 <= enProceso2020Value[1]
+        student.enProceso2020.cantidad !== null
+          ? student.enProceso2020.cantidad >= enProceso2020Value[0] &&
+            student.enProceso2020.cantidad <= enProceso2020Value[1]
           : true
 
       return criterioOptativo
@@ -219,7 +321,11 @@ export const FILTERS_FNS = {
       facetedModel: Map<string, number>,
     ) => {
       filteredData.forEach((student) => {
-        const { cantTroncales, cantGenerales, cantEnProceso2020 } = student
+        const {
+          troncales: { cantidad: cantTroncales },
+          generales: { cantidad: cantGenerales },
+          enProceso2020: { cantidad: cantEnProceso2020 },
+        } = student
         facetedModel.set(
           `troncales_${cantTroncales}`,
           (facetedModel.get(`troncales_${cantTroncales}`) ?? 0) + 1,
@@ -260,38 +366,21 @@ export const FILTERS_FNS = {
       return { troncalesMinMax, generalesMinMax, enProceso2020MinMax }
     },
   },
-  promocion: {
+  proyeccion: {
     filterFn: (student: Student, searchParams: SearchParams) => {
-      const promocionParam = searchParams.promocion
-      if (
-        !promocionParam ||
-        student.cantTroncales === null ||
-        student.cantGenerales === null
-      )
-        return true
-      if (promocionParam === 'solo promocionan')
-        return (
-          student.cantTroncales <= 2 &&
-          student.cantTroncales + student.cantGenerales <= 4
-        )
-      return (
-        student.cantTroncales > 2 ||
-        student.cantTroncales + student.cantGenerales > 4
-      )
+      const proyeccionParam = searchParams.proyeccion
+      if (!proyeccionParam) return true
+      return proyeccionParam
+        .split('_')
+        .some((value) => student.proyeccion === value)
     },
     uniqueValuesFn: (
       filteredData: Student[],
       facetedModel: Map<string, number>,
     ) => {
       filteredData.forEach((student) => {
-        const value =
-          student.cantTroncales === null || student.cantGenerales === null
-            ? 'faltan datos'
-            : student.cantTroncales <= 2 &&
-                student.cantTroncales + student.cantGenerales <= 4
-              ? 'Estudiantes que promocionan'
-              : 'Estudiantes que permanecen'
-        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+        const { proyeccion } = student
+        facetedModel.set(proyeccion, (facetedModel.get(proyeccion) ?? 0) + 1)
       })
     },
   },
@@ -347,3 +436,208 @@ export const FILTERS_FNS = {
     },
   },
 } as const
+
+export const SORTING_FNS = [
+  {
+    columnId: 'curso',
+    fn: (a: Student, b: Student) => {
+      const cursoA = `${a.anio}${CARACTER_GRADO} ${a.division}${CARACTER_GRADO}`
+      const cursoB = `${b.anio}${CARACTER_GRADO} ${b.division}${CARACTER_GRADO}`
+      return cursoA.localeCompare(cursoB)
+    },
+  },
+  {
+    columnId: 'estudiante',
+    fn: (a: Student, b: Student) => {
+      const estudianteA = `${a.apellido} ${a.nombre}`
+      const estudianteB = `${b.apellido} ${b.nombre}`
+      return estudianteA.localeCompare(estudianteB)
+    },
+  },
+  {
+    columnId: 'dni',
+    fn: (a: Student, b: Student) => {
+      if (a.dni === null || b.dni === null) return -1
+      return a.dni - b.dni
+    },
+  },
+  {
+    columnId: 'troncales',
+    fn: (a: Student, b: Student) => {
+      const { cantidad: cantidadA, error: errorA } = a.troncales
+      const { cantidad: cantidadB, error: errorB } = b.troncales
+      if (cantidadA === null || (errorA && !errorB)) return 1
+      if (cantidadB === null || (errorB && !errorA)) return -1
+      return cantidadA - cantidadB
+    },
+  },
+  {
+    columnId: 'generales',
+    fn: (a: Student, b: Student) => {
+      const { cantidad: cantidadA, error: errorA } = a.generales
+      const { cantidad: cantidadB, error: errorB } = b.generales
+      if (cantidadA === null || (errorA && !errorB)) return 1
+      if (cantidadB === null || (errorB && !errorA)) return -1
+      return cantidadA - cantidadB
+    },
+  },
+  {
+    columnId: 'enProceso2020',
+    fn: (a: Student, b: Student) => {
+      const { cantidad: cantidadA, detalle: detalleA } = a.enProceso2020
+      const { cantidad: cantidadB, detalle: detalleB } = b.enProceso2020
+      if (cantidadA === null || detalleB === 'No corresponde') return 1
+      if (cantidadB === null || detalleA === 'No corresponde') return -1
+      return cantidadA - cantidadB
+    },
+  },
+  {
+    columnId: 'repitencia',
+    fn: (a: Student, b: Student) => {
+      const repA = a.repitencia
+      const repB = b.repitencia
+      if (repA.length !== repB.length) return repA.length - repB.length
+      for (const [index, anioRepetidoA] of repA.entries()) {
+        const anioRepA = Number(anioRepetidoA[0])
+        const anioRepB = Number(repB[index][0])
+        if (anioRepA !== anioRepB) return anioRepA - anioRepB
+      }
+      return 0
+    },
+  },
+  {
+    columnId: 'proyeccion',
+    fn: (a: Student, b: Student) => {
+      const proyeccionA = a.proyeccion
+      const proyeccionB = b.proyeccion
+      return proyeccionB.localeCompare(proyeccionA)
+    },
+  },
+]
+
+const capitalizeWords = (words: string) =>
+  words
+    .toLowerCase()
+    .trim()
+    .split(' ')
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(' ')
+
+const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
+  repitenciaArr
+    .filter((repValue) => !Number.isNaN(parseInt(repValue[0])))
+    .map((value) => `${value[0]}° año`)
+    .sort()
+
+const formatDetalleMaterias = (detalle: string): string[] => {
+  const partialString = (
+    detalle.endsWith('.') ? detalle.slice(0, detalle.length - 1) : detalle
+  ).replaceAll('º', '°')
+  const splitedString =
+    partialString.includes('Rep. Mediales, Comunicación y Lenguajes') ||
+    partialString.includes('Arte, Tecnol. y Comunicación')
+      ? partialString
+          .split('), ')
+          .map((string) => (string.endsWith(')') ? string : `${string})`))
+      : partialString.split(', ')
+  return splitedString.filter((value) => value !== 'No adeuda')
+}
+
+const defineCalificacion = (string: string) => {
+  if (!Number.isNaN(parseInt(string))) {
+    const numberCalif = Number(string)
+    if (numberCalif > 0 && numberCalif <= 10) return numberCalif
+  }
+  const califStringsValidas = Object.values(CALIFICACIONES_STRINGS).flat()
+  if (califStringsValidas.some((califString) => califString === string))
+    return string
+  return null
+}
+
+export const defineProyeccion = (
+  anioString: string | null,
+  ultimoAnio: number,
+  troncales: Student['troncales'],
+  generales: Student['generales'],
+  enProceso2020: Student['enProceso2020'],
+  includeCalifActuales: boolean = false,
+): Student['proyeccion'] => {
+  const { cantidad: cantTroncales, error: errorTroncales } = troncales
+  const { cantidad: cantGenerales, error: errorGenerales } = generales
+  const { cantidad: cantEnProceso2020 } = enProceso2020
+  if (
+    anioString === null ||
+    cantTroncales === null ||
+    cantGenerales === null ||
+    errorTroncales ||
+    errorGenerales
+  )
+    return 'Faltan datos'
+  const anioActual = Number(anioString[0])
+  if (anioActual === ultimoAnio) {
+    if (!includeCalifActuales) return 'Egresa'
+    if (cantEnProceso2020 === null || cantEnProceso2020 === undefined)
+      return 'Faltan datos'
+    return cantTroncales + cantGenerales + cantEnProceso2020 === 0
+      ? 'Egresa (titula)'
+      : 'Egresa (NO titula)'
+  }
+  return cantTroncales <= 2 && cantTroncales + cantGenerales <= 4
+    ? 'Promociona'
+    : 'Permanece'
+}
+
+export const evaluarCalificacion = (calificacion?: Calificacion) => {
+  if (CALIFICACIONES_STRINGS.desaprueba.some((value) => value === calificacion))
+    return 'desaprueba'
+  if (CALIFICACIONES_STRINGS.aprueba.some((value) => value === calificacion))
+    return 'aprueba'
+  if (Number(calificacion) > 0) {
+    return Number(calificacion) >= 6 ? 'aprueba' : 'desaprueba'
+  }
+  return 'sin calificar'
+}
+
+export function isValidInstancia(
+  instancia: string,
+): instancia is (typeof INSTANCIAS_ANIO)[number] {
+  return (
+    instancia === 'acreditacion' ||
+    INSTANCIAS_ANIO.includes(instancia as (typeof INSTANCIAS_ANIO)[number])
+  )
+}
+
+export const getPagesNumbers = (
+  currentPage: number | null,
+  lastPage: number | null,
+) => {
+  if (!currentPage || !lastPage) return []
+  const maxCantButtons = 7
+  const maxConsecutiveButtons = maxCantButtons - 2
+  if (lastPage <= maxCantButtons)
+    return Array.from({ length: lastPage }, (_, i) => i + 1)
+  if (currentPage <= maxConsecutiveButtons - 1)
+    return [
+      ...Array.from({ length: maxConsecutiveButtons }, (_, i) => i + 1),
+      '...',
+      lastPage,
+    ]
+  if (lastPage - currentPage < maxConsecutiveButtons - 1)
+    return [
+      1,
+      '...',
+      ...Array.from(
+        { length: maxConsecutiveButtons },
+        (_, i) => lastPage - i,
+      ).sort(),
+    ]
+  return [
+    1,
+    '...',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    '...',
+    lastPage,
+  ]
+}

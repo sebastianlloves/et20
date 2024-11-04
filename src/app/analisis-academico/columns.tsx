@@ -1,10 +1,10 @@
 'use client'
 
-import ColumnHead from './table-content/column-head'
-import ExpandButton from './table-content/expand-button'
-import ExpandableRow from './table-content/expandable-row'
-import PromocionContent from './table-content/promocion-content'
-import RepitenciaContent from './table-content/repitencia-content'
+import ColumnHead from '../../components/analisis-academico/table-content/column-head'
+import ExpandButton from '../../components/analisis-academico/table-content/expand-button'
+import ExpandableRow from '../../components/analisis-academico/table-content/expandable-row'
+import ProyeccionContent from '../../components/analisis-academico/table-content/proyeccion-content'
+import RepitenciaContent from '../../components/analisis-academico/table-content/repitencia-content'
 import { Badge } from '@/components/ui/badge'
 import { Student } from '@/lib/definitions'
 import { ColumnDef, RowData } from '@tanstack/react-table'
@@ -19,13 +19,14 @@ declare module '@tanstack/react-table' {
   }
 }
 
+
 export const columns: ColumnDef<Student>[] = [
   {
     id: 'expand',
     accessorFn: (row) => [
-      ...row.detalleTroncales,
-      ...row.detalleGenerales,
-      ...row.detalleEnProceso2020,
+      ...row.troncales.detalle,
+      ...row.generales.detalle,
+      ...row.enProceso2020.detalle,
     ],
     header: ({ table }) => (
       <ExpandButton
@@ -47,8 +48,7 @@ export const columns: ColumnDef<Student>[] = [
     enableSorting: false,
     meta: {
       title: 'Expandir',
-      width:
-        'w-[20px] lg:w-[22px] mx-1 md:mx-1.5 lg:mx-2.5 2xl:mx-3',
+      width: 'w-[20px] lg:w-[22px] mx-1 md:mx-1.5 lg:mx-2.5 2xl:mx-3',
       stickyProperties: 'left-0 sticky z-10',
     },
   },
@@ -89,7 +89,7 @@ export const columns: ColumnDef<Student>[] = [
       title: 'Estudiante',
       width: 'w-24 lg:w-[150px]',
       stickyProperties:
-        'left-[80px] md:left-[87px] lg:left-[115px] 2xl:left-[120px] sticky z-10',
+        'left-[80px] md:left-[89px] lg:left-[115px] 2xl:left-[120px] sticky z-10',
     },
     sortingFn: 'text',
   },
@@ -109,28 +109,28 @@ export const columns: ColumnDef<Student>[] = [
   },
   {
     id: 'troncales',
-    accessorFn: (row) => row.cantTroncales,
+    accessorFn: (row) => row.troncales.cantidad,
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ row, table }) => (
       <ExpandableRow
-        subjects={row.original.detalleTroncales}
+        subjects={row.original.troncales}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
         iconColor="text-destructive dark:text-red-600/80"
       />
     ),
     sortingFn: 'basic',
     meta: {
-      title: 'Troncales',
-      width: 'w-32 lg:w-44',
+      title: 'Materias Troncales',
+      width: 'w-36 lg:w-44',
     },
   },
   {
     id: 'generales',
-    accessorFn: (row) => row.cantGenerales,
+    accessorFn: (row) => row.generales.cantidad,
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ row, table }) => (
       <ExpandableRow
-        subjects={row.original.detalleGenerales}
+        subjects={row.original.generales}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
         iconColor="text-amber-600 dark:text-amber-700"
       />
@@ -138,17 +138,17 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'basic',
     size: 190,
     meta: {
-      title: 'Generales',
-      width: 'w-32 lg:w-44',
+      title: 'Materias Generales',
+      width: 'w-36 lg:w-44',
     },
   },
   {
     id: 'enProceso2020',
-    accessorFn: (row) => row.cantEnProceso2020,
+    accessorFn: (row) => row.enProceso2020.cantidad,
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ row, table }) => (
       <ExpandableRow
-        subjects={row.original.detalleEnProceso2020}
+        subjects={row.original.enProceso2020}
         open={table.getIsAllRowsExpanded() || row.getIsExpanded()}
         iconColor="text-slate-500 dark:text-slate-500"
       />
@@ -156,8 +156,8 @@ export const columns: ColumnDef<Student>[] = [
     sortingFn: 'basic',
     size: 190,
     meta: {
-      title: 'En Proceso (2020)',
-      width: 'w-32 lg:w-44',
+      title: 'Materias En Proceso (2020)',
+      width: 'w-36 lg:w-44',
     },
   },
   {
@@ -173,25 +173,15 @@ export const columns: ColumnDef<Student>[] = [
     },
   },
   {
-    id: 'promocion',
-    accessorFn: (row) => {
-      const { cantTroncales, cantGenerales } = row
-      if (cantTroncales === null || cantGenerales === null)
-        return 'faltan datos'
-      return cantTroncales <= 2 && cantTroncales + cantGenerales <= 4
-        ? 'promociona'
-        : 'permanece'
-    },
+    id: 'proyeccion',
+    accessorKey: 'proyeccion',
     header: ({ column }) => <ColumnHead column={column} />,
     cell: ({ getValue }) => (
-      <PromocionContent
-        value={getValue<'faltan datos' | 'promociona' | 'permanece'>()}
-      />
+      <ProyeccionContent value={getValue<Student['proyeccion']>()} />
     ),
-    size: 150,
     meta: {
-      title: 'Promoción',
-      width: 'w-[110px]',
+      title: 'Proyección',
+      width: 'w-[140px] lg:w-[155px]',
     },
     sortingFn: 'text',
   },

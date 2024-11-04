@@ -11,7 +11,10 @@ import {
 import MenuItem from './menu-item'
 import SliderItem from './slider-item'
 import useParamsState from '@/hooks/useParamsState'
-import { getCantRepitenciasString, getSliderFilterData } from '../../utils'
+import {
+  getCantRepitenciasString,
+  getSliderFilterData,
+} from '../../../app/analisis-academico/utils'
 
 function RepitenciaFilter({
   repitenciaAniosUniqueValues,
@@ -67,6 +70,7 @@ function RepitenciaFilter({
     newRepitenciaState.length
       ? searchParams.set('repitenciaAnios', newRepitenciaState.join('_'))
       : searchParams.delete('repitenciaAnios')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -74,6 +78,7 @@ function RepitenciaFilter({
     value[0] === min && value[1] === max
       ? searchParams.delete('repitenciaCant')
       : searchParams.set('repitenciaCant', value.join('_'))
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -89,12 +94,14 @@ function RepitenciaFilter({
     } else {
       searchParams.delete('repitenciaCant')
     }
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('repitenciaAnios')
     searchParams.delete('repitenciaCant')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -130,7 +137,7 @@ function RepitenciaFilter({
           </DropdownMenuCheckboxItem>
         ))}
       </>
-      <DropdownMenuSeparator />
+      <DropdownMenuSeparator className="mx-1" />
       <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={false}>
         <SliderItem
           title="Cantidad"

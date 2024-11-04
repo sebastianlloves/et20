@@ -1,3 +1,14 @@
+import { INSTANCIAS_ANIO } from './constants'
+
+export type MateriasPendientes = {
+  cantidad: number | null
+  detalle: string[]
+  error?: {
+    type: string
+    details?: string[]
+  }
+}
+
 export type Student = {
   anio: string | null
   division: string | null
@@ -5,12 +16,12 @@ export type Student = {
   nombre: string | null
   dni: number | null
   repitencia: string[]
-  cantTroncales: number | null
-  detalleTroncales: string[]
-  cantGenerales: number | null
-  detalleGenerales: string[]
-  cantEnProceso2020: number | null
-  detalleEnProceso2020: string[]
+  troncales: MateriasPendientes
+  generales: MateriasPendientes
+  enProceso2020: Omit<MateriasPendientes, 'detalle' | 'error'> & {
+    detalle: string[] | 'No corresponde'
+  }
+  proyeccion: 'Promociona' | 'Permanece' | 'Egresa' | 'Egresa (titula)' | 'Egresa (NO titula)' | 'Faltan datos'
 }
 
 export type StudentsTableFilters = {
@@ -18,4 +29,15 @@ export type StudentsTableFilters = {
   search?: string[]
   cursos?: string[]
   promocion?: string[]
+}
+
+export type Calificacion = string | number | null
+
+export type StudentCalifActuales = {
+  apellido?: string
+  nombre?: string
+  dni: number
+  materias: ({
+    nombre: string
+  } & Record<(typeof INSTANCIAS_ANIO)[number], Calificacion>)[]
 }

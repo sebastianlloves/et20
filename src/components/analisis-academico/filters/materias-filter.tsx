@@ -50,6 +50,7 @@ function MateriasFilter({
     newMateriasState.length
       ? searchParams.set('materias', newMateriasState.join('_'))
       : searchParams.delete('materias')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -57,6 +58,7 @@ function MateriasFilter({
     strictInclusion === 'true'
       ? searchParams.delete('inclusionEstricta')
       : searchParams.set('inclusionEstricta', 'true')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -69,12 +71,14 @@ function MateriasFilter({
         ? searchParams.set('materias', newState.join('_'))
         : searchParams.delete('materias')
     }
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('materias')
     if (strictInclusion === 'true') searchParams.delete('inclusionEstricta')
+      if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -100,44 +104,46 @@ function MateriasFilter({
                 className="text-[length:inherit]"
               >
                 <ScrollArea className="pr-1">
-                  {MATERIAS_POR_CURSO[
-                    anio as keyof typeof MATERIAS_POR_CURSO
-                  ].map(({ nombre: materia }) => (
-                    <DropdownMenuCheckboxItem
-                      key={materia}
-                      disabled={
-                        !materiasUniqueValues ||
-                        !materiasUniqueValues.get(
-                          `${materia} (${anio.split(' ')[0]})`,
-                        )
-                      }
-                      checked={materiasValue.includes(
-                        `${materia} (${anio.split(' ')[0]})`,
-                      )}
-                      onSelect={(e) => e.preventDefault()}
-                      className="max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] w-full cursor-pointer"
-                      onCheckedChange={() =>
-                        updateParams(`${materia} (${anio.split(' ')[0]})`)
-                      }
-                    >
-                      <MenuItem
-                        value={`${materia} (${anio.split(' ')[0]})`}
-                        quantity={
-                          materiasUniqueValues &&
-                          (materiasUniqueValues.get(
+                  <div className="max-h-[max(90vh,calc(var(--radix-dropdown-menu-content-available-height)-20px))]">
+                    {MATERIAS_POR_CURSO[
+                      anio as keyof typeof MATERIAS_POR_CURSO
+                    ].map(({ nombre: materia }) => (
+                      <DropdownMenuCheckboxItem
+                        key={materia}
+                        disabled={
+                          !materiasUniqueValues ||
+                          !materiasUniqueValues.get(
                             `${materia} (${anio.split(' ')[0]})`,
-                          ) ??
-                            0)
+                          )
                         }
-                      />
-                    </DropdownMenuCheckboxItem>
-                  ))}
+                        checked={materiasValue.includes(
+                          `${materia} (${anio.split(' ')[0]})`,
+                        )}
+                        onSelect={(e) => e.preventDefault()}
+                        className="w-full max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-pointer"
+                        onCheckedChange={() =>
+                          updateParams(`${materia} (${anio.split(' ')[0]})`)
+                        }
+                      >
+                        <MenuItem
+                          value={`${materia} (${anio.split(' ')[0]})`}
+                          quantity={
+                            materiasUniqueValues &&
+                            (materiasUniqueValues.get(
+                              `${materia} (${anio.split(' ')[0]})`,
+                            ) ??
+                              0)
+                          }
+                        />
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </div>
                 </ScrollArea>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
         ))}
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="mx-1" />
         <DropdownMenuItem
           onSelect={(e) => e.preventDefault()}
           /* disabled={

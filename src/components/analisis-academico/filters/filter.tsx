@@ -7,6 +7,7 @@ import {
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
 import { TagsBox } from './tags'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface FilterProps {
   children: ReactNode | ReactNode[]
@@ -54,7 +55,11 @@ function Filter({
           alignOffset={-1}
           className="rounded-md p-1 text-[length:inherit]"
         >
-          {children}
+          <ScrollArea className="pr-1">
+            <div className="max-h-[calc(var(--radix-dropdown-menu-content-available-height)-20px)] sm:max-h-[80vh]">
+              {children}
+            </div>
+          </ScrollArea>
         </DropdownMenuContent>
       </DropdownMenu>
 

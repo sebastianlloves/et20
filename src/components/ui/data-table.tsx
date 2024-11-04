@@ -4,7 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import {
@@ -32,20 +31,21 @@ function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     manualFiltering: true,
+    manualPagination: true,
+    manualSorting: true,
   })
 
   // const [border] = useState(false)
 
   return (
-    <ScrollArea className="scrollArea h-[80vh] w-full rounded-lg border bg-table-body shadow-sm">
+    <ScrollArea className="h-[75vh] w-full rounded-md border bg-table-body shadow-sm">
       <Table className="flex w-full flex-col bg-table-body text-xs lg:text-sm">
-        <TableHeader className="sticky top-0 z-20 border-b border-primary/70 shadow-sm shadow-primary/40">
+        <TableHeader className="sticky top-0 z-20 w-full border-b border-primary/70 shadow-sm shadow-primary/40">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="flex w-full items-center bg-table-header p-0 hover:bg-table-header"
+              className="flex w-full items-center bg-table-header p-0 pr-4 hover:bg-table-header"
             >
               {headerGroup.headers.map((header) => {
                 return (
@@ -69,7 +69,7 @@ function DataTable<TData, TValue>({
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext(),
+                        header.getContext()
                       )}
                     </div>
                   </TableHead>
@@ -84,7 +84,7 @@ function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="flex bg-inherit px-0 hover:bg-muted min-h-[86px]"
+                className="flex min-h-[86px] w-full bg-inherit px-0 hover:bg-muted/70"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

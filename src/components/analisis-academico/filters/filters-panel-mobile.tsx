@@ -9,11 +9,21 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ListFilter } from 'lucide-react'
-import React, { ReactNode } from 'react'
-import ToggleDB from '../toggle-db'
+import ToggleDB from './toggle-db'
 import SearchBar from './search-bar'
+import FiltersPanel from './filters-panel'
+import { Student } from '@/lib/definitions'
+import { SearchParams } from '../../../app/analisis-academico/page'
 
-function FiltersPanelMobile({ children }: { children: ReactNode }) {
+function FiltersPanelMobile({
+  filterParams = {},
+  data,
+  className,
+}: {
+  filterParams?: Omit<SearchParams, 'anio'>
+  data?: Student[]
+  className?: string
+}) {
   return (
     <div className="flex gap-x-3 lg:hidden">
       <Sheet>
@@ -38,7 +48,11 @@ function FiltersPanelMobile({ children }: { children: ReactNode }) {
             <div className="flex flex-col gap-10">
               <ToggleDB />
               <SearchBar />
-              {children}
+              <FiltersPanel
+                filterParams={filterParams}
+                data={data}
+                className={className}
+              />
             </div>
           </ScrollArea>
         </SheetContent>
