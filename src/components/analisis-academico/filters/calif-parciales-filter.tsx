@@ -2,7 +2,11 @@
 
 import { ChartSpline } from 'lucide-react'
 import Filter from './filter'
-import { CARACTER_GRADO } from '@/lib/constants'
+import {
+  AGENDA_ANIO_ACTUAL,
+  ANIO_ACTUAL,
+  CARACTER_GRADO,
+} from '@/lib/constants'
 import { StudentCalifActuales } from '@/lib/definitions'
 import {
   DropdownMenuLabel,
@@ -64,6 +68,7 @@ function CalifParcialesFilter() {
   const { pathname, replace, searchParams } = useParamsState()
 
   const filterValue = searchParams.get('califParciales')
+  const anio = searchParams.get('anio') || `${ANIO_ACTUAL}`
   const filterValueObj = periodos.find(({ value }) => value === filterValue)
   const proyeccionTags = filterValueObj
     ? [
@@ -112,7 +117,11 @@ function CalifParcialesFilter() {
               itemTitle === `Período de acreditación`) && (
               <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
             )}
-            <DropdownMenuRadioItem value={value} className="cursor-pointer">
+            <DropdownMenuRadioItem
+              value={value}
+              className="cursor-pointer"
+              disabled={isDisabled(anio, value)}
+            >
               <MenuItem value={itemTitle} />
             </DropdownMenuRadioItem>
           </div>
@@ -123,3 +132,20 @@ function CalifParcialesFilter() {
 }
 
 export default CalifParcialesFilter
+
+
+
+const isDisabled = (
+  anio: string,
+  value: (typeof periodos)[number]['value'],
+) => {
+  if (anio !== `${ANIO_ACTUAL}`) return false
+  if (!AGENDA_ANIO_ACTUAL[value]) return true
+  const {
+    anio: anioCarga,
+    mes,
+    dia,
+  } = AGENDA_ANIO_ACTUAL[value].fechaInicioCarga
+  const timeFechaCarga = new Date(anioCarga, mes - 1, dia).getTime()
+  return timeFechaCarga > new Date().getTime()
+}

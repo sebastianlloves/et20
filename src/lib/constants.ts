@@ -1,4 +1,48 @@
+import { StudentCalifActuales } from './definitions'
 import { isCursosKey } from './typeGuards'
+
+export const ANIO_ACTUAL = 2024
+
+export const AGENDA_ANIO_ACTUAL: {
+  // eslint-disable-next-line no-unused-vars
+  [key in keyof StudentCalifActuales['materias'][number] | 'acreditacion']?: {
+    fechaCierre: { dia: number; mes: number; anio: number }
+    fechaInicioCarga: { dia: number; mes: number; anio: number }
+  }
+} = {
+  primerBimestre: {
+    fechaCierre: { dia: 31, mes: 5, anio: 2024 },
+    fechaInicioCarga: { dia: 31, mes: 5, anio: 2024 },
+  },
+  segundoBimestre: {
+    fechaCierre: { dia: 15, mes: 7, anio: 2024 },
+    fechaInicioCarga: { dia: 15, mes: 7, anio: 2024 },
+  },
+  tercerBimestre: {
+    fechaCierre: { dia: 30, mes: 9, anio: 2024 },
+    fechaInicioCarga: { dia: 30, mes: 9, anio: 2024 },
+  },
+  cuartoBimestre: {
+    fechaCierre: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+  },
+  primerCuatrimestre: {
+    fechaCierre: { dia: 15, mes: 7, anio: 2024 },
+    fechaInicioCarga: { dia: 15, mes: 7, anio: 2024 },
+  },
+  segundoCuatrimestre: {
+    fechaCierre: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+  },
+  anual: {
+    fechaCierre: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+  },
+  acreditacion: {
+    fechaCierre: { dia: 28, mes: 2, anio: 2025 },
+    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+  },
+}
 
 export const CURSOS = {
   '1° año': [

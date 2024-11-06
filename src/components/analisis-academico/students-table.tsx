@@ -13,6 +13,7 @@ import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 import { isValidInstancia } from '@/lib/utils'
 import TablePagination from './table-pagination'
+import { ANIO_ACTUAL } from '@/lib/constants'
 
 const ROWS_COUNT = 50
 
@@ -23,12 +24,13 @@ export default async function StudentsTable({
 }) {
   console.time('fetching + paginación en students-table')
   const {
-    anio,
+    anio: anioParam,
     califParciales: califParcialesParam,
     page,
     sort,
     ...filterParams
   } = searchParams
+  const anio = anioParam || `${ANIO_ACTUAL}`
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
   let allData
 

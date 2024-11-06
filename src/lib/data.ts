@@ -1,5 +1,9 @@
 import { SearchParams } from '@/app/analisis-academico/page'
-import { CURSOS, DB_CALIFICACIONES, MATERIAS_POR_CURSO } from './constants'
+import {
+  CURSOS,
+  DB_CALIFICACIONES,
+  MATERIAS_POR_CURSO,
+} from './constants'
 import { Student, StudentCalifActuales } from './definitions'
 import {
   defineProyeccion,
@@ -10,7 +14,9 @@ import {
   SORTING_FNS,
 } from './utils'
 
-export async function fetchCalificacionesHistoricas(anio: string = '2024') {
+export async function fetchCalificacionesHistoricas(
+  anio: string,
+) {
   if (!(anio in DB_CALIFICACIONES))
     throw new Error(`No hay datos para el año ${anio}`)
   try {
@@ -32,7 +38,7 @@ export async function fetchCalificacionesHistoricas(anio: string = '2024') {
 
 export async function fetchCalificacionesActuales(
   // data: Student[],
-  anio: string = '2024',
+  anio: string,
   // cursosFilter?: string[],
 ) {
   console.time('depuracion')
