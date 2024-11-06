@@ -38,13 +38,13 @@ function TagsBox({
             />
           )}
 
-          <div className="mt-0.5 lg:mt-1 flex flex-wrap justify-start gap-1.5 overflow-hidden">
+          <div className="mt-0.5 flex flex-wrap justify-start gap-1.5 overflow-hidden lg:mt-1">
             {tags.map((tag) => (
               <Badge
                 key={tag.value}
                 variant="default"
                 className={cn(
-                  'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 lg:px-2 py-1 lg:py-1.5 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10',
+                  'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 py-1 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10 lg:px-2 lg:py-1.5',
                   tag.className,
                 )}
               >
@@ -57,7 +57,7 @@ function TagsBox({
                       <Skeleton className="h-1 w-5 rounded-md bg-primary/50" />
                     ) : (
                       tag.quantity !== null && (
-                        <p className="align-middle font-mono text-[length:inherit] leading-tight text-muted-foreground/80 mt-0.5">
+                        <p className="mt-0.5 align-middle font-mono text-[length:inherit] leading-tight text-muted-foreground/80">
                           {`(${tag.quantity})`}
                         </p>
                       )

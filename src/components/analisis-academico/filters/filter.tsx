@@ -28,6 +28,10 @@ function Filter({
   handleRemoveTag,
   handleRemoveAll,
 }: FilterProps) {
+  /* filterTags
+    .filter(({ quantity }) => quantity === 0)
+    .forEach(({ value }) => handleRemoveTag(value))
+  const tags = filterTags.filter(({ quantity }) => !quantity || quantity > 0) */
   return (
     <div className="w-full rounded-md border text-xs lg:text-sm">
       <DropdownMenu>
