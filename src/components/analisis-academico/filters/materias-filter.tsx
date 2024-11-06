@@ -3,7 +3,7 @@
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
 import { Book } from 'lucide-react'
-import { MATERIAS_POR_CURSO } from '@/lib/constants'
+import { MATERIAS_DATA } from '@/lib/constants'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
@@ -50,7 +50,7 @@ function MateriasFilter({
     newMateriasState.length
       ? searchParams.set('materias', newMateriasState.join('_'))
       : searchParams.delete('materias')
-      if (searchParams.has('page')) searchParams.delete('page')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -58,7 +58,7 @@ function MateriasFilter({
     strictInclusion === 'true'
       ? searchParams.delete('inclusionEstricta')
       : searchParams.set('inclusionEstricta', 'true')
-      if (searchParams.has('page')) searchParams.delete('page')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -71,14 +71,14 @@ function MateriasFilter({
         ? searchParams.set('materias', newState.join('_'))
         : searchParams.delete('materias')
     }
-      if (searchParams.has('page')) searchParams.delete('page')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
   const handleRemoveAll = () => {
     searchParams.delete('materias')
     if (strictInclusion === 'true') searchParams.delete('inclusionEstricta')
-      if (searchParams.has('page')) searchParams.delete('page')
+    if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams}`)
   }
 
@@ -92,7 +92,7 @@ function MateriasFilter({
       handleRemoveAll={handleRemoveAll}
     >
       <div className="text-xs lg:text-sm">
-        {Object.keys(MATERIAS_POR_CURSO).map((anio) => (
+        {MATERIAS_DATA.map(({ anio, todas }) => (
           <DropdownMenuSub key={anio}>
             <DropdownMenuSubTrigger className="w-28 sm:w-full">
               {anio}
@@ -105,34 +105,23 @@ function MateriasFilter({
               >
                 <ScrollArea className="pr-1">
                   <div className="max-h-[max(90vh,calc(var(--radix-dropdown-menu-content-available-height)-20px))]">
-                    {MATERIAS_POR_CURSO[
-                      anio as keyof typeof MATERIAS_POR_CURSO
-                    ].map(({ nombre: materia }) => (
+                    {todas.map((materia) => (
                       <DropdownMenuCheckboxItem
                         key={materia}
                         disabled={
                           !materiasUniqueValues ||
-                          !materiasUniqueValues.get(
-                            `${materia} (${anio.split(' ')[0]})`,
-                          )
+                          !materiasUniqueValues.get(materia)
                         }
-                        checked={materiasValue.includes(
-                          `${materia} (${anio.split(' ')[0]})`,
-                        )}
+                        checked={materiasValue.includes(materia)}
                         onSelect={(e) => e.preventDefault()}
                         className="w-full max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-pointer"
-                        onCheckedChange={() =>
-                          updateParams(`${materia} (${anio.split(' ')[0]})`)
-                        }
+                        onCheckedChange={() => updateParams(materia)}
                       >
                         <MenuItem
-                          value={`${materia} (${anio.split(' ')[0]})`}
+                          value={materia}
                           quantity={
                             materiasUniqueValues &&
-                            (materiasUniqueValues.get(
-                              `${materia} (${anio.split(' ')[0]})`,
-                            ) ??
-                              0)
+                            (materiasUniqueValues.get(materia) ?? 0)
                           }
                         />
                       </DropdownMenuCheckboxItem>

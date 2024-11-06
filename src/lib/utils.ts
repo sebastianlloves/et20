@@ -7,6 +7,7 @@ import {
   CALIFICACIONES_STRINGS,
   CARACTER_GRADO,
   CURSOS,
+  CURSOS_DATA,
   INSTANCIAS_ANIO,
 } from './constants'
 
@@ -216,10 +217,18 @@ export const FILTERS_FNS = {
     ) => undefined,
   },
   cursos: {
+    formatParam: (cursosParam?: string | null) => {
+      const cursosValue = cursosParam?.split('_') || []
+      const filterValue = cursosValue
+        .filter((curso) =>
+          CURSOS_DATA.flatMap(({ todos }) => todos).includes(curso),
+        )
+        .sort()
+      return filterValue
+    },
     filterFn: (student: Student, searchParams: SearchParams) => {
       if (student.anio === null || student.division === null) return true
-      const cursosParam = searchParams.cursos || ''
-      const filterValue = cursosParam.split('_').sort()
+      const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
       return filterValue.includes(`${student.anio[0]}° ${student.division[0]}°`)
     },
     uniqueValuesFn: (
@@ -532,7 +541,7 @@ const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
 const formatDetalleMaterias = (detalle: string): string[] => {
   const partialString = (
     detalle.endsWith('.') ? detalle.slice(0, detalle.length - 1) : detalle
-  ).replaceAll('º', '°')
+  ).replaceAll('º', CARACTER_GRADO)
   const splitedString =
     partialString.includes('Rep. Mediales, Comunicación y Lenguajes') ||
     partialString.includes('Arte, Tecnol. y Comunicación')

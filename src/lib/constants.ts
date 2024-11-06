@@ -1,7 +1,7 @@
 import { StudentCalifActuales } from './definitions'
-import { isCursosKey } from './typeGuards'
 
 export const ANIO_ACTUAL = 2024
+export const CARACTER_GRADO = '°'
 
 export const AGENDA_ANIO_ACTUAL: {
   // eslint-disable-next-line no-unused-vars
@@ -86,6 +86,25 @@ export const CURSOS = {
     { curso: '6° 2°', orientacion: 'TICs', turno: 'Mañana' },
   ],
 }
+
+export const CURSOS_DATA = (
+  Object.keys(CURSOS) as Array<keyof typeof CURSOS>
+).map((anio) => {
+  const todos = CURSOS[anio].map(({ curso }) => curso)
+  const turnoManiana = CURSOS[anio]
+    .filter(({ turno }) => turno === 'Mañana')
+    .map(({ curso }) => curso)
+  const turnoTarde = CURSOS[anio]
+    .filter(({ turno }) => turno === 'Tarde')
+    .map(({ curso }) => curso)
+  const cursosTICs = CURSOS[anio]
+    .filter(({ orientacion }) => orientacion === 'TICs')
+    .map(({ curso }) => curso)
+  const cursosPM = CURSOS[anio]
+    .filter(({ orientacion }) => orientacion === 'Producción Multimedial')
+    .map(({ curso }) => curso)
+  return { anio, todos, turnoManiana, turnoTarde, cursosTICs, cursosPM }
+})
 
 export const MATERIAS_POR_CURSO = {
   '1° año': [
@@ -417,13 +436,45 @@ export const MATERIAS_POR_CURSO = {
   ],
 }
 
-export const CURSOS_POR_ANIO = (() => {
-  return Object.fromEntries(
-    Object.keys(CURSOS)
-      .filter((key) => isCursosKey(key))
-      .map((anio) => [anio, CURSOS[anio].map((objCurso) => objCurso.curso)]),
-  )
-})()
+export const MATERIAS_DATA = (
+  Object.keys(MATERIAS_POR_CURSO) as Array<keyof typeof MATERIAS_POR_CURSO>
+).map((anio) => {
+  const formatFn = (obj: (typeof MATERIAS_POR_CURSO)[typeof anio][number]) =>
+    `${obj.nombre} (${anio.split(' ')[0]})`
+  const todas = MATERIAS_POR_CURSO[anio].map(formatFn)
+  const troncales = MATERIAS_POR_CURSO[anio]
+    .filter(({ esTroncal }) => esTroncal)
+    .map(formatFn)
+  const generales = MATERIAS_POR_CURSO[anio]
+    .filter(({ esTroncal }) => !esTroncal)
+    .map(formatFn)
+  const materiasTICs = MATERIAS_POR_CURSO[anio]
+    .filter(
+      ({ orientacion }) =>
+        orientacion === 'TICs' || orientacion === 'Ciclo Superior',
+    )
+    .map(formatFn)
+  const materiasPM = MATERIAS_POR_CURSO[anio]
+    .filter(
+      ({ orientacion }) =>
+        orientacion === 'Producción Multimedial' ||
+        orientacion === 'Ciclo Superior',
+    )
+    .map(formatFn)
+  const materiasCB = MATERIAS_POR_CURSO[anio]
+    .filter(({ orientacion }) => orientacion === 'Ciclo Básico')
+    .map(formatFn)
+
+  return {
+    anio,
+    todas,
+    troncales,
+    generales,
+    materiasCB,
+    materiasTICs,
+    materiasPM,
+  }
+})
 
 export const DB_CALIFICACIONES: {
   [key: string]: {
@@ -534,5 +585,3 @@ export const INSTANCIAS_ANIO = [
   'febrero',
   'definitiva',
 ] as const
-
-export const CARACTER_GRADO = '°'
