@@ -338,7 +338,7 @@ const getQuantity = (
   )
 }
 
-const getGrupalItemData = (
+export const getGrupalItemData = (
   valuesItem: string[],
   comparedValues: string[],
   uniqueValues?: Map<string, number>,

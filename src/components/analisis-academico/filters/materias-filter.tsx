@@ -7,7 +7,9 @@ import { MATERIAS_DATA } from '@/lib/constants'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
-  DropdownMenuPortal,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -17,6 +19,8 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import MenuItem from './menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { getGrupalItemData } from './cursos-filter'
+import { FILTERS_FNS } from '@/lib/utils'
 
 function MateriasFilter({
   materiasUniqueValues,
@@ -24,7 +28,9 @@ function MateriasFilter({
   materiasUniqueValues?: Map<string, number>
 }) {
   const { pathname, searchParams, replace } = useParamsState()
-  const materiasValue = searchParams.get('materias')?.split('_') || []
+  const materiasValue = FILTERS_FNS.materias.formatParam(
+    searchParams.get('materias'),
+  )
   const strictInclusion = searchParams.get('inclusionEstricta')
   const materiasTags = materiasValue.map((value) => {
     const quantity =
@@ -43,12 +49,41 @@ function MateriasFilter({
         ]
       : materiasTags
 
-  const updateParams = (materia: string) => {
-    const newMateriasState = materiasValue.includes(materia)
-      ? materiasValue.filter((prevValue) => prevValue !== materia)
-      : [...materiasValue, materia]
-    newMateriasState.length
-      ? searchParams.set('materias', newMateriasState.join('_'))
+  const updateParams = (itemValue: string | string[]) => {
+    let newState: string[]
+    if (typeof itemValue === 'string') {
+      newState = materiasValue.includes(itemValue)
+        ? materiasValue.filter((prevValue) => prevValue !== itemValue)
+        : [...materiasValue, itemValue]
+    } else {
+      const distintosAnios = [
+        ...new Set(itemValue.map((materia) => materia.split('(')[1][0])),
+      ]
+      const analyzedValues =
+        distintosAnios.length > 1
+          ? materiasValue
+          : materiasValue.filter(
+              (materia) => materia.split('(')[1][0] === distintosAnios[0],
+            )
+      const areEqualsArrays =
+        JSON.stringify(itemValue.sort(FILTERS_FNS.materias.sort)) ===
+        JSON.stringify(analyzedValues.sort(FILTERS_FNS.materias.sort))
+      newState = areEqualsArrays
+        ? materiasValue.filter((value) => !itemValue.includes(value))
+        : [
+            ...new Set([
+              ...materiasValue.filter(
+                (value) => !analyzedValues.includes(value),
+              ),
+              ...itemValue,
+            ]),
+          ]
+    }
+    newState.length
+      ? searchParams.set(
+          'materias',
+          newState.sort(FILTERS_FNS.materias.sort).join('_'),
+        )
       : searchParams.delete('materias')
     if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
@@ -82,6 +117,23 @@ function MateriasFilter({
     replace(`${pathname}?${searchParams}`)
   }
 
+  const todasCB = MATERIAS_DATA.flatMap(({ materiasCB }) => materiasCB)
+  const { isSelected: cbIsSelected, quantity: cbQuantity } = getGrupalItemData(
+    todasCB,
+    materiasValue,
+    materiasUniqueValues,
+  )
+  const todasTICS = MATERIAS_DATA.flatMap(({ materiasTICs }) => materiasTICs)
+  const { isSelected: ticsIsSelected, quantity: ticsQuantity } =
+    getGrupalItemData(todasTICS, materiasValue, materiasUniqueValues)
+
+  const todasPM = MATERIAS_DATA.flatMap(({ materiasPM }) => materiasPM)
+  const { isSelected: pmIsSelected, quantity: pmQuantity } = getGrupalItemData(
+    todasPM,
+    materiasValue,
+    materiasUniqueValues,
+  )
+
   return (
     <Filter
       title="Materias"
@@ -92,46 +144,167 @@ function MateriasFilter({
       handleRemoveAll={handleRemoveAll}
     >
       <div className="text-xs lg:text-sm">
-        {MATERIAS_DATA.map(({ anio, todas }) => (
-          <DropdownMenuSub key={anio}>
-            <DropdownMenuSubTrigger className="w-28 sm:w-full">
-              {anio}
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent
-                alignOffset={-5}
-                sideOffset={6}
-                className="text-[length:inherit]"
-              >
-                <ScrollArea className="pr-1">
-                  <div className="max-h-[max(90vh,calc(var(--radix-dropdown-menu-content-available-height)-20px))]">
-                    {todas.map((materia) => (
+        {MATERIAS_DATA.map(
+          ({ anio, todas, troncales, generales, materiasTICs, materiasPM }) => {
+            const especificAnioValues = materiasValue.filter(
+              (value) => value.split('(')?.[1]?.[0] === anio[0],
+            )
+
+            const { isSelected: todasIsSelected, quantity: todasQuantity } =
+              getGrupalItemData(
+                todas,
+                especificAnioValues,
+                materiasUniqueValues,
+              )
+            const { isSelected: ticsIsSelected, quantity: ticsQuantity } =
+              getGrupalItemData(
+                materiasTICs,
+                especificAnioValues,
+                materiasUniqueValues,
+              )
+            const { isSelected: pmIsSelected, quantity: pmQuantity } =
+              getGrupalItemData(
+                materiasPM,
+                especificAnioValues,
+                materiasUniqueValues,
+              )
+
+            return (
+              <DropdownMenuSub key={anio}>
+                <DropdownMenuSubTrigger className="w-28 sm:w-full">
+                  {anio}
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent
+                  alignOffset={-5}
+                  sideOffset={6}
+                  className="text-[length:inherit]"
+                >
+                  <ScrollArea className="pr-1">
+                    <div className="max-h-[max(90vh,calc(var(--radix-dropdown-menu-content-available-height)-20px))]">
+                      {todas.map((materia) => (
+                        <DropdownMenuCheckboxItem
+                          key={materia}
+                          disabled={
+                            !materiasUniqueValues ||
+                            !materiasUniqueValues.get(materia)
+                          }
+                          checked={materiasValue.includes(materia)}
+                          onSelect={(e) => e.preventDefault()}
+                          className="w-full max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-pointer"
+                          onCheckedChange={() => updateParams(materia)}
+                        >
+                          <MenuItem
+                            value={materia}
+                            quantity={
+                              materiasUniqueValues &&
+                              (materiasUniqueValues.get(materia) ?? 0)
+                            }
+                          />
+                        </DropdownMenuCheckboxItem>
+                      ))}
+
+                      {materiasTICs.length > 0 && materiasPM.length > 0 && (
+                        <>
+                          <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+                          <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+                            Orientación
+                          </DropdownMenuLabel>
+                          <DropdownMenuRadioGroup
+                            value={
+                              (!todasIsSelected &&
+                                ((ticsIsSelected && 'TICs') ||
+                                  (pmIsSelected && 'Prod. Multimedial'))) ||
+                              undefined
+                            }
+                            onValueChange={(value) => {
+                              if (value === 'TICs') updateParams(materiasTICs)
+                              if (value === 'Prod. Multimedial')
+                                updateParams(materiasPM)
+                            }}
+                          >
+                            <DropdownMenuRadioItem
+                              value="TICs"
+                              className="cursor-pointer"
+                              disabled={ticsQuantity === 0 && !ticsIsSelected}
+                            >
+                              <MenuItem
+                                value={`TICs`}
+                                quantity={ticsQuantity}
+                              />
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem
+                              value="Prod. Multimedial"
+                              className="cursor-pointer"
+                              disabled={pmQuantity === 0 && !pmIsSelected}
+                            >
+                              <MenuItem
+                                value={`Prod. Multimedial`}
+                                quantity={pmQuantity}
+                              />
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        </>
+                      )}
+
+                      <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
                       <DropdownMenuCheckboxItem
-                        key={materia}
-                        disabled={
-                          !materiasUniqueValues ||
-                          !materiasUniqueValues.get(materia)
-                        }
-                        checked={materiasValue.includes(materia)}
-                        onSelect={(e) => e.preventDefault()}
-                        className="w-full max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-pointer"
-                        onCheckedChange={() => updateParams(materia)}
+                        className="cursor-pointer font-medium text-foreground/80"
+                        disabled={todasQuantity === 0 && !todasIsSelected}
+                        checked={todasIsSelected}
+                        onCheckedChange={() => updateParams(todas)}
                       >
                         <MenuItem
-                          value={materia}
-                          quantity={
-                            materiasUniqueValues &&
-                            (materiasUniqueValues.get(materia) ?? 0)
-                          }
+                          value={`Todos las materias de ${anio}`}
+                          quantity={todasQuantity}
                         />
                       </DropdownMenuCheckboxItem>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-        ))}
+                    </div>
+                  </ScrollArea>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            )
+          },
+        )}
+        <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+        <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+          Orientación
+        </DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={
+            (cbIsSelected && 'CB') ||
+            (ticsIsSelected && 'TICs') ||
+            (pmIsSelected && 'Prod. Multimedial') ||
+            undefined
+          }
+          onValueChange={(value) => {
+            if (value === 'CB') updateParams(todasCB)
+            if (value === 'TICs') updateParams(todasTICS)
+            if (value === 'Prod. Multimedial') updateParams(todasPM)
+          }}
+        >
+          <DropdownMenuRadioItem
+            value="CB"
+            className="cursor-pointer"
+            disabled={cbQuantity === 0 && !cbIsSelected}
+          >
+            <MenuItem value={`Ciclo Básico`} quantity={cbQuantity} />
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value="TICs"
+            className="cursor-pointer"
+            disabled={ticsQuantity === 0 && !ticsIsSelected}
+          >
+            <MenuItem value={`TICs`} quantity={ticsQuantity} />
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value="Prod. Multimedial"
+            className="cursor-pointer"
+            disabled={pmQuantity === 0 && !pmIsSelected}
+          >
+            <MenuItem value={`Prod. Multimedial`} quantity={pmQuantity} />
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+
         <DropdownMenuSeparator className="mx-1" />
         <DropdownMenuItem
           onSelect={(e) => e.preventDefault()}

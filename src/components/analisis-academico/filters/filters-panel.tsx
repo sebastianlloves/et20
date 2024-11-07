@@ -69,7 +69,7 @@ function FiltersPanel({
         className,
       )}
     >
-      <div className="flex flex-col items-start justify-start gap-y-4 p-1 text-xs lg:px-2 lg:py-4 lg:text-sm">
+      <div className="flex flex-col items-start justify-start gap-y-4 p-1 text-xs lg:px-3 lg:py-4 lg:text-sm">
         <div className="mb-6 hidden w-1/2 items-center justify-start gap-6 px-2 lg:flex">
           <ListFilter size={16} className="min-w-6" />
           <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">

@@ -9,6 +9,7 @@ import {
   CURSOS,
   CURSOS_DATA,
   INSTANCIAS_ANIO,
+  MATERIAS_DATA,
 } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
@@ -242,6 +243,21 @@ export const FILTERS_FNS = {
     },
   },
   materias: {
+    sort: (materiaA: string, materiaB: string) => {
+      const anioA = Number(materiaA.split('(')?.[1]?.[0])
+      const anioB = Number(materiaB.split('(')?.[1]?.[0])
+      if (anioA !== anioB) return anioA - anioB
+      return materiaA.localeCompare(materiaB)
+    },
+    formatParam: (materiasParam?: string | null) => {
+      const materiasValue = materiasParam?.split('_') || []
+      const filterValue = materiasValue
+        .filter((materia) =>
+          MATERIAS_DATA.flatMap(({ todas }) => todas).includes(materia),
+        )
+        .sort(FILTERS_FNS.materias.sort)
+      return filterValue
+    },
     filterFn: (student: Student, searchParams: SearchParams) => {
       const materiasParam = searchParams.materias || ''
       const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
