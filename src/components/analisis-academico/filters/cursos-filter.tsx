@@ -78,39 +78,30 @@ function CursosFilter({
   }
 
   const todosManiana = CURSOS_DATA.flatMap(({ turnoManiana }) => turnoManiana)
-  const manianaIsSelected =
-    todosManiana.length &&
-    filterValue.length === todosManiana.length &&
-    todosManiana.every((curso) => filterValue.includes(curso))
-  const manianaQuantity = getQuantity(todosManiana, uniqueValues)
+  const { isSelected: manianaIsSelected, quantity: manianaQuantity } =
+    getGrupalItemData(todosManiana, filterValue, uniqueValues)
 
   const todosTarde = CURSOS_DATA.flatMap(({ turnoTarde }) => turnoTarde)
-  const tardeIsSelected =
-    todosTarde.length &&
-    filterValue.length === todosTarde.length &&
-    todosTarde.every((curso) => filterValue.includes(curso))
-  const tardeQuantity = getQuantity(todosTarde, uniqueValues)
+  const { isSelected: tardeIsSelected, quantity: tardeQuantity } =
+    getGrupalItemData(todosTarde, filterValue, uniqueValues)
 
   const todosCB = CURSOS_DATA.flatMap(({ cursosCB }) => cursosCB)
-  const cbIsSelected =
-    todosCB.length &&
-    filterValue.length === todosCB.length &&
-    todosCB.every((curso) => filterValue.includes(curso))
-  const cbQuantity = getQuantity(todosCB, uniqueValues)
+  const { isSelected: cbIsSelected, quantity: cbQuantity } = getGrupalItemData(
+    todosCB,
+    filterValue,
+    uniqueValues,
+  )
 
   const todosTICS = CURSOS_DATA.flatMap(({ cursosTICs }) => cursosTICs)
-  const ticsIsSelected =
-    todosTICS.length &&
-    filterValue.length === todosTICS.length &&
-    todosTICS.every((curso) => filterValue.includes(curso))
-  const ticsQuantity = getQuantity(todosTICS, uniqueValues)
+  const { isSelected: ticsIsSelected, quantity: ticsQuantity } =
+    getGrupalItemData(todosTICS, filterValue, uniqueValues)
 
   const todosPM = CURSOS_DATA.flatMap(({ cursosPM }) => cursosPM)
-  const pmIsSelected =
-    todosPM.length &&
-    filterValue.length === todosPM.length &&
-    todosPM.every((curso) => filterValue.includes(curso))
-  const pmQuantity = getQuantity(todosPM, uniqueValues)
+  const { isSelected: pmIsSelected, quantity: pmQuantity } = getGrupalItemData(
+    todosPM,
+    filterValue,
+    uniqueValues,
+  )
 
   return (
     <Filter
@@ -124,39 +115,23 @@ function CursosFilter({
       <div className="text-xs lg:text-sm">
         {CURSOS_DATA.map(
           ({ anio, todos, turnoManiana, turnoTarde, cursosTICs, cursosPM }) => {
-            const anioFilterValue = filterValue.filter(
+            const anioFilterValues = filterValue.filter(
               (curso) => curso[0] === anio[0],
             )
-            const todosQuantity = getQuantity(todos, uniqueValues)
-            const todosIsCheked = todos.every((curso) =>
-              filterValue.includes(curso),
-            )
-            const manianaIsSelected =
-              turnoManiana.length &&
-              anioFilterValue.length === turnoManiana.length &&
-              turnoManiana.every((curso) => filterValue.includes(curso))
-            const manianaQuantity = getQuantity(turnoManiana, uniqueValues)
-            const tardeQuantity = getQuantity(turnoTarde, uniqueValues)
-            const tardeIsSelected =
-              turnoTarde.length &&
-              anioFilterValue.length === turnoTarde.length &&
-              turnoTarde.every((curso) => filterValue.includes(curso))
-            const ticsIsSelected =
-              cursosTICs.length > 0 &&
-              anioFilterValue.length === cursosTICs.length &&
-              cursosTICs.every((curso) => filterValue.includes(curso))
-            const ticsQuantity =
-              cursosTICs.length > 0
-                ? getQuantity(cursosTICs, uniqueValues)
-                : undefined
-            const pmIsSelected =
-              cursosPM.length > 0 &&
-              anioFilterValue.length === cursosPM.length &&
-              cursosPM.every((curso) => filterValue.includes(curso))
-            const pmQuantity =
-              cursosPM.length > 0
-                ? getQuantity(cursosPM, uniqueValues)
-                : undefined
+            const { isSelected: todosIsSelected, quantity: todosQuantity } =
+              getGrupalItemData(todos, anioFilterValues, uniqueValues)
+
+            const { isSelected: manianaIsSelected, quantity: manianaQuantity } =
+              getGrupalItemData(turnoManiana, anioFilterValues, uniqueValues)
+
+            const { isSelected: tardeIsSelected, quantity: tardeQuantity } =
+              getGrupalItemData(turnoTarde, anioFilterValues, uniqueValues)
+
+            const { isSelected: ticsIsSelected, quantity: ticsQuantity } =
+              getGrupalItemData(cursosTICs, anioFilterValues, uniqueValues)
+
+            const { isSelected: pmIsSelected, quantity: pmQuantity } =
+              getGrupalItemData(cursosPM, anioFilterValues, uniqueValues)
 
             return (
               <DropdownMenuSub key={anio}>
@@ -189,7 +164,7 @@ function CursosFilter({
                   </DropdownMenuLabel>
                   <DropdownMenuRadioGroup
                     value={
-                      (!todosIsCheked &&
+                      (!todosIsSelected &&
                         ((manianaIsSelected && 'turnoManiana') ||
                           (tardeIsSelected && 'turnoTarde'))) ||
                       undefined
@@ -228,7 +203,7 @@ function CursosFilter({
                       </DropdownMenuLabel>
                       <DropdownMenuRadioGroup
                         value={
-                          (!todosIsCheked &&
+                          (!todosIsSelected &&
                             ((ticsIsSelected && 'TICs') ||
                               (pmIsSelected && 'Prod. Multimedial'))) ||
                           undefined
@@ -262,8 +237,8 @@ function CursosFilter({
                   <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
                   <DropdownMenuCheckboxItem
                     className="cursor-pointer font-medium text-foreground/80"
-                    disabled={todosQuantity === 0 && !todosIsCheked}
-                    checked={todosIsCheked}
+                    disabled={todosQuantity === 0 && !todosIsSelected}
+                    checked={todosIsSelected}
                     onCheckedChange={() => updateParams(todos)}
                   >
                     <MenuItem
@@ -361,4 +336,16 @@ const getQuantity = (
       0,
     )
   )
+}
+
+const getGrupalItemData = (
+  valuesItem: string[],
+  comparedValues: string[],
+  uniqueValues?: Map<string, number>,
+) => {
+  const arraysAreEquals =
+    JSON.stringify(valuesItem.sort()) === JSON.stringify(comparedValues.sort())
+  const isSelected = valuesItem.length ? arraysAreEquals : undefined
+  const quantity = getQuantity(valuesItem, uniqueValues)
+  return { isSelected, quantity }
 }

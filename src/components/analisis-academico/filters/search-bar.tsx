@@ -25,7 +25,7 @@ function SearchBar({ className }: { className?: string }) {
       </label>
       <Search
         strokeWidth={1.2}
-        className="absolute left-3 top-[calc(50%-2px)] w-[18px] -translate-y-1/2 text-muted-foreground/80 lg:w-[20px]"
+        className="absolute left-3 top-1/2 lg:top-[calc(50%-2px)] w-[18px] -translate-y-1/2 text-muted-foreground/80 lg:w-[20px]"
       />
       <Input
         key={searchParams.get('search')}
@@ -38,7 +38,7 @@ function SearchBar({ className }: { className?: string }) {
       <Button
         variant="ghost"
         disabled={!searchParams.get('search')}
-        className="absolute right-3 top-[calc(50%-2px)] -translate-y-1/2 p-0 text-muted-foreground hover:bg-inherit hover:text-foreground"
+        className="absolute right-3 top-1/2 lg:top-[calc(50%-2px)] -translate-y-1/2 p-0 text-muted-foreground hover:bg-inherit hover:text-foreground"
         onClick={() => updateUrlParams()}
       >
         <X size={16} />
