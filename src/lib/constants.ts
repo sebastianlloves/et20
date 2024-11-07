@@ -97,13 +97,24 @@ export const CURSOS_DATA = (
   const turnoTarde = CURSOS[anio]
     .filter(({ turno }) => turno === 'Tarde')
     .map(({ curso }) => curso)
+  const cursosCB = CURSOS[anio]
+    .filter(({ orientacion }) => orientacion === 'Ciclo Básico')
+    .map(({ curso }) => curso)
   const cursosTICs = CURSOS[anio]
     .filter(({ orientacion }) => orientacion === 'TICs')
     .map(({ curso }) => curso)
   const cursosPM = CURSOS[anio]
     .filter(({ orientacion }) => orientacion === 'Producción Multimedial')
     .map(({ curso }) => curso)
-  return { anio, todos, turnoManiana, turnoTarde, cursosTICs, cursosPM }
+  return {
+    anio,
+    todos,
+    turnoManiana,
+    turnoTarde,
+    cursosCB,
+    cursosTICs,
+    cursosPM,
+  }
 })
 
 export const MATERIAS_POR_CURSO = {

@@ -37,16 +37,19 @@ function CursosFilter({
         ? filterValue.filter((prevParam) => prevParam !== itemValue)
         : [...filterValue, itemValue]
     } else {
-      const anio = itemValue[0][0]
-      const anioFilterValue = filterValue.filter((curso) => curso[0] === anio)
+      const distintosAnios = [...new Set(itemValue.map((curso) => curso[0]))]
+      const analyzedCursos =
+        distintosAnios.length > 1
+          ? filterValue
+          : filterValue.filter((curso) => curso[0] === distintosAnios[0])
       newCursosState =
         itemValue.every((curso) => filterValue.includes(curso)) &&
-        anioFilterValue.length === itemValue.length
+        analyzedCursos.length === itemValue.length
           ? filterValue.filter((prevCurso) => !itemValue.includes(prevCurso))
           : [
               ...new Set([
                 ...filterValue.filter(
-                  (curso) => !anioFilterValue.includes(curso),
+                  (curso) => !analyzedCursos.includes(curso),
                 ),
                 ...itemValue,
               ]),
@@ -74,6 +77,41 @@ function CursosFilter({
     replace(`${pathname}?${searchParams}`)
   }
 
+  const todosManiana = CURSOS_DATA.flatMap(({ turnoManiana }) => turnoManiana)
+  const manianaIsSelected =
+    todosManiana.length &&
+    filterValue.length === todosManiana.length &&
+    todosManiana.every((curso) => filterValue.includes(curso))
+  const manianaQuantity = getQuantity(todosManiana, uniqueValues)
+
+  const todosTarde = CURSOS_DATA.flatMap(({ turnoTarde }) => turnoTarde)
+  const tardeIsSelected =
+    todosTarde.length &&
+    filterValue.length === todosTarde.length &&
+    todosTarde.every((curso) => filterValue.includes(curso))
+  const tardeQuantity = getQuantity(todosTarde, uniqueValues)
+
+  const todosCB = CURSOS_DATA.flatMap(({ cursosCB }) => cursosCB)
+  const cbIsSelected =
+    todosCB.length &&
+    filterValue.length === todosCB.length &&
+    todosCB.every((curso) => filterValue.includes(curso))
+  const cbQuantity = getQuantity(todosCB, uniqueValues)
+
+  const todosTICS = CURSOS_DATA.flatMap(({ cursosTICs }) => cursosTICs)
+  const ticsIsSelected =
+    todosTICS.length &&
+    filterValue.length === todosTICS.length &&
+    todosTICS.every((curso) => filterValue.includes(curso))
+  const ticsQuantity = getQuantity(todosTICS, uniqueValues)
+
+  const todosPM = CURSOS_DATA.flatMap(({ cursosPM }) => cursosPM)
+  const pmIsSelected =
+    todosPM.length &&
+    filterValue.length === todosPM.length &&
+    todosPM.every((curso) => filterValue.includes(curso))
+  const pmQuantity = getQuantity(todosPM, uniqueValues)
+
   return (
     <Filter
       title="Cursos"
@@ -94,13 +132,15 @@ function CursosFilter({
               filterValue.includes(curso),
             )
             const manianaIsSelected =
+              turnoManiana.length &&
               anioFilterValue.length === turnoManiana.length &&
               turnoManiana.every((curso) => filterValue.includes(curso))
             const manianaQuantity = getQuantity(turnoManiana, uniqueValues)
+            const tardeQuantity = getQuantity(turnoTarde, uniqueValues)
             const tardeIsSelected =
+              turnoTarde.length &&
               anioFilterValue.length === turnoTarde.length &&
               turnoTarde.every((curso) => filterValue.includes(curso))
-            const tardeQuantity = getQuantity(turnoTarde, uniqueValues)
             const ticsIsSelected =
               cursosTICs.length > 0 &&
               anioFilterValue.length === cursosTICs.length &&
@@ -190,12 +230,12 @@ function CursosFilter({
                         value={
                           (!todosIsCheked &&
                             ((ticsIsSelected && 'TICs') ||
-                              (pmIsSelected && 'Producción Multimedial'))) ||
+                              (pmIsSelected && 'Prod. Multimedial'))) ||
                           undefined
                         }
                         onValueChange={(value) => {
                           if (value === 'TICs') updateParams(cursosTICs)
-                          if (value === 'Producción Multimedial')
+                          if (value === 'Prod. Multimedial')
                             updateParams(cursosPM)
                         }}
                       >
@@ -207,7 +247,7 @@ function CursosFilter({
                           <MenuItem value={`TICs`} quantity={ticsQuantity} />
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem
-                          value="Producción Multimedial"
+                          value="Prod. Multimedial"
                           className="cursor-pointer"
                           disabled={pmQuantity === 0 && !pmIsSelected}
                         >
@@ -236,6 +276,71 @@ function CursosFilter({
             )
           },
         )}
+        <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+        <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+          Turnos
+        </DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={
+            (manianaIsSelected && 'turnoManiana') ||
+            (tardeIsSelected && 'turnoTarde') ||
+            undefined
+          }
+          onValueChange={(value) => {
+            if (value === 'turnoManiana') updateParams(todosManiana)
+            if (value === 'turnoTarde') updateParams(todosTarde)
+          }}
+        >
+          <DropdownMenuRadioItem
+            value="turnoManiana"
+            className="cursor-pointer"
+          >
+            <MenuItem value={`Turno Mañana`} quantity={manianaQuantity} />
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="turnoTarde" className="cursor-pointer">
+            <MenuItem value={`Turno Tarde`} quantity={tardeQuantity} />
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+
+        <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+        <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+          Orientación
+        </DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={
+            (cbIsSelected && 'CB') ||
+            (ticsIsSelected && 'TICs') ||
+            (pmIsSelected && 'Prod. Multimedial') ||
+            undefined
+          }
+          onValueChange={(value) => {
+            if (value === 'CB') updateParams(todosCB)
+            if (value === 'TICs') updateParams(todosTICS)
+            if (value === 'Prod. Multimedial') updateParams(todosPM)
+          }}
+        >
+          <DropdownMenuRadioItem
+            value="CB"
+            className="cursor-pointer"
+            disabled={cbQuantity === 0 && !cbIsSelected}
+          >
+            <MenuItem value={`Ciclo Básico`} quantity={cbQuantity} />
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value="TICs"
+            className="cursor-pointer"
+            disabled={ticsQuantity === 0 && !ticsIsSelected}
+          >
+            <MenuItem value={`TICs`} quantity={ticsQuantity} />
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value="Prod. Multimedial"
+            className="cursor-pointer"
+            disabled={pmQuantity === 0 && !pmIsSelected}
+          >
+            <MenuItem value={`Prod. Multimedial`} quantity={pmQuantity} />
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
       </div>
     </Filter>
   )
