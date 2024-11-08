@@ -171,7 +171,7 @@ function MateriasFilter({
 
             return (
               <DropdownMenuSub key={anio}>
-                <DropdownMenuSubTrigger className="w-28 sm:w-full">
+                <DropdownMenuSubTrigger className="">
                   {anio}
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent

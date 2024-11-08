@@ -1,6 +1,6 @@
 'use client'
 
-import { ChartSpline } from 'lucide-react'
+import { ChartCandlestick } from 'lucide-react'
 import Filter from './filter'
 import {
   AGENDA_ANIO_ACTUAL,
@@ -98,7 +98,9 @@ function CalifParcialesFilter() {
   return (
     <Filter
       title="Calif. Parciales"
-      icon={<ChartSpline strokeWidth={1.4} className="w-[16px] lg:w-[17px]" />}
+      icon={
+        <ChartCandlestick strokeWidth={1.3} className="w-[16px] lg:w-[17px]" />
+      }
       maxTags={3}
       filterTags={proyeccionTags}
       handleRemoveTag={handleRemoveAll}

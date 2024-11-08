@@ -1,6 +1,6 @@
 'use client'
 
-import { Rocket } from 'lucide-react'
+import { FastForward } from 'lucide-react'
 import Filter from './filter'
 import { DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
@@ -82,7 +82,7 @@ function ProyeccionFilter({
     <Filter
       title="Proyección"
       maxTags={3}
-      icon={<Rocket strokeWidth={1.0} className="w-[13px] lg:w-[15px]" />}
+      icon={<FastForward strokeWidth={1.5} className="w-[13px] lg:w-[15px]" />}
       filterTags={proyeccionTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}

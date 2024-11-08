@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 import { FILTERS_FNS } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 function CursosFilter({
   uniqueValues,
@@ -139,113 +140,121 @@ function CursosFilter({
                   {anio}
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent alignOffset={-5} sideOffset={6}>
-                  <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
-                    Específicos
-                  </DropdownMenuLabel>
-                  {todos.map((curso) => {
-                    const cursoQuantity = getQuantity(curso, uniqueValues)
-                    const cursoIsSelected = filterValue.includes(curso)
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={curso}
-                        className="cursor-pointer"
-                        disabled={cursoQuantity === 0 && !cursoIsSelected}
-                        onSelect={(e) => e.preventDefault()}
-                        checked={cursoIsSelected}
-                        onCheckedChange={() => updateParams(curso)}
-                      >
-                        <MenuItem value={curso} quantity={cursoQuantity} />
-                      </DropdownMenuCheckboxItem>
-                    )
-                  })}
-                  <DropdownMenuSeparator className="mx-1 bg-muted-foreground/10" />
-                  <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
-                    Turnos
-                  </DropdownMenuLabel>
-                  <DropdownMenuRadioGroup
-                    value={
-                      (!todosIsSelected &&
-                        ((manianaIsSelected && 'turnoManiana') ||
-                          (tardeIsSelected && 'turnoTarde'))) ||
-                      undefined
-                    }
-                    onValueChange={(value) => {
-                      if (value === 'turnoManiana') updateParams(turnoManiana)
-                      if (value === 'turnoTarde') updateParams(turnoTarde)
-                    }}
-                  >
-                    <DropdownMenuRadioItem
-                      value="turnoManiana"
-                      className="cursor-pointer"
-                      disabled={manianaQuantity === 0 && !manianaIsSelected}
-                    >
-                      <MenuItem
-                        value={`Turno Mañana`}
-                        quantity={manianaQuantity}
-                      />
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value="turnoTarde"
-                      className="cursor-pointer"
-                      disabled={tardeQuantity === 0 && !tardeIsSelected}
-                    >
-                      <MenuItem
-                        value={`Turno Tarde`}
-                        quantity={tardeQuantity}
-                      />
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                  {cursosPM.length > 0 && cursosTICs.length > 0 && (
-                    <>
+                  <ScrollArea className="pr-1">
+                    <div className="max-h-[max(90vh,calc(var(--radix-dropdown-menu-content-available-height)-20px))]">
+                      <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+                        Específicos
+                      </DropdownMenuLabel>
+                      {todos.map((curso) => {
+                        const cursoQuantity = getQuantity(curso, uniqueValues)
+                        const cursoIsSelected = filterValue.includes(curso)
+                        return (
+                          <DropdownMenuCheckboxItem
+                            key={curso}
+                            className="cursor-pointer"
+                            disabled={cursoQuantity === 0 && !cursoIsSelected}
+                            onSelect={(e) => e.preventDefault()}
+                            checked={cursoIsSelected}
+                            onCheckedChange={() => updateParams(curso)}
+                          >
+                            <MenuItem value={curso} quantity={cursoQuantity} />
+                          </DropdownMenuCheckboxItem>
+                        )
+                      })}
                       <DropdownMenuSeparator className="mx-1 bg-muted-foreground/10" />
                       <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
-                        Orientación
+                        Turnos
                       </DropdownMenuLabel>
                       <DropdownMenuRadioGroup
                         value={
                           (!todosIsSelected &&
-                            ((ticsIsSelected && 'TICs') ||
-                              (pmIsSelected && 'Prod. Multimedial'))) ||
+                            ((manianaIsSelected && 'turnoManiana') ||
+                              (tardeIsSelected && 'turnoTarde'))) ||
                           undefined
                         }
                         onValueChange={(value) => {
-                          if (value === 'TICs') updateParams(cursosTICs)
-                          if (value === 'Prod. Multimedial')
-                            updateParams(cursosPM)
+                          if (value === 'turnoManiana')
+                            updateParams(turnoManiana)
+                          if (value === 'turnoTarde') updateParams(turnoTarde)
                         }}
                       >
                         <DropdownMenuRadioItem
-                          value="TICs"
+                          value="turnoManiana"
                           className="cursor-pointer"
-                          disabled={ticsQuantity === 0 && !ticsIsSelected}
-                        >
-                          <MenuItem value={`TICs`} quantity={ticsQuantity} />
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem
-                          value="Prod. Multimedial"
-                          className="cursor-pointer"
-                          disabled={pmQuantity === 0 && !pmIsSelected}
+                          disabled={manianaQuantity === 0 && !manianaIsSelected}
                         >
                           <MenuItem
-                            value={`Prod. Multimedial`}
-                            quantity={pmQuantity}
+                            value={`Turno Mañana`}
+                            quantity={manianaQuantity}
+                          />
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem
+                          value="turnoTarde"
+                          className="cursor-pointer"
+                          disabled={tardeQuantity === 0 && !tardeIsSelected}
+                        >
+                          <MenuItem
+                            value={`Turno Tarde`}
+                            quantity={tardeQuantity}
                           />
                         </DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
-                    </>
-                  )}
-                  <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
-                  <DropdownMenuCheckboxItem
-                    className="cursor-pointer font-medium text-foreground/80"
-                    disabled={todosQuantity === 0 && !todosIsSelected}
-                    checked={todosIsSelected}
-                    onCheckedChange={() => updateParams(todos)}
-                  >
-                    <MenuItem
-                      value={`Todos los ${anio.split(' ')[0]}`}
-                      quantity={todosQuantity}
-                    />
-                  </DropdownMenuCheckboxItem>
+                      {cursosPM.length > 0 && cursosTICs.length > 0 && (
+                        <>
+                          <DropdownMenuSeparator className="mx-1 bg-muted-foreground/10" />
+                          <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+                            Orientación
+                          </DropdownMenuLabel>
+                          <DropdownMenuRadioGroup
+                            value={
+                              (!todosIsSelected &&
+                                ((ticsIsSelected && 'TICs') ||
+                                  (pmIsSelected && 'Prod. Multimedial'))) ||
+                              undefined
+                            }
+                            onValueChange={(value) => {
+                              if (value === 'TICs') updateParams(cursosTICs)
+                              if (value === 'Prod. Multimedial')
+                                updateParams(cursosPM)
+                            }}
+                          >
+                            <DropdownMenuRadioItem
+                              value="TICs"
+                              className="cursor-pointer"
+                              disabled={ticsQuantity === 0 && !ticsIsSelected}
+                            >
+                              <MenuItem
+                                value={`TICs`}
+                                quantity={ticsQuantity}
+                              />
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem
+                              value="Prod. Multimedial"
+                              className="cursor-pointer"
+                              disabled={pmQuantity === 0 && !pmIsSelected}
+                            >
+                              <MenuItem
+                                value={`Prod. Multimedial`}
+                                quantity={pmQuantity}
+                              />
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        </>
+                      )}
+                      <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+                      <DropdownMenuCheckboxItem
+                        className="cursor-pointer font-medium text-foreground/80"
+                        disabled={todosQuantity === 0 && !todosIsSelected}
+                        checked={todosIsSelected}
+                        onCheckedChange={() => updateParams(todos)}
+                      >
+                        <MenuItem
+                          value={`Todos los ${anio.split(' ')[0]}`}
+                          quantity={todosQuantity}
+                        />
+                      </DropdownMenuCheckboxItem>
+                    </div>
+                  </ScrollArea>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
             )
