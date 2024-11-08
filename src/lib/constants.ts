@@ -636,12 +636,12 @@ export const MATERIAS_DATA = (
   const formatFn = (obj: (typeof MATERIAS_POR_CURSO)[typeof anio][number]) =>
     `${obj.nombre} (${anio.split(' ')[0]})`
   const todas = MATERIAS_POR_CURSO[anio].map(formatFn)
-  const troncales = MATERIAS_POR_CURSO[anio]
+/*   const troncales = MATERIAS_POR_CURSO[anio]
     .filter(({ esTroncal }) => esTroncal)
     .map(formatFn)
   const generales = MATERIAS_POR_CURSO[anio]
     .filter(({ esTroncal }) => !esTroncal)
-    .map(formatFn)
+    .map(formatFn) */
   const materiasCB = MATERIAS_POR_CURSO[anio]
     .filter(({ orientacion }) => orientacion === 'Ciclo Básico')
     .map(formatFn)
@@ -662,8 +662,8 @@ export const MATERIAS_DATA = (
   return {
     anio,
     todas,
-    troncales,
-    generales,
+    /* troncales,
+    generales, */
     materiasCB,
     materiasTICs,
     materiasPM,

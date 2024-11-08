@@ -145,7 +145,12 @@ function MateriasFilter({
     >
       <div className="text-xs lg:text-sm">
         {MATERIAS_DATA.map(
-          ({ anio, todas, troncales, generales, materiasTICs, materiasPM }) => {
+          ({
+            anio,
+            todas /* , troncales, generales */,
+            materiasTICs,
+            materiasPM,
+          }) => {
             const especificAnioValues = materiasValue.filter(
               (value) => value.split('(')?.[1]?.[0] === anio[0],
             )
@@ -313,7 +318,7 @@ function MateriasFilter({
           } */
           className="w-28 sm:w-full"
         >
-          <div className="flex items-center gap-4 p-1 lg:gap-6">
+          <div className="flex w-full items-center justify-between gap-4 p-1 lg:gap-6">
             <Label
               htmlFor="estrict-inclusion"
               className="cursor-pointer text-[length:inherit] font-normal text-foreground"
