@@ -38,14 +38,14 @@ function TablePagination({
   }
 
   return (
-    <div className="relative my-0 flex flex-col items-center justify-end gap-y-1 px-2 md:flex-row lg:col-start-2 xl:px-4">
-      <div className="left-2 flex h-8 w-fit items-center self-start md:absolute md:self-center lg:left-4 lg:h-10">
+    <div className="my-0 flex flex-col items-center justify-between gap-y-2.5 md:flex-row lg:col-start-2 xl:px-4">
+      <div className="flex h-6 w-fit shrink-0 items-center self-start align-middle sm:h-9">
         {totalSize === undefined ? (
           <Skeleton className="h-3 w-56 rounded-full bg-muted-foreground/20" />
         ) : (
           totalSize > 0 && (
-            <p className="text-xs text-foreground/90 lg:text-sm">
-              <span className="hidden xl:inline">{'Mostrando '}</span>
+            <p className="text-xs text-foreground/90 xl:text-sm">
+              <span className="inline lg:hidden xl:inline">{'Mostrando '}</span>
               {`${indexFirstElement}-${indexLastElement} de`}{' '}
               <span className="font-medium">{` ${totalSize}`}</span>{' '}
               {'resultados'}
@@ -54,14 +54,14 @@ function TablePagination({
         )}
       </div>
       <Pagination className="mx-0 w-fit">
-        <PaginationContent>
+        <PaginationContent className="w-full">
           <PaginationPrevious
             href={{
               pathname: '/analisis-academico',
               query: currentPage ? getPageQuery(currentPage - 1) : '',
             }}
             isDisabled={currentPage === 1 || !pagesButtons.length}
-            className="mr-1 h-7 px-3 py-0 text-xs lg:mr-2 lg:h-9 lg:px-4 lg:text-sm"
+            className="mr-1 h-6 px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
           />
           {currentPage && lastPage ? (
             pagesButtons.map((buttonNumber, index) =>
@@ -73,14 +73,14 @@ function TablePagination({
                     query: getPageQuery(buttonNumber),
                   }}
                   isActive={buttonNumber === currentPage}
-                  className="h-7 w-7 text-xs lg:h-9 lg:w-9 lg:text-sm"
+                  className="h-6 w-6 text-xs sm:h-9 sm:w-9 xl:text-sm"
                 >
                   {buttonNumber}
                 </PaginationLink>
               ) : (
                 <PaginationEllipsis
                   key={index}
-                  className="h-7 w-7 lg:h-9 lg:w-9"
+                  className="h-6 w-6 sm:h-9 sm:w-9"
                 />
               ),
             )
@@ -89,7 +89,7 @@ function TablePagination({
               {Array.from({ length: 7 }).map((_, index) => (
                 <Skeleton
                   key={index}
-                  className="h-7 w-7 rounded-md bg-muted-foreground/15 lg:h-9 lg:w-9"
+                  className="h-6 w-6 rounded-md bg-muted-foreground/15 sm:h-9 sm:w-9"
                 />
               ))}
             </div>
@@ -100,7 +100,7 @@ function TablePagination({
               query: currentPage ? getPageQuery(currentPage + 1) : '',
             }}
             isDisabled={currentPage === lastPage || !pagesButtons.length}
-            className="ml-1 text-xs lg:ml-2 lg:text-sm"
+            className="ml-1 h-6 px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
           />
         </PaginationContent>
       </Pagination>

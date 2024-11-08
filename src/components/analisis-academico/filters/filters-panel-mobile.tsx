@@ -44,7 +44,7 @@ function FiltersPanelMobile({
             <SheetTitle>Filtros</SheetTitle>
             <SheetDescription>Panel de filtros</SheetDescription>
           </SheetHeader>
-          <ScrollArea className="h-[90vh] pr-3">
+          <ScrollArea className="h-[90dvh] pr-3">
             <div className="flex flex-col gap-10">
               <ToggleDB />
               <SearchBar />

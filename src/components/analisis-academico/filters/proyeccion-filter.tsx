@@ -82,7 +82,7 @@ function ProyeccionFilter({
     <Filter
       title="Proyección"
       maxTags={3}
-      icon={<FastForward strokeWidth={1.5} className="w-[13px] lg:w-[15px]" />}
+      icon={<FastForward strokeWidth={1.8} className="w-[13px] lg:w-[15px]" />}
       filterTags={proyeccionTags}
       handleRemoveTag={handleRemoveTag}
       handleRemoveAll={handleRemoveAll}
