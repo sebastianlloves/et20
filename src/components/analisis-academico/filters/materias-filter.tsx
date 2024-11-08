@@ -316,7 +316,7 @@ function MateriasFilter({
           /* disabled={
             materiasValue.length > 0 
           } */
-          className="w-28 sm:w-full"
+          className="w-full"
         >
           <div className="flex w-full items-center justify-between gap-4 p-1 lg:gap-6">
             <Label
