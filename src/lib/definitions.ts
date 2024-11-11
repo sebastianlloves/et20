@@ -24,13 +24,6 @@ export type Student = {
   proyeccion: 'Promociona' | 'Permanece' | 'Egresa' | 'Egresa (titula)' | 'Egresa (NO titula)' | 'Faltan datos'
 }
 
-export type StudentsTableFilters = {
-  anio: string
-  search?: string[]
-  cursos?: string[]
-  promocion?: string[]
-}
-
 export type Calificacion = string | number | null
 
 export type StudentCalifActuales = {

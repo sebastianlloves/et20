@@ -9,13 +9,14 @@ import DataTable from '@/components/ui/data-table'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 import TablePagination from './table-pagination'
 import { SearchParams } from '../../app/analisis-academico/page'
+import { getPagination } from '@/lib/utils'
+import { MAX_BUTTONS_PAGINATION, ROWS_COUNT } from '@/app/analisis-academico/utils/constants'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams
 }
 
 function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
-  const skeletonData = Array(30).fill({})
   const skeletonColumns = columns.map((column) => {
     return {
       ...column,
@@ -29,14 +30,18 @@ function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
     }
   })
   const pageParam = searchParams.page
-  const [currentPage, lastPage] = pageParam ? pageParam.split('_').map((value) => Number(value)) : [null, null]
+  const { paginatedData: paginatedSkeletonData, ...paginationUtils } = getPagination(
+    ROWS_COUNT,
+    MAX_BUTTONS_PAGINATION,
+    pageParam,
+  )
   return (
     <>
       <FiltersPanelMobile className="block lg:hidden" />
       <FiltersPanel className="hidden lg:block" />
-      <DataTable columns={skeletonColumns} data={skeletonData} />
+      <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
       <TablePagination
-        paginationUtils={{ currentPage, lastPage, totalSize: undefined }}
+        paginationUtils={paginationUtils}
         searchParams={searchParams}
       />
     </>

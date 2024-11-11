@@ -3,7 +3,6 @@
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
 import { Book } from 'lucide-react'
-import { MATERIAS_DATA } from '@/lib/constants'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
@@ -20,7 +19,8 @@ import { Switch } from '@/components/ui/switch'
 import MenuItem from './menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { getGrupalItemData } from './cursos-filter'
-import { FILTERS_FNS } from '@/lib/utils'
+import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
+import { FILTERS_FNS } from '@/app/analisis-academico/utils/dataOperations'
 
 function MateriasFilter({
   materiasUniqueValues,
@@ -66,8 +66,8 @@ function MateriasFilter({
               (materia) => materia.split('(')[1][0] === distintosAnios[0],
             )
       const areEqualsArrays =
-        JSON.stringify(itemValue.sort(FILTERS_FNS.materias.sort)) ===
-        JSON.stringify(analyzedValues.sort(FILTERS_FNS.materias.sort))
+        JSON.stringify(itemValue.sort(FILTERS_FNS.materias.sortParam)) ===
+        JSON.stringify(analyzedValues.sort(FILTERS_FNS.materias.sortParam))
       newState = areEqualsArrays
         ? materiasValue.filter((value) => !itemValue.includes(value))
         : [
@@ -82,7 +82,7 @@ function MateriasFilter({
     newState.length
       ? searchParams.set(
           'materias',
-          newState.sort(FILTERS_FNS.materias.sort).join('_'),
+          newState.sort(FILTERS_FNS.materias.sortParam).join('_'),
         )
       : searchParams.delete('materias')
     if (searchParams.has('page')) searchParams.delete('page')
@@ -117,17 +117,19 @@ function MateriasFilter({
     replace(`${pathname}?${searchParams}`)
   }
 
-  const todasCB = MATERIAS_DATA.flatMap(({ materiasCB }) => materiasCB)
+  const todasCB = MATERIAS_ITEMS_DATA.flatMap(({ materiasCB }) => materiasCB)
   const { isSelected: cbIsSelected, quantity: cbQuantity } = getGrupalItemData(
     todasCB,
     materiasValue,
     materiasUniqueValues,
   )
-  const todasTICS = MATERIAS_DATA.flatMap(({ materiasTICs }) => materiasTICs)
+  const todasTICS = MATERIAS_ITEMS_DATA.flatMap(
+    ({ materiasTICs }) => materiasTICs,
+  )
   const { isSelected: ticsIsSelected, quantity: ticsQuantity } =
     getGrupalItemData(todasTICS, materiasValue, materiasUniqueValues)
 
-  const todasPM = MATERIAS_DATA.flatMap(({ materiasPM }) => materiasPM)
+  const todasPM = MATERIAS_ITEMS_DATA.flatMap(({ materiasPM }) => materiasPM)
   const { isSelected: pmIsSelected, quantity: pmQuantity } = getGrupalItemData(
     todasPM,
     materiasValue,
@@ -144,7 +146,7 @@ function MateriasFilter({
       handleRemoveAll={handleRemoveAll}
     >
       <div className="text-xs lg:text-sm">
-        {MATERIAS_DATA.map(
+        {MATERIAS_ITEMS_DATA.map(
           ({
             anio,
             todas /* , troncales, generales */,

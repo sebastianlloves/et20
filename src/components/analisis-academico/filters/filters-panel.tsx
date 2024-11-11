@@ -4,12 +4,16 @@ import { SearchParams } from '../../../app/analisis-academico/page'
 import CursosFilter from './cursos-filter'
 import MateriasFilter from './materias-filter'
 import { Student } from '@/lib/definitions'
-import { getStudentsUniqueValues } from '@/lib/data'
 import CantidadesFilter from './cantidades-filter'
-import { cn, FILTERS_FNS } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
 import CalifParcialesFilter from './calif-parciales-filter'
 import ProyeccionFilter from './proyeccion-filter'
+import {
+  FILTERS_FNS,
+  getStudentsUniqueValues,
+} from '@/app/analisis-academico/utils/dataOperations'
+import Button from './new/button'
 // import Filter from './filter'
 
 function FiltersPanel({
@@ -76,6 +80,7 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
+        <Button />
         <CalifParcialesFilter />
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter materiasUniqueValues={materiasUniqueValues} />

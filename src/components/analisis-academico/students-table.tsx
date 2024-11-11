@@ -1,21 +1,24 @@
 import {
   fetchCalificacionesActuales,
   fetchCalificacionesHistoricas,
-  getFilteredStudentData,
-  getPagination,
-  getSortedData,
-  projectCalifActuales,
 } from '@/lib/data'
 import DataTable from '../ui/data-table'
 import { columns } from '../../app/analisis-academico/columns'
 import { SearchParams } from '../../app/analisis-academico/page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
-import { isValidInstancia } from '@/lib/utils'
+import { getPagination, isValidInstancia } from '@/lib/utils'
 import TablePagination from './table-pagination'
 import { ANIO_ACTUAL } from '@/lib/constants'
-
-const ROWS_COUNT = 50
+import {
+  getFilteredStudentData,
+  getSortedData,
+} from '@/app/analisis-academico/utils/dataOperations'
+import {
+  MAX_BUTTONS_PAGINATION,
+  ROWS_COUNT,
+} from '@/app/analisis-academico/utils/constants'
+import { projectCalifActuales } from '@/lib/dataOperations'
 
 export default async function StudentsTable({
   searchParams,
@@ -49,9 +52,10 @@ export default async function StudentsTable({
   const sortedData = sort ? getSortedData(filteredData, sort) : filteredData
 
   const { paginatedData, ...paginationUtils } = getPagination(
-    sortedData,
     ROWS_COUNT,
+    MAX_BUTTONS_PAGINATION,
     page,
+    sortedData,
   )
   console.timeEnd('fetching + paginación en students-table')
 

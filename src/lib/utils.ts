@@ -1,626 +1,10 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Calificacion, Student, StudentCalifActuales } from './definitions'
-import { SearchParams } from '@/app/analisis-academico/page'
-import { getStudentsUniqueValues } from './data'
-import {
-  CALIFICACIONES_STRINGS,
-  CARACTER_GRADO,
-  CURSOS,
-  CURSOS_DATA,
-  INSTANCIAS_ANIO,
-  MATERIAS_DATA,
-} from './constants'
+import { Student } from './definitions'
+import { INSTANCIAS_ANIO } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
-}
-
-export function formatStudentsResponse(
-  textResponse: string,
-  anioDB: number,
-): Student[] {
-  const [, ...data] = textResponse.split('\r\n').map((row) => row.split('\t'))
-  const ultimoAnio =
-    Object.keys(CURSOS)
-      .map((key) => Number(key[0]))
-      .sort()
-      .at(-1) || 0
-  return data.map(
-    ([
-      anioValue,
-      divisionValue,
-      apellidoValue,
-      nombreValue,
-      dniValue,
-      troncalesCantValue,
-      troncalesDetalleValue,
-      generalesCantValue,
-      generalesDetalleValue,
-      enProceso2020CantidadValue,
-      enProceso2020DetalleValue,
-      repitencia1Value,
-      repitencia2Value,
-      repitencia3Value,
-    ]) => {
-      const anio = anioValue.length ? `${anioValue[0]}º` : null
-      const repitencia = defineRepitencia([
-        repitencia1Value,
-        repitencia2Value,
-        repitencia3Value,
-      ])
-      const troncales = {
-        cantidad: !Number.isNaN(parseInt(troncalesCantValue))
-          ? parseInt(troncalesCantValue)
-          : null,
-        detalle: formatDetalleMaterias(troncalesDetalleValue.trim()),
-      }
-      const generales = {
-        cantidad: !Number.isNaN(parseInt(generalesCantValue))
-          ? parseInt(generalesCantValue)
-          : null,
-        detalle: formatDetalleMaterias(generalesDetalleValue.trim()),
-      }
-      const curso2020enSecundaria = anio
-        ? anioDB + 1 - Number(anio[0]) - repitencia.length <= 2020
-        : true
-      const enProceso2020 = {
-        cantidad: !Number.isNaN(parseInt(enProceso2020CantidadValue))
-          ? parseInt(enProceso2020CantidadValue)
-          : null,
-        detalle: curso2020enSecundaria
-          ? formatDetalleMaterias(enProceso2020DetalleValue.trim())
-          : 'No corresponde',
-      } as const
-      const proyeccion = defineProyeccion(
-        anio,
-        ultimoAnio,
-        troncales,
-        generales,
-        enProceso2020,
-      )
-
-      return {
-        anio,
-        division: divisionValue.length ? `${divisionValue[0]}º` : null,
-        apellido: apellidoValue.length
-          ? capitalizeWords(apellidoValue)
-              .trim()
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '')
-          : null,
-        nombre: nombreValue.length
-          ? capitalizeWords(nombreValue)
-              .trim()
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '')
-          : null,
-        dni: parseInt(dniValue) || null,
-        repitencia,
-        troncales,
-        generales,
-        enProceso2020,
-        proyeccion,
-      }
-    },
-  )
-}
-
-export function formatCalifActualesResponse(
-  response: string,
-  anio: string,
-): Pick<StudentCalifActuales, 'dni' | 'materias'>[] {
-  const [, encabezadoMaterias, , ...data] = response
-    .split('\r\n')
-    .map((row) => {
-      const [, ...data] = row.split('\t')
-      return data
-    })
-  const formatedDatada = data.flatMap((row) =>
-    Array.from(row, (_, index) => {
-      const arrIndex = index / 13
-      if (Number.isInteger(arrIndex)) {
-        const [
-          apellido,
-          nombre,
-          dniValue,
-          primerBimestreValue,
-          segundoBimestreValue,
-          primerCuatrimestreValue,
-          tercerBimestreValue,
-          cuartoBimestreValue,
-          segundoCuatrimestreValue,
-          anualValue,
-          diciembreValue,
-          febreroValue,
-          definitivaValue,
-        ] = row.slice(index, index + 13)
-        return {
-          apellido,
-          nombre,
-          dni: Number(dniValue),
-          materia: `${encabezadoMaterias[index]}_${anio}`,
-          primerBimestre: defineCalificacion(primerBimestreValue),
-          segundoBimestre: defineCalificacion(segundoBimestreValue),
-          primerCuatrimestre: defineCalificacion(primerCuatrimestreValue),
-          tercerBimestre: defineCalificacion(tercerBimestreValue),
-          cuartoBimestre: defineCalificacion(cuartoBimestreValue),
-          segundoCuatrimestre: defineCalificacion(segundoCuatrimestreValue),
-          anual: defineCalificacion(anualValue),
-          diciembre: defineCalificacion(diciembreValue),
-          febrero: defineCalificacion(febreroValue),
-          definitiva: defineCalificacion(definitivaValue),
-        }
-      }
-      return null
-    }).filter((value) => value !== null),
-  )
-
-  const uniqueValuesDNI = new Set(formatedDatada.map(({ dni }) => dni))
-  const groupedData = [...uniqueValuesDNI].map((uniqueDNI) => {
-    const formatedObjs = formatedDatada.filter(({ dni }) => uniqueDNI === dni)
-    const materias = formatedObjs.map(
-      ({
-        materia,
-        primerBimestre,
-        segundoBimestre,
-        primerCuatrimestre,
-        tercerBimestre,
-        cuartoBimestre,
-        segundoCuatrimestre,
-        anual,
-        diciembre,
-        febrero,
-        definitiva,
-      }) => {
-        return {
-          nombre: materia,
-          primerBimestre,
-          segundoBimestre,
-          primerCuatrimestre,
-          tercerBimestre,
-          cuartoBimestre,
-          segundoCuatrimestre,
-          anual,
-          diciembre,
-          febrero,
-          definitiva,
-        }
-      },
-    )
-    return { dni: uniqueDNI, materias }
-  })
-  return groupedData
-}
-
-export const FILTERS_FNS = {
-  search: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const searchParam = searchParams.search || ''
-      const filterValue = searchParam.split(' ').map((string) =>
-        string
-          .trim()
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''),
-      )
-      const { apellido, nombre, dni } = student
-      return filterValue.every(
-        (string: string) =>
-          apellido?.toLowerCase().includes(string) ||
-          nombre?.toLowerCase().includes(string) ||
-          `${dni}`.includes(string),
-      )
-    },
-    uniqueValuesFn: (
-      _filteredData: Student[],
-      _facetedModel: Map<string, number>,
-    ) => undefined,
-  },
-  cursos: {
-    formatParam: (cursosParam?: string | null) => {
-      const cursosValue = cursosParam?.split('_') || []
-      const filterValue = cursosValue
-        .filter((curso) =>
-          CURSOS_DATA.flatMap(({ todos }) => todos).includes(curso),
-        )
-        .sort()
-      return filterValue
-    },
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      if (student.anio === null || student.division === null) return true
-      const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
-      return filterValue.includes(`${student.anio[0]}° ${student.division[0]}°`)
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const value = `${student.anio?.[0]}° ${student.division?.[0]}°`
-        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
-      })
-    },
-  },
-  materias: {
-    sort: (materiaA: string, materiaB: string) => {
-      const anioA = Number(materiaA.split('(')?.[1]?.[0])
-      const anioB = Number(materiaB.split('(')?.[1]?.[0])
-      if (anioA !== anioB) return anioA - anioB
-      return materiaA.localeCompare(materiaB)
-    },
-    formatParam: (materiasParam?: string | null) => {
-      const materiasValue = materiasParam?.split('_') || []
-      const filterValue = materiasValue
-        .filter((materia) =>
-          MATERIAS_DATA.flatMap(({ todas }) => todas).includes(materia),
-        )
-        .sort(FILTERS_FNS.materias.sort)
-      return filterValue
-    },
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const materiasParam = searchParams.materias || ''
-      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
-      const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
-      const filterValue = materiasParam.split('_')
-      const studentMaterias = [
-        ...student.troncales.detalle,
-        ...student.generales.detalle,
-      ]
-      if (
-        enProceso2020Param &&
-        student.enProceso2020.detalle !== 'No corresponde'
-      )
-        studentMaterias.push(...student.enProceso2020.detalle)
-      return inclusionEstrictaParam
-        ? filterValue.every((materia) => studentMaterias.includes(materia))
-        : filterValue.some((materia) => studentMaterias.includes(materia))
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-      filterParams: Omit<SearchParams, 'anio'>,
-    ) => {
-      filteredData.forEach((student) => {
-        const values = [
-          ...student.troncales.detalle,
-          ...student.generales.detalle,
-        ]
-        if (
-          filterParams?.enProceso2020 !== 'false' &&
-          student.enProceso2020.detalle !== 'No corresponde'
-        )
-          values.push(...student.enProceso2020.detalle)
-        values.forEach((value) =>
-          facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
-        )
-      })
-    },
-  },
-  cantidades: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const {
-        cantidadesTroncales,
-        cantidadesGenerales,
-        cantidadesEnProceso2020,
-        enProceso2020,
-      } = searchParams
-      const criterioOptativo = searchParams.cantOptativo === 'true'
-      const [troncalesValue, generalesValue, enProceso2020Value] = [
-        cantidadesTroncales,
-        cantidadesGenerales,
-        cantidadesEnProceso2020,
-      ].map(
-        (filterParam) =>
-          filterParam !== undefined &&
-          filterParam
-            .split('_')
-            .map((value) => Number(value))
-            .sort((a, b) => a - b),
-      )
-
-      const isTroncalesValid =
-        troncalesValue && student.troncales.cantidad !== null
-          ? student.troncales.cantidad >= troncalesValue[0] &&
-            student.troncales.cantidad <= troncalesValue[1]
-          : true
-      const isGeneralesValid =
-        generalesValue && student.generales.cantidad !== null
-          ? student.generales.cantidad >= generalesValue[0] &&
-            student.generales.cantidad <= generalesValue[1]
-          : true
-      const isEnProceso2020Valid =
-        enProceso2020Value &&
-        enProceso2020 !== 'false' &&
-        student.enProceso2020.cantidad !== null
-          ? student.enProceso2020.cantidad >= enProceso2020Value[0] &&
-            student.enProceso2020.cantidad <= enProceso2020Value[1]
-          : true
-
-      return criterioOptativo
-        ? isTroncalesValid || isGeneralesValid || isEnProceso2020Valid
-        : isTroncalesValid && isGeneralesValid && isEnProceso2020Valid
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const {
-          troncales: { cantidad: cantTroncales },
-          generales: { cantidad: cantGenerales },
-          enProceso2020: { cantidad: cantEnProceso2020 },
-        } = student
-        facetedModel.set(
-          `troncales_${cantTroncales}`,
-          (facetedModel.get(`troncales_${cantTroncales}`) ?? 0) + 1,
-        )
-        facetedModel.set(
-          `generales_${cantGenerales}`,
-          (facetedModel.get(`generales_${cantGenerales}`) ?? 0) + 1,
-        )
-        facetedModel.set(
-          `enProceso2020_${cantEnProceso2020}`,
-          (facetedModel.get(`enProceso2020_${cantEnProceso2020}`) ?? 0) + 1,
-        )
-      })
-    },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getStudentsUniqueValues(data, {}, 'cantidades')
-      const troncalesUniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.split('_')[0] === 'troncales')
-        .map(([key]) => Number(key.split('_')[1]))
-      const generalesUniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.split('_')[0] === 'generales')
-        .map(([key]) => Number(key.split('_')[1]))
-      const enProceso2020UniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.split('_')[0] === 'enProceso2020')
-        .map(([key]) => Number(key.split('_')[1]))
-      const troncalesMinMax = [
-        Math.min(...troncalesUniqueValues),
-        Math.max(...troncalesUniqueValues),
-      ]
-      const generalesMinMax = [
-        Math.min(...generalesUniqueValues),
-        Math.max(...generalesUniqueValues),
-      ]
-      const enProceso2020MinMax = [
-        Math.min(...enProceso2020UniqueValues),
-        Math.max(...enProceso2020UniqueValues),
-      ]
-      return { troncalesMinMax, generalesMinMax, enProceso2020MinMax }
-    },
-  },
-  proyeccion: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const proyeccionParam = searchParams.proyeccion
-      if (!proyeccionParam) return true
-      return proyeccionParam
-        .split('_')
-        .some((value) => student.proyeccion === value)
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const { proyeccion } = student
-        facetedModel.set(proyeccion, (facetedModel.get(proyeccion) ?? 0) + 1)
-      })
-    },
-  },
-  repitencia: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const studentRepitencia = student.repitencia
-      const repitenciaAniosParam = searchParams.repitenciaAnios?.split('_')
-      const repitenciaCantParam = searchParams.repitenciaCant
-        ?.split('_')
-        .map((value) => Number(value))
-        .sort((a, b) => a - b)
-
-      const isAniosOk = repitenciaAniosParam
-        ? studentRepitencia.some((anioRepetido) =>
-            repitenciaAniosParam.includes(anioRepetido),
-          )
-        : true
-      const isCantOk = repitenciaCantParam
-        ? studentRepitencia.length >= repitenciaCantParam[0] &&
-          studentRepitencia.length <= repitenciaCantParam[1]
-        : true
-
-      return isAniosOk && isCantOk
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach(({ repitencia }) => {
-        const aniosRepetidos = Array.from(new Set(repitencia))
-        aniosRepetidos.forEach((anioRepetido) =>
-          facetedModel.set(
-            anioRepetido,
-            (facetedModel.get(anioRepetido) ?? 0) + 1,
-          ),
-        )
-        facetedModel.set(
-          `cant_${repitencia.length}`,
-          (facetedModel.get(`cant_${repitencia.length}`) ?? 0) + 1,
-        )
-      })
-    },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getStudentsUniqueValues(data, {}, 'repitencia')
-      const repitenciaCantUniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.includes('cant'))
-        .map(([key]) => Number(key.split('_')[1]))
-      const repitenciaCantMinMax = [
-        Math.min(...repitenciaCantUniqueValues),
-        Math.max(...repitenciaCantUniqueValues),
-      ]
-      return repitenciaCantMinMax
-    },
-  },
-} as const
-
-export const SORTING_FNS = [
-  {
-    columnId: 'curso',
-    fn: (a: Student, b: Student) => {
-      const cursoA = `${a.anio}${CARACTER_GRADO} ${a.division}${CARACTER_GRADO}`
-      const cursoB = `${b.anio}${CARACTER_GRADO} ${b.division}${CARACTER_GRADO}`
-      return cursoA.localeCompare(cursoB)
-    },
-  },
-  {
-    columnId: 'estudiante',
-    fn: (a: Student, b: Student) => {
-      const estudianteA = `${a.apellido} ${a.nombre}`
-      const estudianteB = `${b.apellido} ${b.nombre}`
-      return estudianteA.localeCompare(estudianteB)
-    },
-  },
-  {
-    columnId: 'dni',
-    fn: (a: Student, b: Student) => {
-      if (a.dni === null || b.dni === null) return -1
-      return a.dni - b.dni
-    },
-  },
-  {
-    columnId: 'troncales',
-    fn: (a: Student, b: Student) => {
-      const { cantidad: cantidadA, error: errorA } = a.troncales
-      const { cantidad: cantidadB, error: errorB } = b.troncales
-      if (cantidadA === null || (errorA && !errorB)) return 1
-      if (cantidadB === null || (errorB && !errorA)) return -1
-      return cantidadA - cantidadB
-    },
-  },
-  {
-    columnId: 'generales',
-    fn: (a: Student, b: Student) => {
-      const { cantidad: cantidadA, error: errorA } = a.generales
-      const { cantidad: cantidadB, error: errorB } = b.generales
-      if (cantidadA === null || (errorA && !errorB)) return 1
-      if (cantidadB === null || (errorB && !errorA)) return -1
-      return cantidadA - cantidadB
-    },
-  },
-  {
-    columnId: 'enProceso2020',
-    fn: (a: Student, b: Student) => {
-      const { cantidad: cantidadA, detalle: detalleA } = a.enProceso2020
-      const { cantidad: cantidadB, detalle: detalleB } = b.enProceso2020
-      if (cantidadA === null || detalleB === 'No corresponde') return 1
-      if (cantidadB === null || detalleA === 'No corresponde') return -1
-      return cantidadA - cantidadB
-    },
-  },
-  {
-    columnId: 'repitencia',
-    fn: (a: Student, b: Student) => {
-      const repA = a.repitencia
-      const repB = b.repitencia
-      if (repA.length !== repB.length) return repA.length - repB.length
-      for (const [index, anioRepetidoA] of repA.entries()) {
-        const anioRepA = Number(anioRepetidoA[0])
-        const anioRepB = Number(repB[index][0])
-        if (anioRepA !== anioRepB) return anioRepA - anioRepB
-      }
-      return 0
-    },
-  },
-  {
-    columnId: 'proyeccion',
-    fn: (a: Student, b: Student) => {
-      const proyeccionA = a.proyeccion
-      const proyeccionB = b.proyeccion
-      return proyeccionB.localeCompare(proyeccionA)
-    },
-  },
-]
-
-const capitalizeWords = (words: string) =>
-  words
-    .toLowerCase()
-    .trim()
-    .split(' ')
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
-    .join(' ')
-
-const defineRepitencia = (repitenciaArr: string[]): Student['repitencia'] =>
-  repitenciaArr
-    .filter((repValue) => !Number.isNaN(parseInt(repValue[0])))
-    .map((value) => `${value[0]}° año`)
-    .sort()
-
-const formatDetalleMaterias = (detalle: string): string[] => {
-  const partialString = (
-    detalle.endsWith('.') ? detalle.slice(0, detalle.length - 1) : detalle
-  ).replaceAll('º', CARACTER_GRADO)
-  const splitedString =
-    partialString.includes('Rep. Mediales, Comunicación y Lenguajes') ||
-    partialString.includes('Arte, Tecnol. y Comunicación')
-      ? partialString
-          .split('), ')
-          .map((string) => (string.endsWith(')') ? string : `${string})`))
-      : partialString.split(', ')
-  return splitedString.filter((value) => value !== 'No adeuda')
-}
-
-const defineCalificacion = (string: string) => {
-  if (!Number.isNaN(parseInt(string))) {
-    const numberCalif = Number(string)
-    if (numberCalif > 0 && numberCalif <= 10) return numberCalif
-  }
-  const califStringsValidas = Object.values(CALIFICACIONES_STRINGS).flat()
-  if (califStringsValidas.some((califString) => califString === string))
-    return string
-  return null
-}
-
-export const defineProyeccion = (
-  anioString: string | null,
-  ultimoAnio: number,
-  troncales: Student['troncales'],
-  generales: Student['generales'],
-  enProceso2020: Student['enProceso2020'],
-  includeCalifActuales: boolean = false,
-): Student['proyeccion'] => {
-  const { cantidad: cantTroncales, error: errorTroncales } = troncales
-  const { cantidad: cantGenerales, error: errorGenerales } = generales
-  const { cantidad: cantEnProceso2020 } = enProceso2020
-  if (
-    anioString === null ||
-    cantTroncales === null ||
-    cantGenerales === null ||
-    errorTroncales ||
-    errorGenerales
-  )
-    return 'Faltan datos'
-  const anioActual = Number(anioString[0])
-  if (anioActual === ultimoAnio) {
-    if (!includeCalifActuales) return 'Egresa'
-    if (cantEnProceso2020 === null || cantEnProceso2020 === undefined)
-      return 'Faltan datos'
-    return cantTroncales + cantGenerales + cantEnProceso2020 === 0
-      ? 'Egresa (titula)'
-      : 'Egresa (NO titula)'
-  }
-  return cantTroncales <= 2 && cantTroncales + cantGenerales <= 4
-    ? 'Promociona'
-    : 'Permanece'
-}
-
-export const evaluarCalificacion = (calificacion?: Calificacion) => {
-  if (CALIFICACIONES_STRINGS.desaprueba.some((value) => value === calificacion))
-    return 'desaprueba'
-  if (CALIFICACIONES_STRINGS.aprueba.some((value) => value === calificacion))
-    return 'aprueba'
-  if (Number(calificacion) > 0) {
-    return Number(calificacion) >= 6 ? 'aprueba' : 'desaprueba'
-  }
-  return 'sin calificar'
 }
 
 export function isValidInstancia(
@@ -632,12 +16,60 @@ export function isValidInstancia(
   )
 }
 
-export const getPagesNumbers = (
-  currentPage: number | null,
-  lastPage: number | null,
+export const getPagination = (
+  rowsCount: number,
+  maxCantButtons: number,
+  pageParam?: string,
+  filteredData?: Student[],
 ) => {
-  if (!currentPage || !lastPage) return []
-  const maxCantButtons = 7
+  const firstPage = 1
+  const currentPageParam = Number(pageParam?.split('_')[0])
+  const lastPageParam = Number(pageParam?.split('_')[1])
+  if (filteredData === undefined)
+    return {
+      paginatedData: Array(rowsCount).fill({}),
+      currentPage: currentPageParam || null,
+      lastPage: lastPageParam || null,
+      indexFirstElement: null,
+      indexLastElement: null,
+      totalSize: null,
+      pagesButtons: Array(maxCantButtons).fill(null),
+    }
+
+  const lastPage =
+    lastPageParam || Math.ceil((filteredData.length || 1) / rowsCount)
+  const currentPage =
+    currentPageParam >= firstPage && currentPageParam <= lastPage
+      ? currentPageParam
+      : 1
+  const pageIndex = currentPage - 1
+  const data = filteredData.slice(
+    pageIndex * rowsCount,
+    pageIndex * rowsCount + rowsCount,
+  )
+  const indexFirstElement =
+    filteredData.findIndex(({ dni }) => dni === data.at(0)?.dni) + 1
+  const indexLastElement =
+    filteredData.findIndex(({ dni }) => dni === data.at(-1)?.dni) + 1
+
+  const pagesButtons = getPagesButtons(currentPage, lastPage, maxCantButtons)
+
+  return {
+    paginatedData: data,
+    currentPage,
+    lastPage,
+    indexFirstElement,
+    indexLastElement,
+    totalSize: filteredData.length,
+    pagesButtons,
+  }
+}
+
+const getPagesButtons = (
+  currentPage: number,
+  lastPage: number,
+  maxCantButtons: number,
+) => {
   const maxConsecutiveButtons = maxCantButtons - 2
   if (lastPage <= maxCantButtons)
     return Array.from({ length: lastPage }, (_, i) => i + 1)

@@ -1,22 +1,10 @@
-import { SearchParams } from '@/app/analisis-academico/page'
+import { DB_CALIFICACIONES } from './constants'
 import {
-  CURSOS,
-  DB_CALIFICACIONES,
-  MATERIAS_POR_CURSO,
-} from './constants'
-import { Student, StudentCalifActuales } from './definitions'
-import {
-  defineProyeccion,
-  evaluarCalificacion,
-  FILTERS_FNS,
   formatCalifActualesResponse,
   formatStudentsResponse,
-  SORTING_FNS,
-} from './utils'
+} from './formatData'
 
-export async function fetchCalificacionesHistoricas(
-  anio: string,
-) {
+export async function fetchCalificacionesHistoricas(anio: string) {
   if (!(anio in DB_CALIFICACIONES))
     throw new Error(`No hay datos para el año ${anio}`)
   try {
@@ -26,7 +14,6 @@ export async function fetchCalificacionesHistoricas(
       cache: 'force-cache',
     })
     const textData = await response.text()
-    // await new Promise((resolve) => setTimeout(resolve, 5000))
     // console.time('formatStudentsResponse')
     const studentsResponse = formatStudentsResponse(textData, Number(anio))
     // console.timeEnd('formatStudentsResponse')
@@ -37,8 +24,8 @@ export async function fetchCalificacionesHistoricas(
 }
 
 export async function fetchCalificacionesActuales(
-  // data: Student[],
   anio: string,
+  // data: Student[],
   // cursosFilter?: string[],
 ) {
   console.time('depuracion')
@@ -100,243 +87,4 @@ export async function fetchCalificacionesActuales(
   )
   console.timeEnd('Tiempo Promise all')
   return califActuales.flat()
-}
-
-export function getFilteredStudentData(
-  data: Student[],
-  filterParams: Omit<SearchParams, 'anio'> = {},
-  omitedKey?: string,
-) {
-  const paramsWithValue = JSON.parse(JSON.stringify(filterParams))
-  const filteredData = data.filter((student) => {
-    const activeFiltersKeys = (
-      Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>
-    ).filter(
-      (filterFnKey) =>
-        Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
-        filterFnKey !== omitedKey,
-    )
-    return activeFiltersKeys.every((filterFnKey) =>
-      FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
-    )
-  })
-  return filteredData
-}
-
-export function getStudentsUniqueValues(
-  data: Student[],
-  filterParams: Omit<SearchParams, 'anio'>,
-  filterKey: keyof typeof FILTERS_FNS,
-  omitKeyInFiltering?: boolean,
-) {
-  const partialFilteredData = getFilteredStudentData(
-    data,
-    filterParams,
-    omitKeyInFiltering ? undefined : filterKey,
-  )
-  const facetedModel = new Map<any, number>()
-  FILTERS_FNS[filterKey].uniqueValuesFn(
-    partialFilteredData,
-    facetedModel,
-    filterParams,
-  )
-
-  return facetedModel
-}
-
-export const getSortedData = (filteredData: Student[], sortParam: string) => {
-  const columnsParams = sortParam.split('_').map((value) => {
-    const [columnIdParam, order] = value.split('-')
-    return { columnIdParam, order }
-  })
-  const sortData = columnsParams
-    .map(({ columnIdParam, order }) => {
-      const sortObj = SORTING_FNS.find(
-        ({ columnId }) => columnId === columnIdParam,
-      )
-      return sortObj ? { ...sortObj, order } : null
-    })
-    .filter((value) => value !== null)
-  console.log(sortData)
-
-  const sortedData = filteredData.sort((a, b) => {
-    for (const sortingData of sortData) {
-      const { fn, order } = sortingData
-      const firstEl = order === 'desc' ? b : a
-      const secondEl = order === 'desc' ? a : b
-      const sortResult = fn(firstEl, secondEl)
-      if (sortResult !== 0) return sortResult
-    }
-    return 0
-  })
-
-  return sortedData
-}
-
-export const projectCalifActuales = (
-  students: Student[],
-  califActuales: StudentCalifActuales[],
-  instancia: keyof StudentCalifActuales['materias'][number] | 'acreditacion',
-) => {
-  console.time('Proceso de populación')
-  const ultimoAnio =
-    Object.keys(CURSOS)
-      .map((key) => Number(key[0]))
-      .sort()
-      .at(-1) || 0
-
-  const projectedStudents = students.map((student) => {
-    const { anio, division, dni } = student
-    const califActual = califActuales.find(
-      ({ dni: dniValue }) => dni === dniValue,
-    )
-    if (!califActual) {
-      const error = {
-        type: 'Error al obtener las calificaciones actuales del estudiante',
-      }
-      return {
-        ...student,
-        troncales: { ...student.troncales, error },
-        generales: { ...student.generales, error },
-      }
-    }
-
-    const dataCursos = (
-      Object.keys(CURSOS) as Array<keyof typeof CURSOS>
-    ).flatMap((key) => CURSOS[key])
-    const anioValue = anio?.[0]
-    const divisionValue = division?.[0]
-    const orientacionCurso = dataCursos.find(
-      ({ curso }) => curso === `${anioValue}° ${divisionValue}°`,
-    )?.orientacion
-
-    if (!orientacionCurso || !anioValue || !divisionValue) {
-      const error = {
-        type: 'Error al obtener información del curso del estudiante',
-      }
-      return {
-        ...student,
-        troncales: { ...student.troncales, error },
-        generales: { ...student.generales, error },
-      }
-    }
-
-    if (!Object.keys(MATERIAS_POR_CURSO).includes(`${anioValue}° año`)) {
-      const error = {
-        type: 'Error al obtener información de las materias del curso del estudiante',
-      }
-      return {
-        ...student,
-        troncales: { ...student.troncales, error },
-        generales: { ...student.generales, error },
-      }
-    }
-
-    const troncalesSet = new Set(student.troncales.detalle)
-    const generalesSet = new Set(student.generales.detalle)
-    const troncalesSinCalificar = new Set<string>([])
-    const generalesSinCalificar = new Set<string>([])
-
-    const materiasCurso =
-      MATERIAS_POR_CURSO[`${anioValue}° año` as keyof typeof MATERIAS_POR_CURSO]
-
-    materiasCurso.forEach(({ nombre, esTroncal, orientacion }) => {
-      const isValidOrientacion =
-        orientacion === orientacionCurso ||
-        (orientacionCurso !== 'Ciclo Básico' &&
-          orientacion === 'Ciclo Superior')
-      if (!isValidOrientacion) return
-
-      const formatedMateriaName = `${nombre} (${anioValue}°)`
-      const calificacion =
-        instancia !== 'acreditacion'
-          ? califActual.materias.find(
-              (calif) => calif.nombre.split('_')[0] === nombre,
-            )?.[instancia]
-          : undefined
-
-      const evaluacion = evaluarCalificacion(calificacion)
-      if (evaluacion === 'desaprueba')
-        esTroncal
-          ? troncalesSet.add(formatedMateriaName)
-          : generalesSet.add(formatedMateriaName)
-      if (evaluacion === 'sin calificar')
-        esTroncal
-          ? troncalesSinCalificar.add(formatedMateriaName)
-          : generalesSinCalificar.add(formatedMateriaName)
-    })
-
-    const troncales = {
-      cantidad: troncalesSet.size,
-      detalle: [...troncalesSet],
-      error:
-        troncalesSinCalificar.size > 0
-          ? {
-              type: 'Materia/s troncal/es sin calificación',
-              details: [...troncalesSinCalificar],
-            }
-          : undefined,
-    }
-    const generales = {
-      cantidad: generalesSet.size,
-      detalle: [...generalesSet],
-      error:
-        generalesSinCalificar.size > 0
-          ? {
-              type: 'Materia/s general/es sin calificación',
-              details: [...generalesSinCalificar],
-            }
-          : undefined,
-    }
-
-    return {
-      ...student,
-      troncales,
-      generales,
-      proyeccion: defineProyeccion(
-        student.anio,
-        ultimoAnio,
-        troncales,
-        generales,
-        student.enProceso2020,
-        true,
-      ),
-    }
-  })
-
-  console.timeEnd('Proceso de populación')
-
-  return projectedStudents
-}
-
-export const getPagination = (
-  filteredData: Student[],
-  rowsCount: number,
-  pageParam?: string,
-) => {
-  const firstPage = 1
-  const lastPage = Math.ceil((filteredData.length || 1) / rowsCount)
-  const currentPageParam = Number(pageParam?.split('_')[0])
-  const currentPage =
-    currentPageParam >= firstPage && currentPageParam <= lastPage
-      ? currentPageParam
-      : 1
-  const pageIndex = currentPage - 1
-  const data = filteredData.slice(
-    pageIndex * rowsCount,
-    pageIndex * rowsCount + rowsCount,
-  )
-  const indexFirstElement =
-    filteredData.findIndex(({ dni }) => dni === data.at(0)?.dni) + 1
-  const indexLastElement =
-    filteredData.findIndex(({ dni }) => dni === data.at(-1)?.dni) + 1
-
-  return {
-    paginatedData: data,
-    currentPage,
-    lastPage,
-    indexFirstElement,
-    indexLastElement,
-    totalSize: filteredData.length,
-  }
 }

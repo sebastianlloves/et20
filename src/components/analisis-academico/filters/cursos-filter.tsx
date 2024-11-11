@@ -3,7 +3,6 @@
 import useParamsState from '@/hooks/useParamsState'
 import Filter from './filter'
 import { Users } from 'lucide-react'
-import { CURSOS_DATA } from '@/lib/constants'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuLabel,
@@ -15,8 +14,9 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
-import { FILTERS_FNS } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
+import { FILTERS_FNS } from '@/app/analisis-academico/utils/dataOperations'
 
 function CursosFilter({
   uniqueValues,
@@ -32,6 +32,7 @@ function CursosFilter({
   })
 
   const updateParams = (itemValue: string | string[]) => {
+    console.time('Cursos updateParams')
     let newCursosState: string[]
     if (typeof itemValue === 'string') {
       newCursosState = filterValue.includes(itemValue)
@@ -60,6 +61,7 @@ function CursosFilter({
       ? searchParams.set('cursos', newCursosState.sort().join('_'))
       : searchParams.delete('cursos')
     if (searchParams.has('page')) searchParams.delete('page')
+    console.timeEnd('Cursos updateParams')
     replace(`${pathname}?${searchParams.toString()}`)
   }
 
@@ -78,26 +80,28 @@ function CursosFilter({
     replace(`${pathname}?${searchParams}`)
   }
 
-  const todosManiana = CURSOS_DATA.flatMap(({ turnoManiana }) => turnoManiana)
+  const todosManiana = CURSOS_ITEMS_DATA.flatMap(
+    ({ turnoManiana }) => turnoManiana,
+  )
   const { isSelected: manianaIsSelected, quantity: manianaQuantity } =
     getGrupalItemData(todosManiana, filterValue, uniqueValues)
 
-  const todosTarde = CURSOS_DATA.flatMap(({ turnoTarde }) => turnoTarde)
+  const todosTarde = CURSOS_ITEMS_DATA.flatMap(({ turnoTarde }) => turnoTarde)
   const { isSelected: tardeIsSelected, quantity: tardeQuantity } =
     getGrupalItemData(todosTarde, filterValue, uniqueValues)
 
-  const todosCB = CURSOS_DATA.flatMap(({ cursosCB }) => cursosCB)
+  const todosCB = CURSOS_ITEMS_DATA.flatMap(({ cursosCB }) => cursosCB)
   const { isSelected: cbIsSelected, quantity: cbQuantity } = getGrupalItemData(
     todosCB,
     filterValue,
     uniqueValues,
   )
 
-  const todosTICS = CURSOS_DATA.flatMap(({ cursosTICs }) => cursosTICs)
+  const todosTICS = CURSOS_ITEMS_DATA.flatMap(({ cursosTICs }) => cursosTICs)
   const { isSelected: ticsIsSelected, quantity: ticsQuantity } =
     getGrupalItemData(todosTICS, filterValue, uniqueValues)
 
-  const todosPM = CURSOS_DATA.flatMap(({ cursosPM }) => cursosPM)
+  const todosPM = CURSOS_ITEMS_DATA.flatMap(({ cursosPM }) => cursosPM)
   const { isSelected: pmIsSelected, quantity: pmQuantity } = getGrupalItemData(
     todosPM,
     filterValue,
@@ -114,7 +118,7 @@ function CursosFilter({
       handleRemoveAll={handleRemoveAll}
     >
       <div className="text-xs lg:text-sm">
-        {CURSOS_DATA.map(
+        {CURSOS_ITEMS_DATA.map(
           ({ anio, todos, turnoManiana, turnoTarde, cursosTICs, cursosPM }) => {
             const anioFilterValues = filterValue.filter(
               (curso) => curso[0] === anio[0],
