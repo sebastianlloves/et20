@@ -13,7 +13,7 @@ import {
   FILTERS_FNS,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
-import Button from './new/button'
+import NewCursosFilter from './new/new-cursos-filter'
 // import Filter from './filter'
 
 function FiltersPanel({
@@ -80,7 +80,7 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
-        <Button />
+        <NewCursosFilter searchParams={filterParams} data={data} />
         <CalifParcialesFilter />
         <CursosFilter uniqueValues={cursosUniqueValues} />
         <MateriasFilter materiasUniqueValues={materiasUniqueValues} />

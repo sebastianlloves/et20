@@ -18,9 +18,9 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import MenuItem from './menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { getGrupalItemData } from './cursos-filter'
 import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import { FILTERS_FNS } from '@/app/analisis-academico/utils/dataOperations'
+import { getGrupalItemData } from '@/app/analisis-academico/utils/urlParamsOperations'
 
 function MateriasFilter({
   materiasUniqueValues,

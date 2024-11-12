@@ -1,8 +1,17 @@
-'use client'
-
-import useParamsState from '@/hooks/useParamsState'
-import Filter from './filter'
+import { SearchParams } from '@/app/analisis-academico/page'
+import {
+  FILTERS_FNS,
+  getStudentsUniqueValues,
+} from '@/app/analisis-academico/utils/dataOperations'
+import { Student } from '@/lib/definitions'
+import Filter from '../filter'
 import { Users } from 'lucide-react'
+import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
+import {
+  getGrupalItemData,
+  getQuantity,
+  updateArrParamState,
+} from '@/app/analisis-academico/utils/urlParamsOperations'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuLabel,
@@ -13,76 +22,22 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
-import MenuItem from './menu-item'
+import NewMenuItem from './new_menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
-import { FILTERS_FNS } from '@/app/analisis-academico/utils/dataOperations'
-import {
-  getGrupalItemData,
-  getQuantity,
-} from '@/app/analisis-academico/utils/urlParamsOperations'
 
-function CursosFilter({
-  uniqueValues,
-}: {
-  uniqueValues?: Map<string, number>
-}) {
-  const { pathname, searchParams, replace } = useParamsState()
+interface NewCursosFilterProps {
+  searchParams: SearchParams
+  data?: Student[]
+}
 
-  const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.get('cursos'))
-  const cursosTags = filterValue.sort().map((value) => {
-    const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
-    return { value, quantity }
-  })
+function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
+  console.log('clg desde NewCursosFilter')
+  console.time('NewCursosFilter cálculos')
 
-  const updateParams = (itemValue: string | string[]) => {
-    console.time('Cursos updateParams')
-    let newCursosState: string[]
-    if (typeof itemValue === 'string') {
-      newCursosState = filterValue.includes(itemValue)
-        ? filterValue.filter((prevParam) => prevParam !== itemValue)
-        : [...filterValue, itemValue]
-    } else {
-      const distintosAnios = [...new Set(itemValue.map((curso) => curso[0]))]
-      const analyzedCursos =
-        distintosAnios.length > 1
-          ? filterValue
-          : filterValue.filter((curso) => curso[0] === distintosAnios[0])
-      newCursosState =
-        itemValue.every((curso) => filterValue.includes(curso)) &&
-        analyzedCursos.length === itemValue.length
-          ? filterValue.filter((prevCurso) => !itemValue.includes(prevCurso))
-          : [
-              ...new Set([
-                ...filterValue.filter(
-                  (curso) => !analyzedCursos.includes(curso),
-                ),
-                ...itemValue,
-              ]),
-            ]
-    }
-    newCursosState.length
-      ? searchParams.set('cursos', newCursosState.sort().join('_'))
-      : searchParams.delete('cursos')
-    if (searchParams.has('page')) searchParams.delete('page')
-    console.timeEnd('Cursos updateParams')
-    replace(`${pathname}?${searchParams.toString()}`)
-  }
-
-  const handleRemoveAll = () => {
-    searchParams.delete('cursos')
-    if (searchParams.has('page')) searchParams.delete('page')
-    replace(`${pathname}?${searchParams}`)
-  }
-
-  const handleRemoveTag = (value: string) => {
-    const newState = filterValue.filter((prevValue) => prevValue !== value)
-    newState.length
-      ? searchParams.set('cursos', newState.join('_'))
-      : searchParams.delete('cursos')
-    if (searchParams.has('page')) searchParams.delete('page')
-    replace(`${pathname}?${searchParams}`)
-  }
+  const uniqueValues =
+    data && getStudentsUniqueValues(data, searchParams, 'cursos')
+  const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
+  const classifyingFunction = (value: string): string => value[0]
 
   const todosManiana = CURSOS_ITEMS_DATA.flatMap(
     ({ turnoManiana }) => turnoManiana,
@@ -111,21 +66,23 @@ function CursosFilter({
     filterValue,
     uniqueValues,
   )
+  console.timeEnd('NewCursosFilter cálculos')
 
   return (
     <Filter
       title="Cursos"
       maxTags={3}
       icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
-      filterTags={cursosTags}
-      handleRemoveTag={handleRemoveTag}
-      handleRemoveAll={handleRemoveAll}
+      filterTags={[]}
+      handleRemoveTag={() => undefined}
+      handleRemoveAll={() => undefined}
     >
       <div className="text-xs lg:text-sm">
         {CURSOS_ITEMS_DATA.map(
           ({ anio, todos, turnoManiana, turnoTarde, cursosTICs, cursosPM }) => {
             const anioFilterValues = filterValue.filter(
-              (curso) => curso[0] === anio[0],
+              (curso) =>
+                classifyingFunction(curso) === classifyingFunction(anio),
             )
             const { isSelected: todosIsSelected, quantity: todosQuantity } =
               getGrupalItemData(todos, anioFilterValues, uniqueValues)
@@ -161,11 +118,17 @@ function CursosFilter({
                             key={curso}
                             className="cursor-pointer"
                             disabled={cursoQuantity === 0 && !cursoIsSelected}
-                            onSelect={(e) => e.preventDefault()}
                             checked={cursoIsSelected}
-                            onCheckedChange={() => updateParams(curso)}
                           >
-                            <MenuItem value={curso} quantity={cursoQuantity} />
+                            <NewMenuItem
+                              value={curso}
+                              quantity={cursoQuantity}
+                              pathname="/analisis-academico"
+                              query={{
+                                ...searchParams,
+                                cursos: updateArrParamState(curso, filterValue),
+                              }}
+                            />
                           </DropdownMenuCheckboxItem>
                         )
                       })}
@@ -180,20 +143,24 @@ function CursosFilter({
                               (tardeIsSelected && 'turnoTarde'))) ||
                           undefined
                         }
-                        onValueChange={(value) => {
-                          if (value === 'turnoManiana')
-                            updateParams(turnoManiana)
-                          if (value === 'turnoTarde') updateParams(turnoTarde)
-                        }}
                       >
                         <DropdownMenuRadioItem
                           value="turnoManiana"
                           className="cursor-pointer"
                           disabled={manianaQuantity === 0 && !manianaIsSelected}
                         >
-                          <MenuItem
+                          <NewMenuItem
                             value={`Turno Mañana`}
                             quantity={manianaQuantity}
+                            pathname="/analisis-academico"
+                            query={{
+                              ...searchParams,
+                              cursos: updateArrParamState(
+                                turnoManiana,
+                                filterValue,
+                                anioFilterValues,
+                              ),
+                            }}
                           />
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem
@@ -201,9 +168,18 @@ function CursosFilter({
                           className="cursor-pointer"
                           disabled={tardeQuantity === 0 && !tardeIsSelected}
                         >
-                          <MenuItem
+                          <NewMenuItem
                             value={`Turno Tarde`}
                             quantity={tardeQuantity}
+                            pathname="/analisis-academico"
+                            query={{
+                              ...searchParams,
+                              cursos: updateArrParamState(
+                                turnoTarde,
+                                filterValue,
+                                anioFilterValues,
+                              ),
+                            }}
                           />
                         </DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
@@ -220,20 +196,24 @@ function CursosFilter({
                                   (pmIsSelected && 'Prod. Multimedial'))) ||
                               undefined
                             }
-                            onValueChange={(value) => {
-                              if (value === 'TICs') updateParams(cursosTICs)
-                              if (value === 'Prod. Multimedial')
-                                updateParams(cursosPM)
-                            }}
                           >
                             <DropdownMenuRadioItem
                               value="TICs"
                               className="cursor-pointer"
                               disabled={ticsQuantity === 0 && !ticsIsSelected}
                             >
-                              <MenuItem
+                              <NewMenuItem
                                 value={`TICs`}
                                 quantity={ticsQuantity}
+                                pathname="/analisis-academico"
+                                query={{
+                                  ...searchParams,
+                                  cursos: updateArrParamState(
+                                    cursosTICs,
+                                    filterValue,
+                                    anioFilterValues,
+                                  ),
+                                }}
                               />
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem
@@ -241,9 +221,18 @@ function CursosFilter({
                               className="cursor-pointer"
                               disabled={pmQuantity === 0 && !pmIsSelected}
                             >
-                              <MenuItem
+                              <NewMenuItem
                                 value={`Prod. Multimedial`}
                                 quantity={pmQuantity}
+                                pathname="/analisis-academico"
+                                query={{
+                                  ...searchParams,
+                                  cursos: updateArrParamState(
+                                    cursosPM,
+                                    filterValue,
+                                    anioFilterValues,
+                                  ),
+                                }}
                               />
                             </DropdownMenuRadioItem>
                           </DropdownMenuRadioGroup>
@@ -254,11 +243,19 @@ function CursosFilter({
                         className="cursor-pointer font-medium text-foreground/80"
                         disabled={todosQuantity === 0 && !todosIsSelected}
                         checked={todosIsSelected}
-                        onCheckedChange={() => updateParams(todos)}
                       >
-                        <MenuItem
+                        <NewMenuItem
                           value={`Todos los ${anio.split(' ')[0]}`}
                           quantity={todosQuantity}
+                          pathname="/analisis-academico"
+                          query={{
+                            ...searchParams,
+                            cursos: updateArrParamState(
+                              todos,
+                              filterValue,
+                              anioFilterValues,
+                            ),
+                          }}
                         />
                       </DropdownMenuCheckboxItem>
                     </div>
@@ -268,7 +265,9 @@ function CursosFilter({
             )
           },
         )}
+
         <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+
         <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
           Turnos
         </DropdownMenuLabel>
@@ -278,19 +277,36 @@ function CursosFilter({
             (tardeIsSelected && 'turnoTarde') ||
             undefined
           }
-          onValueChange={(value) => {
-            if (value === 'turnoManiana') updateParams(todosManiana)
-            if (value === 'turnoTarde') updateParams(todosTarde)
-          }}
         >
           <DropdownMenuRadioItem
             value="turnoManiana"
             className="cursor-pointer"
+            disabled={manianaQuantity === 0 && !manianaIsSelected}
           >
-            <MenuItem value={`Turno Mañana`} quantity={manianaQuantity} />
+            <NewMenuItem
+              value={`Turno Mañana`}
+              quantity={manianaQuantity}
+              pathname="/analisis-academico"
+              query={{
+                ...searchParams,
+                cursos: updateArrParamState(todosManiana, filterValue),
+              }}
+            />
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="turnoTarde" className="cursor-pointer">
-            <MenuItem value={`Turno Tarde`} quantity={tardeQuantity} />
+          <DropdownMenuRadioItem
+            value="turnoTarde"
+            className="cursor-pointer"
+            disabled={tardeQuantity === 0 && !tardeIsSelected}
+          >
+            <NewMenuItem
+              value={`Turno Tarde`}
+              quantity={tardeQuantity}
+              pathname="/analisis-academico"
+              query={{
+                ...searchParams,
+                cursos: updateArrParamState(todosTarde, filterValue),
+              }}
+            />
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
 
@@ -305,32 +321,51 @@ function CursosFilter({
             (pmIsSelected && 'Prod. Multimedial') ||
             undefined
           }
-          onValueChange={(value) => {
-            if (value === 'CB') updateParams(todosCB)
-            if (value === 'TICs') updateParams(todosTICS)
-            if (value === 'Prod. Multimedial') updateParams(todosPM)
-          }}
         >
           <DropdownMenuRadioItem
             value="CB"
             className="cursor-pointer"
             disabled={cbQuantity === 0 && !cbIsSelected}
           >
-            <MenuItem value={`Ciclo Básico`} quantity={cbQuantity} />
+            <NewMenuItem
+              value={`Ciclo Básico`}
+              quantity={cbQuantity}
+              pathname="/analisis-academico"
+              query={{
+                ...searchParams,
+                cursos: updateArrParamState(todosCB, filterValue),
+              }}
+            />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             value="TICs"
             className="cursor-pointer"
             disabled={ticsQuantity === 0 && !ticsIsSelected}
           >
-            <MenuItem value={`TICs`} quantity={ticsQuantity} />
+            <NewMenuItem
+              value={`TICs`}
+              quantity={ticsQuantity}
+              pathname="/analisis-academico"
+              query={{
+                ...searchParams,
+                cursos: updateArrParamState(todosTICS, filterValue),
+              }}
+            />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             value="Prod. Multimedial"
             className="cursor-pointer"
             disabled={pmQuantity === 0 && !pmIsSelected}
           >
-            <MenuItem value={`Prod. Multimedial`} quantity={pmQuantity} />
+            <NewMenuItem
+              value={`Prod. Multimedial`}
+              quantity={pmQuantity}
+              pathname="/analisis-academico"
+              query={{
+                ...searchParams,
+                cursos: updateArrParamState(todosPM, filterValue),
+              }}
+            />
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </div>
@@ -338,4 +373,4 @@ function CursosFilter({
   )
 }
 
-export default CursosFilter
+export default NewCursosFilter
