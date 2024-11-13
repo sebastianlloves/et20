@@ -4,7 +4,6 @@ import {
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { Student } from '@/lib/definitions'
-import Filter from '../filter'
 import { Users } from 'lucide-react'
 import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import {
@@ -24,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import NewMenuItem from './new_menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import Filter from './new-filter'
 
 interface NewCursosFilterProps {
   searchParams: SearchParams
@@ -37,6 +37,23 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
   const uniqueValues =
     data && getStudentsUniqueValues(data, searchParams, 'cursos')
   const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
+  const filterTags = filterValue.map((value) => {
+    const tagText = value
+    const quantity = getQuantity(value, uniqueValues)
+    const pathname = '/analisis-academico'
+    const query = {
+      ...searchParams,
+      cursos: updateArrParamState(value, filterValue),
+    }
+    return { value, tagText, quantity, pathname, query }
+  })
+  const removeFilter = {
+    pathname: '/analisis-academico',
+    query: {
+      ...searchParams,
+      cursos: undefined,
+    },
+  }
   const classifyingFunction = (value: string): string => value[0]
 
   const todosManiana = CURSOS_ITEMS_DATA.flatMap(
@@ -73,9 +90,8 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
       title="Cursos"
       maxTags={3}
       icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
-      filterTags={[]}
-      handleRemoveTag={() => undefined}
-      handleRemoveAll={() => undefined}
+      filterTags={filterTags}
+      removeFilter={removeFilter}
     >
       <div className="text-xs lg:text-sm">
         {CURSOS_ITEMS_DATA.map(
