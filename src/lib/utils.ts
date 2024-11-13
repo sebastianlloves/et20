@@ -7,6 +7,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const detectServerOrClientSide = (text?: string) => {
+  const string = text || 'Aplication'
+  if (typeof window === 'undefined') {
+    console.log(`${string} is on server side`)
+  } else {
+    alert(`${string} is on client side`)
+  }
+}
+
 export function isValidInstancia(
   instancia: string,
 ): instancia is (typeof INSTANCIAS_ANIO)[number] {

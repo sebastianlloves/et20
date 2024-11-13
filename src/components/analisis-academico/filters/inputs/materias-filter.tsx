@@ -27,9 +27,10 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import Link from 'next/link'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { detectServerOrClientSide } from '@/lib/utils'
 
 function MateriasFilter({ searchParams, data }: TableFilterProps) {
-  console.log('clg desde MateriasFilter')
+  detectServerOrClientSide('MateriasFilter')
   const uniqueValues =
     data &&
     getStudentsUniqueValues(

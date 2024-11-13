@@ -24,6 +24,7 @@ import {
 import MenuItem from '../menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Filter from '../filter'
+import { detectServerOrClientSide } from '@/lib/utils'
 
 export interface TableFilterProps {
   searchParams: SearchParams
@@ -31,7 +32,8 @@ export interface TableFilterProps {
 }
 
 function CursosFilter({ searchParams, data }: TableFilterProps) {
-  console.log('clg desde CursosFilter')
+  detectServerOrClientSide('CursosFilter')
+  
   const uniqueValues =
     data && getStudentsUniqueValues(data, searchParams, 'cursos')
   const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)

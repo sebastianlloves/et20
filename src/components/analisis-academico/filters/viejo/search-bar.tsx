@@ -3,12 +3,12 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import useParamsState from '@/hooks/useParamsState'
-import { cn } from '@/lib/utils'
+import { cn, detectServerOrClientSide } from '@/lib/utils'
 import { Search, X } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
 
 function SearchBar({ className }: { className?: string }) {
-  console.log('clg desde SearchBar')
+  detectServerOrClientSide('SearchBar')
   const { pathname, searchParams, replace } = useParamsState()
 
   const updateUrlParams = useDebouncedCallback((term?: string) => {
