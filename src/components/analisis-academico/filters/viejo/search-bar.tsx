@@ -8,6 +8,7 @@ import { Search, X } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
 
 function SearchBar({ className }: { className?: string }) {
+  console.log('clg desde SearchBar')
   const { pathname, searchParams, replace } = useParamsState()
 
   const updateUrlParams = useDebouncedCallback((term?: string) => {

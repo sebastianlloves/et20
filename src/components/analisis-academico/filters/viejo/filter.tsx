@@ -6,24 +6,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
+import { TagsBox } from './tags'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { SearchParams } from '@/app/analisis-academico/page'
-import { TagsBox } from './new-tags-box'
 
 interface FilterProps {
   children: ReactNode | ReactNode[]
   title: string
   maxTags: number
   icon?: ReactNode
-  filterTags: {
-    value: string
-    tagText: string
-    quantity?: number | null
-    pathname: string
-    query: SearchParams
-    className?: string
-  }[]
-  removeFilter: { pathname: string; query: SearchParams }
+  filterTags?: { value: string; quantity?: number | null }[]
+  handleRemoveTag: (value: string) => void
+  handleRemoveAll: () => void
 }
 
 function Filter({
@@ -31,9 +24,14 @@ function Filter({
   title,
   maxTags,
   icon,
-  filterTags,
-  removeFilter,
+  filterTags = [],
+  handleRemoveTag,
+  handleRemoveAll,
 }: FilterProps) {
+  /* filterTags
+    .filter(({ quantity }) => quantity === 0)
+    .forEach(({ value }) => handleRemoveTag(value))
+  const tags = filterTags.filter(({ quantity }) => !quantity || quantity > 0) */
   return (
     <div className="w-full rounded-md border text-xs lg:text-sm">
       <DropdownMenu>
@@ -72,8 +70,9 @@ function Filter({
       {filterTags.length > 0 && (
         <TagsBox
           tags={filterTags}
-          removeFilter={removeFilter}
           maxTags={maxTags}
+          handleRemoveTag={handleRemoveTag}
+          handleRemoveAll={handleRemoveAll}
         />
       )}
     </div>

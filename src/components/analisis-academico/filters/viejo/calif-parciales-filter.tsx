@@ -1,7 +1,6 @@
 'use client'
 
 import { ChartCandlestick } from 'lucide-react'
-import Filter from './filter'
 import {
   AGENDA_ANIO_ACTUAL,
   ANIO_ACTUAL,
@@ -14,8 +13,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import MenuItem from './menu-item'
 import useParamsState from '@/hooks/useParamsState'
+import MenuItem from './menu-item'
+import Filter from './filter'
 
 const periodos: {
   itemTitle: string
@@ -134,8 +134,6 @@ function CalifParcialesFilter() {
 }
 
 export default CalifParcialesFilter
-
-
 
 const isDisabled = (
   anio: string,

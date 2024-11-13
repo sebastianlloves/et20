@@ -1,44 +1,33 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
-import { SearchParams } from '../../../app/analisis-academico/page'
-import CursosFilter from './cursos-filter'
-import MateriasFilter from './materias-filter'
+import { SearchParams } from '../../../../app/analisis-academico/page'
+import MateriasFilter from '../inputs/materias-filter'
 import { Student } from '@/lib/definitions'
 import CantidadesFilter from './cantidades-filter'
 import { cn } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
-import CalifParcialesFilter from './calif-parciales-filter'
+import CalifParcialesFilter from '../inputs/calif-parciales'
+
 import ProyeccionFilter from './proyeccion-filter'
 import {
   FILTERS_FNS,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
-import NewCursosFilter from './new/new-cursos-filter'
-// import Filter from './filter'
+import CursosFilter from '../inputs/cursos-filter'
 
 function FiltersPanel({
-  filterParams = {},
+  searchParams = {},
   data,
   className,
 }: {
-  filterParams?: Omit<SearchParams, 'anio'>
+  searchParams?: SearchParams
   data?: Student[]
   className?: string
 }) {
-  const cursosUniqueValues =
-    data && getStudentsUniqueValues(data, filterParams, 'cursos')
-  const materiasUniqueValues =
-    data &&
-    getStudentsUniqueValues(
-      data,
-      filterParams,
-      'materias',
-      filterParams.inclusionEstricta === 'true',
-    )
   const proyeccionUniqueValues =
-    data && getStudentsUniqueValues(data, filterParams, 'proyeccion')
+    data && getStudentsUniqueValues(data, searchParams, 'proyeccion')
   const cantidadesUniqueValues =
-    data && getStudentsUniqueValues(data, filterParams, 'cantidades', true)
+    data && getStudentsUniqueValues(data, searchParams, 'cantidades', true)
   const cantidadesMinMaxValues =
     data && FILTERS_FNS.cantidades.getMinMaxCant(data)
   const repitenciaAniosUniqueValues =
@@ -46,7 +35,7 @@ function FiltersPanel({
     getStudentsUniqueValues(
       data,
       {
-        ...filterParams,
+        ...searchParams,
         repitenciaAnios: undefined,
       },
       'repitencia',
@@ -57,7 +46,7 @@ function FiltersPanel({
     getStudentsUniqueValues(
       data,
       {
-        ...filterParams,
+        ...searchParams,
         repitenciaCant: undefined,
       },
       'repitencia',
@@ -80,10 +69,9 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
-        <NewCursosFilter searchParams={filterParams} data={data} />
-        <CalifParcialesFilter />
-        <CursosFilter uniqueValues={cursosUniqueValues} />
-        <MateriasFilter materiasUniqueValues={materiasUniqueValues} />
+        <CalifParcialesFilter searchParams={searchParams} />
+        <CursosFilter searchParams={searchParams} data={data} />
+        <MateriasFilter searchParams={searchParams} data={data} />
         <CantidadesFilter
           cantidadesUniqueValues={cantidadesUniqueValues}
           cantidadesMinMaxValues={cantidadesMinMaxValues}

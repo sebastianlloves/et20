@@ -13,14 +13,14 @@ import ToggleDB from './toggle-db'
 import SearchBar from './search-bar'
 import FiltersPanel from './filters-panel'
 import { Student } from '@/lib/definitions'
-import { SearchParams } from '../../../app/analisis-academico/page'
+import { SearchParams } from '../../../../app/analisis-academico/page'
 
 function FiltersPanelMobile({
-  filterParams = {},
+  searchParams = {},
   data,
   className,
 }: {
-  filterParams?: Omit<SearchParams, 'anio'>
+  searchParams?: SearchParams
   data?: Student[]
   className?: string
 }) {
@@ -49,7 +49,7 @@ function FiltersPanelMobile({
               <ToggleDB />
               <SearchBar />
               <FiltersPanel
-                filterParams={filterParams}
+                searchParams={searchParams}
                 data={data}
                 className={className}
               />

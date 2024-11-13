@@ -14,7 +14,7 @@ import useParamsState from '@/hooks/useParamsState'
 import {
   getCantRepitenciasString,
   getSliderFilterData,
-} from '../../../app/analisis-academico/utils'
+} from '../../../../app/analisis-academico/utils'
 
 function RepitenciaFilter({
   repitenciaAniosUniqueValues,

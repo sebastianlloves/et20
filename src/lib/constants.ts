@@ -40,7 +40,7 @@ export const AGENDA_ANIO_ACTUAL: {
   },
   acreditacion: {
     fechaCierre: { dia: 28, mes: 2, anio: 2025 },
-    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 25, mes: 11, anio: 2024 },
   },
 }
 

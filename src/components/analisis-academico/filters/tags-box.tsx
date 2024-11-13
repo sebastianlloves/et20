@@ -35,17 +35,19 @@ function TagsBox({
         tagsQuantity={tags.length}
       >
         <div className="w-full">
-          <Link
-            href={{
-              pathname: removeFilter.pathname,
-              query: JSON.parse(JSON.stringify(removeFilter.query)),
-            }}
-          >
-            <X
-              strokeWidth="1.5px"
-              className="-mr-0.5 ml-auto h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
-            />
-          </Link>
+          {tags.length > 1 && (
+            <Link
+              href={{
+                pathname: removeFilter.pathname,
+                query: JSON.parse(JSON.stringify(removeFilter.query)),
+              }}
+            >
+              <X
+                strokeWidth="1.5px"
+                className="-mr-0.5 ml-auto h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
+              />
+            </Link>
+          )}
 
           <div className="mt-0.5 flex flex-wrap justify-start gap-1.5 overflow-hidden lg:mt-1">
             {tags.map(

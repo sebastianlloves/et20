@@ -21,19 +21,17 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
-import NewMenuItem from './new_menu-item'
+import MenuItem from '../menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import Filter from './new-filter'
+import Filter from '../filter'
 
-interface NewCursosFilterProps {
+export interface TableFilterProps {
   searchParams: SearchParams
   data?: Student[]
 }
 
-function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
-  console.log('clg desde NewCursosFilter')
-  console.time('NewCursosFilter cálculos')
-
+function CursosFilter({ searchParams, data }: TableFilterProps) {
+  console.log('clg desde CursosFilter')
   const uniqueValues =
     data && getStudentsUniqueValues(data, searchParams, 'cursos')
   const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
@@ -83,7 +81,6 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
     filterValue,
     uniqueValues,
   )
-  console.timeEnd('NewCursosFilter cálculos')
 
   return (
     <Filter
@@ -136,7 +133,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
                             disabled={cursoQuantity === 0 && !cursoIsSelected}
                             checked={cursoIsSelected}
                           >
-                            <NewMenuItem
+                            <MenuItem
                               value={curso}
                               quantity={cursoQuantity}
                               pathname="/analisis-academico"
@@ -165,7 +162,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
                           className="cursor-pointer"
                           disabled={manianaQuantity === 0 && !manianaIsSelected}
                         >
-                          <NewMenuItem
+                          <MenuItem
                             value={`Turno Mañana`}
                             quantity={manianaQuantity}
                             pathname="/analisis-academico"
@@ -184,7 +181,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
                           className="cursor-pointer"
                           disabled={tardeQuantity === 0 && !tardeIsSelected}
                         >
-                          <NewMenuItem
+                          <MenuItem
                             value={`Turno Tarde`}
                             quantity={tardeQuantity}
                             pathname="/analisis-academico"
@@ -218,7 +215,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
                               className="cursor-pointer"
                               disabled={ticsQuantity === 0 && !ticsIsSelected}
                             >
-                              <NewMenuItem
+                              <MenuItem
                                 value={`TICs`}
                                 quantity={ticsQuantity}
                                 pathname="/analisis-academico"
@@ -237,7 +234,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
                               className="cursor-pointer"
                               disabled={pmQuantity === 0 && !pmIsSelected}
                             >
-                              <NewMenuItem
+                              <MenuItem
                                 value={`Prod. Multimedial`}
                                 quantity={pmQuantity}
                                 pathname="/analisis-academico"
@@ -260,7 +257,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
                         disabled={todosQuantity === 0 && !todosIsSelected}
                         checked={todosIsSelected}
                       >
-                        <NewMenuItem
+                        <MenuItem
                           value={`Todos los ${anio.split(' ')[0]}`}
                           quantity={todosQuantity}
                           pathname="/analisis-academico"
@@ -299,7 +296,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
             className="cursor-pointer"
             disabled={manianaQuantity === 0 && !manianaIsSelected}
           >
-            <NewMenuItem
+            <MenuItem
               value={`Turno Mañana`}
               quantity={manianaQuantity}
               pathname="/analisis-academico"
@@ -314,7 +311,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
             className="cursor-pointer"
             disabled={tardeQuantity === 0 && !tardeIsSelected}
           >
-            <NewMenuItem
+            <MenuItem
               value={`Turno Tarde`}
               quantity={tardeQuantity}
               pathname="/analisis-academico"
@@ -343,7 +340,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
             className="cursor-pointer"
             disabled={cbQuantity === 0 && !cbIsSelected}
           >
-            <NewMenuItem
+            <MenuItem
               value={`Ciclo Básico`}
               quantity={cbQuantity}
               pathname="/analisis-academico"
@@ -358,7 +355,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
             className="cursor-pointer"
             disabled={ticsQuantity === 0 && !ticsIsSelected}
           >
-            <NewMenuItem
+            <MenuItem
               value={`TICs`}
               quantity={ticsQuantity}
               pathname="/analisis-academico"
@@ -373,7 +370,7 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
             className="cursor-pointer"
             disabled={pmQuantity === 0 && !pmIsSelected}
           >
-            <NewMenuItem
+            <MenuItem
               value={`Prod. Multimedial`}
               quantity={pmQuantity}
               pathname="/analisis-academico"
@@ -389,4 +386,4 @@ function NewCursosFilter({ searchParams, data }: NewCursosFilterProps) {
   )
 }
 
-export default NewCursosFilter
+export default CursosFilter

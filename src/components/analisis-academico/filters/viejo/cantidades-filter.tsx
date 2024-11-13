@@ -11,7 +11,7 @@ import {
 import {
   getCantMateriasString,
   getSliderFilterData,
-} from '../../../app/analisis-academico/utils'
+} from '../../../../app/analisis-academico/utils'
 
 function CantidadesFilter({
   cantidadesUniqueValues,
