@@ -2,7 +2,7 @@ import StudentsTable from '../../components/analisis-academico/students-table'
 import ToggleDB from '../../components/analisis-academico/filters/viejo/toggle-db'
 import { Suspense } from 'react'
 import SearchBar from '../../components/analisis-academico/filters/viejo/search-bar'
-import SkeletonStudentsTable from '../../components/analisis-academico/skeleton-students-table'
+import SkeletonStudentsTable from '../../components/analisis-academico/skeletons/skeleton-students-table'
 
 export interface SearchParams {
   anio?: string

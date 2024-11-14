@@ -9,11 +9,11 @@ export function cn(...inputs: ClassValue[]) {
 
 export const detectServerOrClientSide = (text?: string) => {
   const string = text || 'Aplication'
-  if (typeof window === 'undefined') {
-    console.log(`${string} is on server side`)
-  } else {
-    alert(`${string} is on client side`)
-  }
+  console.log(
+    typeof window === 'undefined'
+      ? `${string} is on server side`
+      : `${string} is on client side`,
+  )
 }
 
 export function isValidInstancia(

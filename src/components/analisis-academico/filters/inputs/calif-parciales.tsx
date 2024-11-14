@@ -14,7 +14,6 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
-import { detectServerOrClientSide } from '@/lib/utils'
 
 const periodos: {
   itemText: string
@@ -64,8 +63,6 @@ const periodos: {
 ]
 
 function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {  
-  detectServerOrClientSide('CalifParcialesFilter')
-
   const anio = searchParams.anio || `${ANIO_ACTUAL}`
   const filterValue = searchParams.califParciales
   const filterData = periodos.find(({ value }) => value === filterValue)

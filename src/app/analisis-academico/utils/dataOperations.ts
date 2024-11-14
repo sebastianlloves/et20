@@ -179,6 +179,12 @@ export const FILTERS_FNS = {
     },
   },
   cantidades: {
+    formatParam: (param?: string) => {
+      return param
+        ?.split('_')
+        .map((value) => Number(value))
+        .sort((a, b) => a - b)
+    },
     filterFn: (student: Student, searchParams: SearchParams) => {
       const {
         cantidadesTroncales,

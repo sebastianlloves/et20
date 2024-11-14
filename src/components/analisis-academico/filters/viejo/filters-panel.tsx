@@ -4,6 +4,7 @@ import { SearchParams } from '../../../../app/analisis-academico/page'
 import MateriasFilter from '../inputs/materias-filter'
 import { Student } from '@/lib/definitions'
 import CantidadesFilter from './cantidades-filter'
+import CantidadesFiltering from '../inputs/cantidades-filter'
 import { cn } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
 import CalifParcialesFilter from '../inputs/calif-parciales'
@@ -76,6 +77,7 @@ function FiltersPanel({
           cantidadesUniqueValues={cantidadesUniqueValues}
           cantidadesMinMaxValues={cantidadesMinMaxValues}
         />
+        <CantidadesFiltering searchParams={searchParams} data={data} />
         <RepitenciaFilter
           repitenciaAniosUniqueValues={repitenciaAniosUniqueValues}
           repitenciaCantUniqueValues={repitenciaCantUniqueValues}
