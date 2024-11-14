@@ -15,6 +15,7 @@ import {
   getCantRepitenciasString,
   getSliderFilterData,
 } from '../../../../app/analisis-academico/utils'
+import { detectServerOrClientSide } from '@/lib/utils'
 
 function RepitenciaFilter({
   repitenciaAniosUniqueValues,
@@ -25,6 +26,7 @@ function RepitenciaFilter({
   repitenciaCantUniqueValues?: Map<string, number>
   repitenciaCantMinMaxValues?: number[]
 }) {
+  detectServerOrClientSide('RepitenciaFilter1')
   const { pathname, searchParams, replace } = useParamsState()
   const anios = Object.keys(CURSOS)
     .sort(

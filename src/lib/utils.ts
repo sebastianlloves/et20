@@ -107,3 +107,9 @@ const getPagesButtons = (
     lastPage,
   ]
 }
+
+export const getNumbersBetween = (numberArr: number[]) => {
+  const min = Math.min(...numberArr)
+  const max = Math.max(...numberArr)
+  return Array.from({ length: max - min + 1 }, (_, index) => min + index)
+}

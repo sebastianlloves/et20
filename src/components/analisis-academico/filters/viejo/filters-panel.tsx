@@ -3,12 +3,11 @@ import { ListFilter } from 'lucide-react'
 import { SearchParams } from '../../../../app/analisis-academico/page'
 import MateriasFilter from '../inputs/materias-filter'
 import { Student } from '@/lib/definitions'
-import CantidadesFilter from './cantidades-filter'
-import CantidadesFiltering from '../inputs/cantidades-filter'
+import CantidadesFilter from '../inputs/cantidades-filter'
 import { cn } from '@/lib/utils'
 import RepitenciaFilter from './repitencia-filter'
+import RepitenciaFiltering from '../inputs/repitencia-filter'
 import CalifParcialesFilter from '../inputs/calif-parciales'
-
 import ProyeccionFilter from './proyeccion-filter'
 import {
   FILTERS_FNS,
@@ -27,10 +26,6 @@ function FiltersPanel({
 }) {
   const proyeccionUniqueValues =
     data && getStudentsUniqueValues(data, searchParams, 'proyeccion')
-  const cantidadesUniqueValues =
-    data && getStudentsUniqueValues(data, searchParams, 'cantidades', true)
-  const cantidadesMinMaxValues =
-    data && FILTERS_FNS.cantidades.getMinMaxCant(data)
   const repitenciaAniosUniqueValues =
     data &&
     getStudentsUniqueValues(
@@ -73,16 +68,13 @@ function FiltersPanel({
         <CalifParcialesFilter searchParams={searchParams} />
         <CursosFilter searchParams={searchParams} data={data} />
         <MateriasFilter searchParams={searchParams} data={data} />
-        <CantidadesFilter
-          cantidadesUniqueValues={cantidadesUniqueValues}
-          cantidadesMinMaxValues={cantidadesMinMaxValues}
-        />
-        <CantidadesFiltering searchParams={searchParams} data={data} />
+        <CantidadesFilter searchParams={searchParams} data={data} />
         <RepitenciaFilter
           repitenciaAniosUniqueValues={repitenciaAniosUniqueValues}
           repitenciaCantUniqueValues={repitenciaCantUniqueValues}
           repitenciaCantMinMaxValues={repitenciaCantMinMaxValues}
         />
+        <RepitenciaFiltering searchParams={searchParams} data={data} />
         <ProyeccionFilter uniqueValues={proyeccionUniqueValues} />
       </div>
     </ScrollArea>

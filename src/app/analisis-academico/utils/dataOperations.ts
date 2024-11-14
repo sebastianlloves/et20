@@ -1,6 +1,10 @@
 import { Student } from '@/lib/definitions'
 import { SearchParams } from '../page'
-import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
+import {
+  ANIOS_REPETIBLES,
+  CURSOS_ITEMS_DATA,
+  MATERIAS_ITEMS_DATA,
+} from './constants'
 import { CARACTER_GRADO } from '@/lib/constants'
 
 export function getFilteredStudentData(
@@ -297,6 +301,31 @@ export const FILTERS_FNS = {
     },
   },
   repitencia: {
+    formatParam: (
+      paramAnios?: string,
+      paramCant?: string,
+      minMax?: number[],
+    ) => {
+      const aniosParamArr = paramAnios?.split('_') || []
+      const aniosValue = aniosParamArr
+        .filter((anioRepetido) => ANIOS_REPETIBLES.includes(anioRepetido))
+        .sort()
+        
+      const cantValue = paramCant
+        ?.split('_')
+        .map((value) => Number(value))
+        .sort((a, b) => a - b)
+      if(cantValue) {
+        let min = cantValue[0]
+        let max = cantValue[1]
+        if (minMax) {
+          const [minValue, maxValue] = minMax
+          if (min < minValue) min = minValue
+          if (max > maxValue) max = maxValue
+        }
+      }
+      return { aniosValue, cantValue}
+    },
     filterFn: (student: Student, searchParams: SearchParams) => {
       const studentRepitencia = student.repitencia
       const repitenciaAniosParam = searchParams.repitenciaAnios?.split('_')

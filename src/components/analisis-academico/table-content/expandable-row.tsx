@@ -20,7 +20,7 @@ function ExpandableRow({
   return detalle === 'No corresponde' ? (
     <Badge
       variant="secondary"
-      className="rounded-md bg-muted/50 font-normal text-muted-foreground/80"
+      className="rounded-md bg-muted/50 font-normal text-muted-foreground/80 group-hover:bg-table-body"
     >
       No corresponde
     </Badge>
@@ -39,7 +39,7 @@ function ExpandableRow({
           ) : (
             <Badge
               variant="secondary"
-              className="rounded-md bg-muted text-[length:inherit] font-medium"
+              className="rounded-md bg-muted text-[length:inherit] font-medium group-hover:bg-table-body"
             >
               {cantidad}
             </Badge>

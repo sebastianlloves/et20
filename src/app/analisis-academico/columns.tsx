@@ -19,7 +19,6 @@ declare module '@tanstack/react-table' {
   }
 }
 
-
 export const columns: ColumnDef<Student>[] = [
   {
     id: 'expand',
@@ -59,7 +58,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ getValue }) => (
       <Badge
         variant="outline"
-        className="text-nowrap rounded-md px-2 py-[5px] font-medium lg:px-3 lg:py-1.5"
+        className="text-nowrap rounded-md px-2 py-[5px] font-medium group-hover:bg-table-body lg:px-3 lg:py-1.5"
       >
         {getValue<string>()}
       </Badge>

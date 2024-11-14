@@ -67,3 +67,11 @@ export const MATERIAS_ITEMS_DATA = (
     materiasPM,
   }
 })
+
+export const ANIOS_REPETIBLES = Object.keys(CURSOS)
+  .sort(
+    (a, b) =>
+      Number(a.split(' ')[0].slice(0, -1)) -
+      Number(b.split(' ')[0].slice(0, -1)),
+  )
+  .slice(0, -1)

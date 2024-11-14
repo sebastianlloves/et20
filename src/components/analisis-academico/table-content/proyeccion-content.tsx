@@ -22,7 +22,7 @@ const badgeContent: {
 } = {
   Promociona: {
     variant: 'success',
-    className: '',
+    className: 'group-hover:bg-table-body',
     icon: <BadgeCheck strokeWidth="1.5px" className="w-[16px] shrink-0" />,
   },
   Permanece: {
@@ -50,7 +50,8 @@ const badgeContent: {
   },
   'Faltan datos': {
     variant: 'outline',
-    className: 'text-yellow-700 border-yellow-600 rounded-lg',
+    className:
+      'text-yellow-700 border-yellow-600 rounded-lg group-hover:bg-table-body',
     icon: <AlertTriangle strokeWidth="1.7px" className="w-[16px] shrink-0" />,
   },
 }

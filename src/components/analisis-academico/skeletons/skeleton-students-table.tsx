@@ -20,8 +20,11 @@ function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
     getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, pageParam)
   return (
     <>
-      <FiltersPanelMobile className="block lg:hidden" />
-      <FiltersPanel className="hidden lg:block" />
+      <FiltersPanelMobile
+        searchParams={searchParams}
+        className="block lg:hidden"
+      />
+      <FiltersPanel searchParams={searchParams} className="hidden lg:block" />
       <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
       <TablePagination
         paginationUtils={paginationUtils}

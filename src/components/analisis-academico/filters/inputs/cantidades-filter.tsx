@@ -1,17 +1,17 @@
 import {
   FILTERS_FNS,
-  getStudentsUniqueValues,
+  // getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { TableFilterProps } from './cursos-filter'
-import { getQuantity } from '@/app/analisis-academico/utils/urlParamsOperations'
+// import { getQuantity } from '@/app/analisis-academico/utils/urlParamsOperations'
 import Filter from '../filter'
 import { Calculator } from 'lucide-react'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import SliderItem from '../slider-item'
+import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
 function CantidadesFilter({ searchParams, data }: TableFilterProps) {
-  const uniqueValues =
-    data && getStudentsUniqueValues(data, searchParams, 'cantidades', true)
+  /* const uniqueValues =
+    data && getStudentsUniqueValues(data, searchParams, 'cantidades', true) */
   const minMaxValues = data && FILTERS_FNS.cantidades.getMinMaxCant(data)
   const cantTroncalesValue = FILTERS_FNS.cantidades.formatParam(
     searchParams.cantidadesTroncales,
@@ -22,8 +22,9 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
   const cantEnProceso2020Value = FILTERS_FNS.cantidades.formatParam(
     searchParams.cantidadesEnProceso2020,
   )
+  const showEnProceso2020 = searchParams.enProceso2020 !== 'false'
 
-  const troncalesTags = cantTroncalesValue && {
+  const troncalesTag = cantTroncalesValue && {
     value: cantTroncalesValue.join('_'),
     tagText: getCantMateriasString(cantTroncalesValue, {
       plural: 'troncales',
@@ -36,7 +37,7 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       cantidadesTroncales: undefined,
     },
   }
-  const generalesTags = cantGeneralesValue && {
+  const generalesTag = cantGeneralesValue && {
     value: cantGeneralesValue.join('_'),
     tagText: getCantMateriasString(cantGeneralesValue, {
       plural: 'generales',
@@ -49,7 +50,7 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       cantidadesGenerales: undefined,
     },
   }
-  const enProceso2020Tags = cantEnProceso2020Value && {
+  const enProceso2020Tag = cantEnProceso2020Value && {
     value: cantEnProceso2020Value.join('_'),
     tagText: getCantMateriasString(cantEnProceso2020Value, {
       plural: 'en Proceso (2020)',
@@ -62,9 +63,11 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       cantidadesEnProceso2020: undefined,
     },
   }
-  const filterTags = [troncalesTags, generalesTags, enProceso2020Tags].filter(
-    (tag) => tag !== undefined,
-  )
+  const filterTags = [
+    troncalesTag,
+    generalesTag,
+    showEnProceso2020 ? enProceso2020Tag : undefined,
+  ].filter((tag) => tag !== undefined)
   const removeFilter = {
     pathname: '/analisis-academico',
     query: {
@@ -83,7 +86,36 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       filterTags={filterTags}
       removeFilter={removeFilter}
     >
-      <SliderItem />
+      <SliderItem
+        title="Troncales"
+        min={minMaxValues?.troncalesMinMax[0] || 0}
+        max={minMaxValues?.troncalesMinMax[1] || 0}
+        paramKey="cantidadesTroncales"
+        filterValue={cantTroncalesValue}
+      />
+
+      <DropdownMenuSeparator className="mx-1" />
+
+      <SliderItem
+        title="Generales"
+        min={minMaxValues?.generalesMinMax[0] || 0}
+        max={minMaxValues?.generalesMinMax[1] || 0}
+        paramKey="cantidadesGenerales"
+        filterValue={cantGeneralesValue}
+      />
+      {showEnProceso2020 && (
+        <>
+          <DropdownMenuSeparator className="mx-1" />
+
+          <SliderItem
+            title="En Proceso (2020)"
+            min={minMaxValues?.enProceso2020MinMax[0] || 0}
+            max={minMaxValues?.enProceso2020MinMax[1] || 0}
+            paramKey="cantidadesEnProceso2020"
+            filterValue={cantEnProceso2020Value}
+          />
+        </>
+      )}
     </Filter>
   )
 }
@@ -101,10 +133,4 @@ const getCantMateriasString = (
   if (min === max)
     return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
   return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
-}
-
-const getNumbersBetween = (numberArr: number[]) => {
-  const min = Math.min(...numberArr)
-  const max = Math.max(...numberArr)
-  return Array.from({ length: max - min + 1 }, (_, index) => min + index)
 }

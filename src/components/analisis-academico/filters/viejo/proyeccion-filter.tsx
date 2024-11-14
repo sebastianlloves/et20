@@ -2,7 +2,10 @@
 
 import { FastForward } from 'lucide-react'
 import Filter from './filter'
-import { DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
 import MenuItem from './menu-item'
 import useParamsState from '@/hooks/useParamsState'
 
@@ -60,6 +63,7 @@ function ProyeccionFilter({
     newFilterValue.length
       ? searchParams.set('proyeccion', newFilterValue.join('_'))
       : searchParams.delete('proyeccion')
+    if (searchParams.has('page')) searchParams.delete('page')
 
     replace(`${pathname}?${searchParams}`)
   }
