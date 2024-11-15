@@ -7,10 +7,7 @@ import {
   getQuantity,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
-import {
-  formatArrValuesParam,
-  updateArrParamState,
-} from '@/app/analisis-academico/utils/urlParamsOperations'
+import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import {
   DropdownMenuCheckboxItem,
@@ -38,11 +35,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
       'materias',
       searchParams.inclusionEstricta === 'true',
     )
-  const filterValue = formatArrValuesParam(
-    searchParams.materias,
-    MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
-    FILTERS_FNS.materias.sortParam,
-  )
+  const filterValue = FILTERS_FNS.materias.formatParam(searchParams.materias)
   const strictInclusionValue = searchParams.inclusionEstricta
 
   const strictInclusionTag = strictInclusionValue === 'true' && {

@@ -9,16 +9,16 @@ export interface SearchParams {
   search?: string
   cursos?: string
   materias?: string
-  proyeccion?: string
-  enProceso2020?: string
+  califParciales?: string
   inclusionEstricta?: string
   cantidadesTroncales?: string
   cantidadesGenerales?: string
   cantidadesEnProceso2020?: string
+  enProceso2020?: string
   cantOptativo?: string
   repitenciaAnios?: string
   repitenciaCant?: string
-  califParciales?: string
+  proyeccion?: string
   page?: string
   sort?: string
 }

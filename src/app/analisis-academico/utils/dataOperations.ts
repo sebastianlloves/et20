@@ -13,18 +13,19 @@ import {
 
 export function getFilteredStudentData(
   data: Student[],
-  filterParams: Omit<SearchParams, 'anio'> = {},
+  filterParams: SearchParams = {},
   omitedKey?: string,
 ) {
   const paramsWithValue = JSON.parse(JSON.stringify(filterParams))
+  const activeFiltersKeys = (
+    Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>
+  ).filter(
+    (filterFnKey) =>
+      Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
+    filterFnKey !== omitedKey,
+  )
+  console.log(activeFiltersKeys)
   const filteredData = data.filter((student) => {
-    const activeFiltersKeys = (
-      Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>
-    ).filter(
-      (filterFnKey) =>
-        Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
-        filterFnKey !== omitedKey,
-    )
     return activeFiltersKeys.every((filterFnKey) =>
       FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
     )
@@ -84,6 +85,17 @@ export const getSortedData = (filteredData: Student[], sortParam: string) => {
 
 export const FILTERS_FNS = {
   search: {
+    formatParam: (param?: string) => {
+      const searchParam = param || ''
+      const filterValue = searchParam.split(' ').map((string) =>
+        string
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, ''),
+      )
+      return filterValue
+    },
     filterFn: (student: Student, searchParams: SearchParams) => {
       const searchParam = searchParams.search || ''
       const filterValue = searchParam.split(' ').map((string) =>
@@ -107,7 +119,11 @@ export const FILTERS_FNS = {
     ) => undefined,
   },
   cursos: {
-    formatParam: formatArrValuesParam,
+    formatParam: (param?: string) =>
+      formatArrValuesParam(
+        param,
+        CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
+      ),
     filterFn: (student: Student, searchParams: SearchParams) => {
       if (student.anio === null || student.division === null) return true
       const filterValue = formatArrValuesParam(
@@ -133,7 +149,12 @@ export const FILTERS_FNS = {
       if (anioA !== anioB) return anioA - anioB
       return materiaA.localeCompare(materiaB)
     },
-    formatParam: formatArrValuesParam,
+    formatParam: (param?: string) =>
+      formatArrValuesParam(
+        param,
+        MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
+        FILTERS_FNS.materias.sortParam,
+      ),
     filterFn: (student: Student, searchParams: SearchParams) => {
       const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
       const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
