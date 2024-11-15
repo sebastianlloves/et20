@@ -8,19 +8,23 @@ import Filter from '../filter'
 import { Calculator } from 'lucide-react'
 import SliderItem from '../slider-item'
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import { formatCantValuesParam } from '@/app/analisis-academico/utils/urlParamsOperations'
 
 function CantidadesFilter({ searchParams, data }: TableFilterProps) {
   /* const uniqueValues =
     data && getStudentsUniqueValues(data, searchParams, 'cantidades', true) */
   const minMaxValues = data && FILTERS_FNS.cantidades.getMinMaxCant(data)
-  const cantTroncalesValue = FILTERS_FNS.cantidades.formatParam(
+  const cantTroncalesValue = formatCantValuesParam(
     searchParams.cantidadesTroncales,
+    minMaxValues?.troncalesMinMax,
   )
-  const cantGeneralesValue = FILTERS_FNS.cantidades.formatParam(
+  const cantGeneralesValue = formatCantValuesParam(
     searchParams.cantidadesGenerales,
+    minMaxValues?.generalesMinMax,
   )
-  const cantEnProceso2020Value = FILTERS_FNS.cantidades.formatParam(
+  const cantEnProceso2020Value = formatCantValuesParam(
     searchParams.cantidadesEnProceso2020,
+    minMaxValues?.enProceso2020MinMax
   )
   const showEnProceso2020 = searchParams.enProceso2020 !== 'false'
 

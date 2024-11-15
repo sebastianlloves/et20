@@ -19,8 +19,7 @@ import { Switch } from '@/components/ui/switch'
 import MenuItem from './menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
-import { FILTERS_FNS } from '@/app/analisis-academico/utils/dataOperations'
-import { getGrupalItemData } from '@/app/analisis-academico/utils/urlParamsOperations'
+import { FILTERS_FNS, getGrupalItemData } from '@/app/analisis-academico/utils/dataOperations'
 
 function MateriasFilter({
   materiasUniqueValues,
@@ -29,7 +28,7 @@ function MateriasFilter({
 }) {
   const { pathname, searchParams, replace } = useParamsState()
   const materiasValue = FILTERS_FNS.materias.formatParam(
-    searchParams.get('materias'),
+    searchParams.get('materias') || undefined,
   )
   const strictInclusion = searchParams.get('inclusionEstricta')
   const materiasTags = materiasValue.map((value) => {

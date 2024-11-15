@@ -1,15 +1,13 @@
 import {
   FILTERS_FNS,
+  getQuantity,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { TableFilterProps } from './cursos-filter'
 import Filter from '../filter'
 import { IterationCcw } from 'lucide-react'
 import { detectServerOrClientSide } from '@/lib/utils'
-import {
-  getQuantity,
-  updateArrParamState,
-} from '@/app/analisis-academico/utils/urlParamsOperations'
+import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { ANIOS_REPETIBLES } from '@/app/analisis-academico/utils/constants'
 import {
   DropdownMenuCheckboxItem,

@@ -3,11 +3,12 @@ import Filter from '../filter'
 import { TableFilterProps } from './cursos-filter'
 import {
   FILTERS_FNS,
+  getGrupalItemData,
+  getQuantity,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import {
-  getGrupalItemData,
-  getQuantity,
+  formatArrValuesParam,
   updateArrParamState,
 } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
@@ -37,7 +38,11 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
       'materias',
       searchParams.inclusionEstricta === 'true',
     )
-  const filterValue = FILTERS_FNS.materias.formatParam(searchParams.materias)
+  const filterValue = formatArrValuesParam(
+    searchParams.materias,
+    MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
+    FILTERS_FNS.materias.sortParam,
+  )
   const strictInclusionValue = searchParams.inclusionEstricta
 
   const strictInclusionTag = strictInclusionValue === 'true' && {

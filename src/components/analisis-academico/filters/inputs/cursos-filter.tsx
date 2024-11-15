@@ -1,14 +1,14 @@
 import { SearchParams } from '@/app/analisis-academico/page'
 import {
-  FILTERS_FNS,
+  getGrupalItemData,
+  getQuantity,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { Student } from '@/lib/definitions'
 import { Users } from 'lucide-react'
 import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import {
-  getGrupalItemData,
-  getQuantity,
+  formatArrValuesParam,
   updateArrParamState,
 } from '@/app/analisis-academico/utils/urlParamsOperations'
 import {
@@ -33,7 +33,10 @@ export interface TableFilterProps {
 function CursosFilter({ searchParams, data }: TableFilterProps) {
   const uniqueValues =
     data && getStudentsUniqueValues(data, searchParams, 'cursos')
-  const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
+  const filterValue = formatArrValuesParam(
+    searchParams.cursos,
+    CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
+  )
   const filterTags = filterValue.map((value) => {
     const tagText = value
     const quantity = getQuantity(value, uniqueValues)

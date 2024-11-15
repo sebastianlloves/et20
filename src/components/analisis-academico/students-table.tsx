@@ -30,7 +30,7 @@ export default async function StudentsTable({
     anio: anioParam,
     califParciales: califParcialesParam,
     page,
-    sort,
+    sort: sortParam,
     ...filterParams
   } = searchParams
   const anio = anioParam || `${ANIO_ACTUAL}`
@@ -48,8 +48,12 @@ export default async function StudentsTable({
     // console.timeEnd('Tiempo proyeción')
   } else allData = califHistoricas
 
+  console.time('Tiempo de filtrado')
   const filteredData = getFilteredStudentData(allData, filterParams)
-  const sortedData = sort ? getSortedData(filteredData, sort) : filteredData
+  console.timeEnd('Tiempo de filtrado')
+  const sortedData = sortParam
+    ? getSortedData(filteredData, sortParam)
+    : filteredData
 
   const { paginatedData, ...paginationUtils } = getPagination(
     ROWS_COUNT,

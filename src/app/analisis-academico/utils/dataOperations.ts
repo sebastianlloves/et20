@@ -6,6 +6,10 @@ import {
   MATERIAS_ITEMS_DATA,
 } from './constants'
 import { CARACTER_GRADO } from '@/lib/constants'
+import {
+  formatArrValuesParam,
+  formatCantValuesParam,
+} from './urlParamsOperations'
 
 export function getFilteredStudentData(
   data: Student[],
@@ -103,18 +107,13 @@ export const FILTERS_FNS = {
     ) => undefined,
   },
   cursos: {
-    formatParam: (cursosParam?: string | null) => {
-      const cursosValue = cursosParam?.split('_') || []
-      const filterValue = cursosValue
-        .filter((curso) =>
-          CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos).includes(curso),
-        )
-        .sort()
-      return filterValue
-    },
+    formatParam: formatArrValuesParam,
     filterFn: (student: Student, searchParams: SearchParams) => {
       if (student.anio === null || student.division === null) return true
-      const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.cursos)
+      const filterValue = formatArrValuesParam(
+        searchParams.cursos,
+        CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
+      )
       return filterValue.includes(`${student.anio[0]}° ${student.division[0]}°`)
     },
     uniqueValuesFn: (
@@ -134,20 +133,15 @@ export const FILTERS_FNS = {
       if (anioA !== anioB) return anioA - anioB
       return materiaA.localeCompare(materiaB)
     },
-    formatParam: (materiasParam?: string | null) => {
-      const materiasValue = materiasParam?.split('_') || []
-      const filterValue = materiasValue
-        .filter((materia) =>
-          MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas).includes(materia),
-        )
-        .sort(FILTERS_FNS.materias.sortParam)
-      return filterValue
-    },
+    formatParam: formatArrValuesParam,
     filterFn: (student: Student, searchParams: SearchParams) => {
-      const materiasParam = searchParams.materias || ''
       const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
       const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
-      const filterValue = materiasParam.split('_')
+      const filterValue = formatArrValuesParam(
+        searchParams.materias,
+        MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
+        FILTERS_FNS.materias.sortParam,
+      )
       const studentMaterias = [
         ...student.troncales.detalle,
         ...student.generales.detalle,
@@ -183,12 +177,6 @@ export const FILTERS_FNS = {
     },
   },
   cantidades: {
-    formatParam: (param?: string) => {
-      return param
-        ?.split('_')
-        .map((value) => Number(value))
-        .sort((a, b) => a - b)
-    },
     filterFn: (student: Student, searchParams: SearchParams) => {
       const {
         cantidadesTroncales,
@@ -201,14 +189,7 @@ export const FILTERS_FNS = {
         cantidadesTroncales,
         cantidadesGenerales,
         cantidadesEnProceso2020,
-      ].map(
-        (filterParam) =>
-          filterParam !== undefined &&
-          filterParam
-            .split('_')
-            .map((value) => Number(value))
-            .sort((a, b) => a - b),
-      )
+      ].map((filterParam) => formatCantValuesParam(filterParam))
 
       const isTroncalesValid =
         troncalesValue && student.troncales.cantidad !== null
@@ -310,12 +291,12 @@ export const FILTERS_FNS = {
       const aniosValue = aniosParamArr
         .filter((anioRepetido) => ANIOS_REPETIBLES.includes(anioRepetido))
         .sort()
-        
+
       const cantValue = paramCant
         ?.split('_')
         .map((value) => Number(value))
         .sort((a, b) => a - b)
-      if(cantValue) {
+      if (cantValue) {
         let min = cantValue[0]
         let max = cantValue[1]
         if (minMax) {
@@ -324,7 +305,7 @@ export const FILTERS_FNS = {
           if (max > maxValue) max = maxValue
         }
       }
-      return { aniosValue, cantValue}
+      return { aniosValue, cantValue }
     },
     filterFn: (student: Student, searchParams: SearchParams) => {
       const studentRepitencia = student.repitencia
@@ -455,3 +436,30 @@ export const SORTING_FNS = [
     },
   },
 ]
+
+export const getGrupalItemData = (
+  valuesItem: string[],
+  filterValue: string[],
+  uniqueValues?: Map<string, number>,
+) => {
+  const arraysAreEquals =
+    JSON.stringify(valuesItem.sort()) === JSON.stringify(filterValue.sort())
+  const isSelected = valuesItem.length ? arraysAreEquals : undefined
+  const quantity = getQuantity(valuesItem, uniqueValues)
+  return { isSelected, quantity }
+}
+
+export const getQuantity = (
+  value: string | string[],
+  uniqueValues?: Map<string, number>,
+) => {
+  if (typeof value === 'string')
+    return uniqueValues && (uniqueValues.get(value) ?? 0)
+  return (
+    uniqueValues &&
+    value.reduce(
+      (prevValue, newValue) => prevValue + (uniqueValues.get(newValue) ?? 0),
+      0,
+    )
+  )
+}

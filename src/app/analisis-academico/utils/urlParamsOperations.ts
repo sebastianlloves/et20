@@ -33,29 +33,37 @@ export const updateArrParamState = (
   return sortedState.length ? sortedState.join('_') : undefined
 }
 
-export const getGrupalItemData = (
-  valuesItem: string[],
-  filterValue: string[],
-  uniqueValues?: Map<string, number>,
+export const formatArrValuesParam = (
+  param?: string,
+  validatingArr?: unknown[],
+  sortingFn?: (a: string, b: string) => number,
 ) => {
-  const arraysAreEquals =
-    JSON.stringify(valuesItem.sort()) === JSON.stringify(filterValue.sort())
-  const isSelected = valuesItem.length ? arraysAreEquals : undefined
-  const quantity = getQuantity(valuesItem, uniqueValues)
-  return { isSelected, quantity }
+  console.log('clg desde formatArrValuesParam')
+  const paramValues = param?.split('_') || []
+  const filterValues = validatingArr
+    ? paramValues.filter((value) => validatingArr.includes(value))
+    : paramValues
+  const sortedValues = sortingFn
+    ? filterValues.sort(sortingFn)
+    : filterValues.sort()
+
+  return sortedValues
 }
 
-export const getQuantity = (
-  value: string | string[],
-  uniqueValues?: Map<string, number>,
+export const formatCantValuesParam = (
+  param?: string,
+  minMaxValidation?: number[],
 ) => {
-  if (typeof value === 'string')
-    return uniqueValues && (uniqueValues.get(value) ?? 0)
-  return (
-    uniqueValues &&
-    value.reduce(
-      (prevValue, newValue) => prevValue + (uniqueValues.get(newValue) ?? 0),
-      0,
-    )
-  )
+  const paramValues = param?.split('_').map((value) => Number(value))
+  if (paramValues === undefined || paramValues.length !== 2) return undefined
+
+  let minValue = Math.min(...paramValues)
+  let maxValue = Math.max(...paramValues)
+  if (minMaxValidation) {
+    const minValid = Math.min(...minMaxValidation)
+    const maxValid = Math.max(...minMaxValidation)
+    if (minValue < minValid) minValue = minValid
+    if (maxValue > maxValid) maxValue = maxValid
+  }
+  return [minValue, maxValue]
 }

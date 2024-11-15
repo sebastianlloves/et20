@@ -16,11 +16,7 @@ import {
 import MenuItem from './menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
-import { FILTERS_FNS } from '@/app/analisis-academico/utils/dataOperations'
-import {
-  getGrupalItemData,
-  getQuantity,
-} from '@/app/analisis-academico/utils/urlParamsOperations'
+import { FILTERS_FNS, getGrupalItemData, getQuantity } from '@/app/analisis-academico/utils/dataOperations'
 
 function CursosFilter({
   uniqueValues,
@@ -29,7 +25,7 @@ function CursosFilter({
 }) {
   const { pathname, searchParams, replace } = useParamsState()
 
-  const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.get('cursos'))
+  const filterValue = FILTERS_FNS.cursos.formatParam(searchParams.get('cursos') || undefined)
   const cursosTags = filterValue.sort().map((value) => {
     const quantity = uniqueValues && (uniqueValues.get(value) ?? 0)
     return { value, quantity }
