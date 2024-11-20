@@ -1,3 +1,32 @@
+/* import { SearchParams } from '../page'
+import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
+import { FILTERS_FNS } from './dataOperations'
+
+export const FORMAT_PARAMS_FNS: Record<
+  keyof SearchParams,
+  (param?: string) => any
+> = {
+  cursos: (param?: string) =>
+    formatArrValuesParam(
+      param,
+      CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
+    ),
+  materias: (param?: string) =>
+    formatArrValuesParam(
+      param,
+      MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
+      FILTERS_FNS.materias.sortParam,
+    ),
+}
+
+export const getFormatedValues = (
+  key: keyof SearchParams,
+  searchParams: SearchParams,
+) => {
+  const param = searchParams[key]
+  return FORMAT_PARAMS_FNS[key] ? FORMAT_PARAMS_FNS[key](param) : param
+} */
+
 export const updateArrParamState = (
   itemValue: string | string[],
   filterValue: string[],
@@ -38,7 +67,6 @@ export const formatArrValuesParam = (
   validatingArr?: unknown[],
   sortingFn?: (a: string, b: string) => number,
 ) => {
-  console.log('clg desde formatArrValuesParam')
   const paramValues = param?.split('_') || []
   const filterValues = validatingArr
     ? paramValues.filter((value) => validatingArr.includes(value))
