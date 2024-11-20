@@ -24,7 +24,7 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
   )
   const cantEnProceso2020Value = formatCantValuesParam(
     searchParams.cantidadesEnProceso2020,
-    minMaxValues?.enProceso2020MinMax
+    minMaxValues?.enProceso2020MinMax,
   )
   const showEnProceso2020 = searchParams.enProceso2020 !== 'false'
 
@@ -35,8 +35,7 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       singular: 'troncal',
     }),
     quantity: null,
-    pathname: '/analisis-academico',
-    query: {
+    newQueryState: {
       ...searchParams,
       cantidadesTroncales: undefined,
     },
@@ -48,8 +47,7 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       singular: 'general',
     }),
     quantity: null,
-    pathname: '/analisis-academico',
-    query: {
+    newQueryState: {
       ...searchParams,
       cantidadesGenerales: undefined,
     },
@@ -61,8 +59,7 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       singular: 'en Proceso (2020)',
     }),
     quantity: null,
-    pathname: '/analisis-academico',
-    query: {
+    newQueryState: {
       ...searchParams,
       cantidadesEnProceso2020: undefined,
     },
@@ -72,15 +69,6 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
     generalesTag,
     showEnProceso2020 ? enProceso2020Tag : undefined,
   ].filter((tag) => tag !== undefined)
-  const removeFilter = {
-    pathname: '/analisis-academico',
-    query: {
-      ...searchParams,
-      cantidadesTroncales: undefined,
-      cantidadesGenerales: undefined,
-      cantidadesEnProceso2020: undefined,
-    },
-  }
 
   return (
     <Filter
@@ -88,7 +76,11 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       maxTags={3}
       icon={<Calculator strokeWidth={1.2} className="w-[15.5px] lg:w-[17px]" />}
       filterTags={filterTags}
-      removeFilter={removeFilter}
+      paramKeys={[
+        'cantidadesTroncales',
+        'cantidadesGenerales',
+        'cantidadesEnProceso2020',
+      ]}
     >
       <SliderItem
         title="Troncales"

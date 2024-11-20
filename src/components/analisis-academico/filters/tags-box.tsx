@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Accordion,
   AccordionContent,
@@ -5,29 +7,30 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SearchParams } from '@/app/analisis-academico/page'
-import Link from 'next/link'
+import useParamsState from '@/hooks/useParamsState'
 
 function TagsBox({
   tags,
-  removeFilter,
+  paramKeys,
   maxTags,
 }: {
   tags: {
     value: string
     tagText: string
     quantity?: number | null
-    pathname: string
-    query: SearchParams
+    newQueryState: SearchParams
     className?: string
   }[]
-  removeFilter: { pathname: string; query: SearchParams }
+  paramKeys: (keyof SearchParams)[]
   maxTags: number
 }) {
+  const { updateParams, pathname, searchParams, replace } = useParamsState()
+
   return (
     <div className="w-full bg-muted/20 p-2 shadow-inner">
       <ConditionalWrapper
@@ -36,61 +39,54 @@ function TagsBox({
       >
         <div className="w-full">
           {tags.length > 1 && (
-            <Link
-              href={{
-                pathname: removeFilter.pathname,
-                query: JSON.parse(JSON.stringify(removeFilter.query)),
-              }}
-            >
+            <div>
               <X
                 strokeWidth="1.5px"
                 className="-mr-0.5 ml-auto h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
+                onClick={() => {
+                  paramKeys.forEach((key) => searchParams.delete(key))
+                  if (searchParams.has('page')) searchParams.delete('page')
+                  replace(`${pathname}?${searchParams.toString()}`)
+                }}
               />
-            </Link>
+            </div>
           )}
 
           <div className="mt-0.5 flex flex-wrap justify-start gap-1.5 overflow-hidden lg:mt-1">
             {tags.map(
-              ({ value, tagText, quantity, pathname, query, className }) => (
-                <Link
+              ({ value, tagText, quantity, newQueryState, className }) => (
+                <Badge
                   key={value}
-                  href={{
-                    pathname,
-                    query: JSON.parse(JSON.stringify(query)),
-                  }}
+                  variant="default"
+                  className={cn(
+                    'max-w-full cursor-pointer justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 py-1 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10 lg:px-2 lg:py-1.5',
+                    className,
+                  )}
+                  onClick={() => updateParams(newQueryState, paramKeys)}
                 >
-                  <Badge
-                    key={value}
-                    variant="default"
-                    className={cn(
-                      'max-w-full justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 py-1 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10 lg:px-2 lg:py-1.5',
-                      className,
-                    )}
-                  >
-                    <div className="flex h-full items-center justify-start">
-                      <div className="flex items-center justify-between gap-3 px-2 leading-3">
-                        <p className="text-pretty align-middle text-[length:inherit] leading-snug text-foreground/80">
-                          {tagText}
-                        </p>
-                        {quantity === undefined ? (
-                          <Skeleton className="h-1 w-5 rounded-md bg-primary/50" />
-                        ) : (
-                          quantity !== null && (
-                            <p className="mt-0.5 align-middle font-mono text-[length:inherit] leading-tight text-muted-foreground/80">
-                              {`(${quantity})`}
-                            </p>
-                          )
-                        )}
-                      </div>
-                      <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
-                        <X
-                          strokeWidth="1.5px"
-                          className="h-[13px] w-[13px] cursor-pointer text-foreground/60 hover:text-foreground/90"
-                        />
-                      </div>
+                  <div className="flex h-full items-center justify-start">
+                    <div className="flex items-center justify-between gap-3 px-2 leading-3">
+                      <p className="text-pretty align-middle text-[length:inherit] leading-snug text-foreground/80">
+                        {tagText}
+                      </p>
+                      {quantity === undefined ? (
+                        <Skeleton className="h-1 w-5 rounded-md bg-primary/50" />
+                      ) : (
+                        quantity !== null && (
+                          <p className="mt-0.5 align-middle font-mono text-[length:inherit] leading-tight text-muted-foreground/80">
+                            {`(${quantity})`}
+                          </p>
+                        )
+                      )}
                     </div>
-                  </Badge>
-                </Link>
+                    <div className="flex h-full cursor-pointer items-center rounded-r-full border-l border-accent-foreground/15 pl-1">
+                      <X
+                        strokeWidth="1.5px"
+                        className="h-[13px] w-[13px] cursor-pointer text-foreground/60 hover:text-foreground/90"
+                      />
+                    </div>
+                  </div>
+                </Badge>
               ),
             )}
           </div>
@@ -105,7 +101,7 @@ function AccordionTags({
   children,
 }: {
   tagsQuantity: number
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <Accordion type="single" collapsible>

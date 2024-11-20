@@ -18,12 +18,11 @@ interface FilterProps {
   filterTags: {
     value: string
     tagText: string
+    newQueryState: SearchParams
     quantity?: number | null
-    pathname: string
-    query: SearchParams
     className?: string
   }[]
-  removeFilter: { pathname: string; query: SearchParams }
+  paramKeys: (keyof SearchParams)[]
 }
 
 function Filter({
@@ -32,7 +31,7 @@ function Filter({
   maxTags,
   icon,
   filterTags,
-  removeFilter,
+  paramKeys,
 }: FilterProps) {
   return (
     <div className="w-full rounded-md border text-xs lg:text-sm">
@@ -70,11 +69,7 @@ function Filter({
       </DropdownMenu>
 
       {filterTags.length > 0 && (
-        <TagsBox
-          tags={filterTags}
-          removeFilter={removeFilter}
-          maxTags={maxTags}
-        />
+        <TagsBox tags={filterTags} maxTags={maxTags} paramKeys={paramKeys} />
       )}
     </div>
   )

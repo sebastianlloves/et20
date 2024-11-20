@@ -40,7 +40,7 @@ function SliderItem({
 
   return (
     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-      <div className="my-0.5 flex w-full flex-col gap-1.5">
+      <div className="my-0.5 flex w-full flex-col gap-1.5 px-2 py-1.5">
         <h4 className="text-left text-[length:inherit] font-medium text-foreground/80">
           {title}
         </h4>

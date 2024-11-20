@@ -5,7 +5,7 @@ import {
 import DataTable from '../ui/data-table'
 import { columns } from '../../app/analisis-academico/columns'
 import { SearchParams } from '../../app/analisis-academico/page'
-import FiltersPanel from './filters/viejo/filters-panel'
+import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/viejo/filters-panel-mobile'
 import { getPagination, isValidInstancia } from '@/lib/utils'
 import TablePagination from './table-pagination'

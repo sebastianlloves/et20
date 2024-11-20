@@ -35,21 +35,12 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
   const filterTags = filterValue.map((value) => {
     const tagText = value
     const quantity = getQuantity(value, uniqueValues)
-    const pathname = '/analisis-academico'
-    const query = {
+    const newQueryState = {
       ...searchParams,
       cursos: updateArrParamState(value, filterValue),
     }
-    return { value, tagText, quantity, pathname, query }
+    return { value, tagText, quantity, newQueryState }
   })
-  const removeFilter = {
-    pathname: '/analisis-academico',
-    query: {
-      ...searchParams,
-      cursos: undefined,
-    },
-  }
-  const classifyingFunction = (value: string): string => value[0]
 
   const todosManiana = CURSOS_ITEMS_DATA.flatMap(
     ({ turnoManiana }) => turnoManiana,
@@ -85,14 +76,13 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
       maxTags={3}
       icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
       filterTags={filterTags}
-      removeFilter={removeFilter}
+      paramKeys={['cursos']}
     >
       <div className="text-xs lg:text-sm">
         {CURSOS_ITEMS_DATA.map(
           ({ anio, todos, turnoManiana, turnoTarde, cursosTICs, cursosPM }) => {
             const anioFilterValues = filterValue.filter(
-              (curso) =>
-                classifyingFunction(curso) === classifyingFunction(anio),
+              (curso) => curso[0] === anio[0],
             )
             const { isSelected: todosIsSelected, quantity: todosQuantity } =
               getGrupalItemData(todos, anioFilterValues, uniqueValues)
@@ -133,8 +123,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                             <MenuItem
                               value={curso}
                               quantity={cursoQuantity}
-                              pathname="/analisis-academico"
-                              query={{
+                              paramKeys={['cursos']}
+                              newQueryState={{
                                 ...searchParams,
                                 cursos: updateArrParamState(curso, filterValue),
                               }}
@@ -162,8 +152,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                           <MenuItem
                             value={`Turno Mañana`}
                             quantity={manianaQuantity}
-                            pathname="/analisis-academico"
-                            query={{
+                            paramKeys={['cursos']}
+                            newQueryState={{
                               ...searchParams,
                               cursos: updateArrParamState(
                                 turnoManiana,
@@ -181,8 +171,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                           <MenuItem
                             value={`Turno Tarde`}
                             quantity={tardeQuantity}
-                            pathname="/analisis-academico"
-                            query={{
+                            paramKeys={['cursos']}
+                            newQueryState={{
                               ...searchParams,
                               cursos: updateArrParamState(
                                 turnoTarde,
@@ -215,8 +205,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                               <MenuItem
                                 value={`TICs`}
                                 quantity={ticsQuantity}
-                                pathname="/analisis-academico"
-                                query={{
+                                paramKeys={['cursos']}
+                                newQueryState={{
                                   ...searchParams,
                                   cursos: updateArrParamState(
                                     cursosTICs,
@@ -234,8 +224,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                               <MenuItem
                                 value={`Prod. Multimedial`}
                                 quantity={pmQuantity}
-                                pathname="/analisis-academico"
-                                query={{
+                                paramKeys={['cursos']}
+                                newQueryState={{
                                   ...searchParams,
                                   cursos: updateArrParamState(
                                     cursosPM,
@@ -257,8 +247,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                         <MenuItem
                           value={`Todos los ${anio.split(' ')[0]}`}
                           quantity={todosQuantity}
-                          pathname="/analisis-academico"
-                          query={{
+                          paramKeys={['cursos']}
+                          newQueryState={{
                             ...searchParams,
                             cursos: updateArrParamState(
                               todos,
@@ -296,8 +286,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Turno Mañana`}
               quantity={manianaQuantity}
-              pathname="/analisis-academico"
-              query={{
+              paramKeys={['cursos']}
+              newQueryState={{
                 ...searchParams,
                 cursos: updateArrParamState(todosManiana, filterValue),
               }}
@@ -311,8 +301,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Turno Tarde`}
               quantity={tardeQuantity}
-              pathname="/analisis-academico"
-              query={{
+              paramKeys={['cursos']}
+              newQueryState={{
                 ...searchParams,
                 cursos: updateArrParamState(todosTarde, filterValue),
               }}
@@ -340,8 +330,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Ciclo Básico`}
               quantity={cbQuantity}
-              pathname="/analisis-academico"
-              query={{
+              paramKeys={['cursos']}
+              newQueryState={{
                 ...searchParams,
                 cursos: updateArrParamState(todosCB, filterValue),
               }}
@@ -355,8 +345,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`TICs`}
               quantity={ticsQuantity}
-              pathname="/analisis-academico"
-              query={{
+              paramKeys={['cursos']}
+              newQueryState={{
                 ...searchParams,
                 cursos: updateArrParamState(todosTICS, filterValue),
               }}
@@ -370,8 +360,8 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Prod. Multimedial`}
               quantity={pmQuantity}
-              pathname="/analisis-academico"
-              query={{
+              paramKeys={['cursos']}
+              newQueryState={{
                 ...searchParams,
                 cursos: updateArrParamState(todosPM, filterValue),
               }}

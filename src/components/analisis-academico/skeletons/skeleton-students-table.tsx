@@ -1,4 +1,4 @@
-import FiltersPanel from '../filters/viejo/filters-panel'
+import FiltersPanel from '../filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
 import FiltersPanelMobile from '../filters/viejo/filters-panel-mobile'
 import TablePagination from '../table-pagination'

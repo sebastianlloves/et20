@@ -72,8 +72,7 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
           value: filterData.value,
           tagText: filterData.tagText,
           quantity: null,
-          pathname: '/analisis-academico',
-          query: {
+          newQueryState: {
             ...searchParams,
             califParciales: undefined,
           },
@@ -81,13 +80,6 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
         },
       ]
     : []
-  const removeFilter = {
-    pathname: '/analisis-academico',
-    query: {
-      ...searchParams,
-      califParciales: undefined,
-    },
-  }
 
   if (anio === '2023') return false
 
@@ -99,7 +91,7 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
         <ChartCandlestick strokeWidth={1.3} className="w-[16px] lg:w-[17px]" />
       }
       filterTags={filterTags}
-      removeFilter={removeFilter}
+      paramKeys={['califParciales']}
     >
       <DropdownMenuRadioGroup value={filterValue || undefined}>
         <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] text-pretty pl-3">
@@ -118,11 +110,11 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
             >
               <MenuItem
                 value={itemText}
-                pathname="/analisis-academico"
-                query={{
+                newQueryState={{
                   ...searchParams,
                   califParciales: filterValue !== value ? value : undefined,
                 }}
+                paramKeys={['califParciales']}
               />
             </DropdownMenuRadioItem>
           </div>

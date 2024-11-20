@@ -49,6 +49,7 @@ function ColumnHead<TData, TValue>({
     formattedValues.length
       ? searchParams.set('sort', formattedValues)
       : searchParams.delete('sort')
+    if (searchParams.has('page')) searchParams.delete('page')
 
     replace(`${pathname}?${searchParams}`)
   }
@@ -69,7 +70,7 @@ function ColumnHead<TData, TValue>({
       >
         {sortingValue && (
           <ArrowUp
-            className={`h-4 w-3 opacity-50 ${sortingValue.order === 'asc' ? '' : 'rotate-180'}`}
+            className={`h-4 w-3 opacity-50 mt-0.5 ${sortingValue.order === 'asc' ? '' : 'rotate-180'}`}
           />
         )}
       </div>

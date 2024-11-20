@@ -311,19 +311,7 @@ export const FILTERS_FNS = {
         .filter((anioRepetido) => ANIOS_REPETIBLES.includes(anioRepetido))
         .sort()
 
-      const cantValue = paramCant
-        ?.split('_')
-        .map((value) => Number(value))
-        .sort((a, b) => a - b)
-      if (cantValue) {
-        let min = cantValue[0]
-        let max = cantValue[1]
-        if (minMax) {
-          const [minValue, maxValue] = minMax
-          if (min < minValue) min = minValue
-          if (max > maxValue) max = maxValue
-        }
-      }
+      const cantValue = formatCantValuesParam(paramCant, minMax)
       return { aniosValue, cantValue }
     },
     filterFn: (student: Student, searchParams: SearchParams) => {

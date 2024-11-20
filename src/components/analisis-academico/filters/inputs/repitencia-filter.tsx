@@ -6,7 +6,7 @@ import {
 import { TableFilterProps } from './cursos-filter'
 import Filter from '../filter'
 import { IterationCcw } from 'lucide-react'
-import { detectServerOrClientSide } from '@/lib/utils'
+// import { detectServerOrClientSide } from '@/lib/utils'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { ANIOS_REPETIBLES } from '@/app/analisis-academico/utils/constants'
 import {
@@ -16,9 +16,10 @@ import {
 import MenuItem from '../menu-item'
 import SliderItem from '../slider-item'
 import { getCantRepitenciasString } from '@/app/analisis-academico/utils'
+import { getNumbersBetween } from '@/lib/utils'
 
 function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
-  detectServerOrClientSide('RepitenciaFilter2')
+  // detectServerOrClientSide('RepitenciaFilter2')
   const aniosUniqueValues =
     data &&
     getStudentsUniqueValues(
@@ -30,7 +31,7 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
       'repitencia',
       true,
     )
-  /* const cantUniqueValues =
+  const cantUniqueValues =
     data &&
     getStudentsUniqueValues(
       data,
@@ -40,14 +41,9 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
       },
       'repitencia',
       true,
-    ) */
+    )
   const cantMinMaxValues = data && FILTERS_FNS.repitencia.getMinMaxCant(data)
 
-  /* 
-  http://localhost:3000/analisis-academico?anio=2024&sort=proyeccion-desc&repitenciaAnios=2%C2%B0+a%C3%B1o_3%C2%B0+a%C3%B1o&repitenciaCant=1_2
-  */
-
-  // El formateo de los param está mal, no valida con minMax la cantRep que se ponga en URL. Analizar de que si en vez de definir en las key de FILTER_FNS un formatParam, no se puede hacer unos formatParam genéricos, uno para array de opciones y otro para cantidades
   const { aniosValue: repAniosValue, cantValue: repCantValue } =
     FILTERS_FNS.repitencia.formatParam(
       searchParams.repitenciaAnios,
@@ -57,20 +53,21 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
   const repAniosTags = repAniosValue.map((value) => {
     const tagText = `Repitió ${value}`
     const quantity = getQuantity(value, aniosUniqueValues)
-    const pathname = '/analisis-academico'
-    const query = {
+    const newQueryState = {
       ...searchParams,
       repitenciaAnios: updateArrParamState(value, repAniosValue),
     }
-    return { value, tagText, quantity, pathname, query }
+    return { value, tagText, quantity, newQueryState }
   })
 
   const repCantTag = repCantValue && {
     value: repCantValue.join('_'),
     tagText: getCantRepitenciasString(repCantValue),
-    quantity: null,
-    pathname: '/analisis-academico',
-    query: {
+    quantity: getQuantity(
+      getNumbersBetween(repCantValue).map((number) => `cant_${number}`),
+      cantUniqueValues,
+    ),
+    newQueryState: {
       ...searchParams,
       repitenciaCant: undefined,
     },
@@ -80,22 +77,13 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
     (tag) => tag !== undefined,
   )
 
-  const removeFilter = {
-    pathname: '/analisis-academico',
-    query: {
-      ...searchParams,
-      repitenciaAnios: undefined,
-      repitenciaCant: undefined,
-    },
-  }
-
   return (
     <Filter
       title="Repitencia"
       maxTags={3}
       icon={<IterationCcw strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
       filterTags={filterTags}
-      removeFilter={removeFilter}
+      paramKeys={['repitenciaAnios', 'repitenciaCant']}
     >
       <>
         {ANIOS_REPETIBLES.map((anio) => (
@@ -108,11 +96,11 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Repitió ${anio}`}
               quantity={aniosUniqueValues && (aniosUniqueValues.get(anio) ?? 0)}
-              pathname="/analisis-academico"
-              query={{
+              newQueryState={{
                 ...searchParams,
                 repitenciaAnios: updateArrParamState(anio, repAniosValue),
               }}
+              paramKeys={['repitenciaAnios']}
             />
           </DropdownMenuCheckboxItem>
         ))}

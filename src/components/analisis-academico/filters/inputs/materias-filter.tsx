@@ -23,7 +23,6 @@ import {
 import MenuItem from '../menu-item'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import Link from 'next/link'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 function MateriasFilter({ searchParams, data }: TableFilterProps) {
@@ -41,33 +40,22 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
   const strictInclusionTag = strictInclusionValue === 'true' && {
     value: strictInclusionValue,
     tagText: 'Inclusión estricta',
-    quantity: null,
-    pathname: '/analisis-academico',
-    query: { ...searchParams, inclusionEstricta: undefined },
+    quantity: getQuantity(filterValue[0], uniqueValues),
+    newQueryState: { ...searchParams, inclusionEstricta: undefined },
     className: 'rounded-lg pl-1 bg-primary/15',
   }
   const filterTags = [
     strictInclusionTag,
     ...filterValue.map((value) => {
       const tagText = value
-      const quantity = getQuantity(value, uniqueValues)
-      const pathname = '/analisis-academico'
-      const query = {
+      const quantity = strictInclusionValue ? null : getQuantity(value, uniqueValues)
+      const newQueryState = {
         ...searchParams,
         materias: updateArrParamState(value, filterValue),
       }
-      return { value, tagText, quantity, pathname, query }
+      return { value, tagText, quantity, newQueryState }
     }),
   ].filter((value) => !!value)
-
-  const removeFilter = {
-    pathname: '/analisis-academico',
-    query: {
-      ...searchParams,
-      materias: undefined,
-      inclusionEstricta: undefined,
-    },
-  }
 
   const todasCB = MATERIAS_ITEMS_DATA.flatMap(({ materiasCB }) => materiasCB)
   const { isSelected: cbIsSelected, quantity: cbQuantity } = getGrupalItemData(
@@ -94,7 +82,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
       maxTags={4}
       icon={<Book strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
       filterTags={filterTags}
-      removeFilter={removeFilter}
+      paramKeys={['materias', 'inclusionEstricta']}
     >
       <div className="text-xs lg:text-sm">
         {MATERIAS_ITEMS_DATA.map(
@@ -134,14 +122,14 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                             quantity={
                               uniqueValues && (uniqueValues.get(materia) ?? 0)
                             }
-                            pathname="/analisis-academico"
-                            query={{
+                            newQueryState={{
                               ...searchParams,
                               materias: updateArrParamState(
                                 materia,
                                 filterValue,
                               ),
                             }}
+                            paramKeys={['materias']}
                           />
                         </DropdownMenuCheckboxItem>
                       ))}
@@ -168,8 +156,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                               <MenuItem
                                 value={`TICs`}
                                 quantity={ticsQuantity}
-                                pathname="/analisis-academico"
-                                query={{
+                                newQueryState={{
                                   ...searchParams,
                                   materias: updateArrParamState(
                                     materiasTICs,
@@ -177,6 +164,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                                     specificAnioValues,
                                   ),
                                 }}
+                                paramKeys={['materias']}
                               />
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem
@@ -187,8 +175,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                               <MenuItem
                                 value={`Prod. Multimedial`}
                                 quantity={pmQuantity}
-                                pathname="/analisis-academico"
-                                query={{
+                                newQueryState={{
                                   ...searchParams,
                                   materias: updateArrParamState(
                                     materiasPM,
@@ -196,6 +183,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                                     specificAnioValues,
                                   ),
                                 }}
+                                paramKeys={['materias']}
                               />
                             </DropdownMenuRadioItem>
                           </DropdownMenuRadioGroup>
@@ -211,8 +199,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                         <MenuItem
                           value={`Todos las materias de ${anio}`}
                           quantity={todasQuantity}
-                          pathname="/analisis-academico"
-                          query={{
+                          newQueryState={{
                             ...searchParams,
                             materias: updateArrParamState(
                               todas,
@@ -220,6 +207,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                               specificAnioValues,
                             ),
                           }}
+                          paramKeys={['materias']}
                         />
                       </DropdownMenuCheckboxItem>
                     </div>
@@ -250,11 +238,11 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Ciclo Básico`}
               quantity={cbQuantity}
-              pathname="/analisis-academico"
-              query={{
+              newQueryState={{
                 ...searchParams,
                 materias: updateArrParamState(todasCB, filterValue),
               }}
+              paramKeys={['materias']}
             />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
@@ -265,11 +253,11 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`TICs`}
               quantity={ticsQuantity}
-              pathname="/analisis-academico"
-              query={{
+              newQueryState={{
                 ...searchParams,
                 materias: updateArrParamState(todasTICS, filterValue),
               }}
+              paramKeys={['materias']}
             />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
@@ -280,11 +268,11 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Prod. Multimedial`}
               quantity={pmQuantity}
-              pathname="/analisis-academico"
-              query={{
+              newQueryState={{
                 ...searchParams,
                 materias: updateArrParamState(todasPM, filterValue),
               }}
+              paramKeys={['materias']}
             />
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
@@ -294,31 +282,30 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
           className="w-full"
           disabled={filterValue.length === 0}
         >
-          <Link
-            href={{
-              pathname: '/analisis-academico',
-              query: {
-                ...searchParams,
-                inclusionEstricta: updateArrParamState(
-                  'true',
-                  strictInclusionValue ? [strictInclusionValue] : [],
-                ),
-              },
+          <MenuItem
+            newQueryState={{
+              ...searchParams,
+              inclusionEstricta: updateArrParamState(
+                'true',
+                strictInclusionValue ? [strictInclusionValue] : [],
+              ),
             }}
-            className="flex w-full items-center justify-between gap-4 p-1 lg:gap-6"
+            paramKeys={['inclusionEstricta']}
           >
-            <Label
-              htmlFor="estrict-inclusion"
-              className="cursor-pointer text-[length:inherit] font-normal text-foreground"
-            >
-              Inclusión estricta
-            </Label>
-            <Switch
-              id="estrict-inclusion"
-              className="h-4 w-8"
-              checked={strictInclusionValue === 'true'}
-            />
-          </Link>
+            <div className="flex w-full items-center justify-between gap-4 lg:gap-6">
+              <Label
+                htmlFor="estrict-inclusion"
+                className="cursor-pointer text-[length:inherit] font-normal text-foreground"
+              >
+                Inclusión estricta
+              </Label>
+              <Switch
+                id="estrict-inclusion"
+                className="h-4 w-8"
+                checked={strictInclusionValue === 'true'}
+              />
+            </div>
+          </MenuItem>
         </DropdownMenuItem>
       </div>
     </Filter>
