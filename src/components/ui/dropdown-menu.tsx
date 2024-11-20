@@ -108,7 +108,8 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      'relative flex max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-default select-none items-center rounded-sm py-1.5 pl-6 pr-2 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 lg:pl-8 lg:text-sm',
+      'relative flex max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-default select-none items-center rounded-sm text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 lg:text-sm',
+      // 'py-1.5 pl-6 pr-2 lg:pl-8',
       className,
     )}
     checked={checked}
@@ -132,7 +133,8 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      'relative flex max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 lg:text-sm',
+      'relative flex max-w-[calc(var(--radix-dropdown-menu-content-available-width)-20px)] cursor-default select-none items-center rounded-sm text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 lg:text-sm',
+      // 'py-1.5 pl-8 pr-2',
       className,
     )}
     {...props}

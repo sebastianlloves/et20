@@ -14,7 +14,7 @@ export default function MenuItem({
 }) {
   return (
     <Link
-      className="flex w-full items-center justify-between gap-x-4 sm:gap-x-7"
+      className="flex w-full items-center justify-between gap-x-4 py-1.5 pl-6 pr-2 sm:gap-x-7 lg:pl-8"
       href={{
         pathname,
         query: JSON.parse(JSON.stringify(query)),

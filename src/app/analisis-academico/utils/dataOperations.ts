@@ -24,7 +24,6 @@ export function getFilteredStudentData(
       Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
     filterFnKey !== omitedKey,
   )
-  console.log(activeFiltersKeys)
   const filteredData = data.filter((student) => {
     return activeFiltersKeys.every((filterFnKey) =>
       FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
@@ -67,7 +66,6 @@ export const getSortedData = (filteredData: Student[], sortParam: string) => {
       return sortObj ? { ...sortObj, order } : null
     })
     .filter((value) => value !== null)
-  console.log(sortData)
 
   const sortedData = filteredData.sort((a, b) => {
     for (const sortingData of sortData) {

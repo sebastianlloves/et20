@@ -58,8 +58,8 @@ export const updateArrParamState = (
       ? filterValue.filter((value) => !itemValue.includes(value))
       : [...unalterablePartialArr, ...itemValue]
   }
-  const sortedState = sortingFn ? newState.sort(sortingFn) : newState.sort()
-  return sortedState.length ? sortedState.join('_') : undefined
+  const sortedNewState = sortingFn ? newState.sort(sortingFn) : newState.sort()
+  return sortedNewState.length ? sortedNewState.join('_') : undefined
 }
 
 export const formatArrValuesParam = (
