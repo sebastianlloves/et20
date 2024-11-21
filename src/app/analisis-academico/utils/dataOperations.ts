@@ -4,6 +4,7 @@ import {
   ANIOS_REPETIBLES,
   CURSOS_ITEMS_DATA,
   MATERIAS_ITEMS_DATA,
+  PROYECCION_DATA,
 } from './constants'
 import { CARACTER_GRADO } from '@/lib/constants'
 import {
@@ -22,7 +23,7 @@ export function getFilteredStudentData(
   ).filter(
     (filterFnKey) =>
       Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
-    filterFnKey !== omitedKey,
+      filterFnKey !== omitedKey,
   )
   const filteredData = data.filter((student) => {
     return activeFiltersKeys.every((filterFnKey) =>
@@ -283,6 +284,11 @@ export const FILTERS_FNS = {
     },
   },
   proyeccion: {
+    formatParam: (param?: string) =>
+      formatArrValuesParam(
+        param,
+        PROYECCION_DATA.map(({ value }) => value),
+      ),
     filterFn: (student: Student, searchParams: SearchParams) => {
       const proyeccionParam = searchParams.proyeccion
       if (!proyeccionParam) return true

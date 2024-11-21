@@ -4,7 +4,7 @@ import {
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { TableFilterProps } from './cursos-filter'
-import Filter from '../filter'
+import Filter from './filter'
 import { IterationCcw } from 'lucide-react'
 // import { detectServerOrClientSide } from '@/lib/utils'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'

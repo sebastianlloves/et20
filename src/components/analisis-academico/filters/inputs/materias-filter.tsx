@@ -1,5 +1,5 @@
 import { Book } from 'lucide-react'
-import Filter from '../filter'
+import Filter from './filter'
 import { TableFilterProps } from './cursos-filter'
 import {
   FILTERS_FNS,
@@ -48,7 +48,9 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
     strictInclusionTag,
     ...filterValue.map((value) => {
       const tagText = value
-      const quantity = strictInclusionValue ? null : getQuantity(value, uniqueValues)
+      const quantity = strictInclusionValue
+        ? null
+        : getQuantity(value, uniqueValues)
       const newQueryState = {
         ...searchParams,
         materias: updateArrParamState(value, filterValue),

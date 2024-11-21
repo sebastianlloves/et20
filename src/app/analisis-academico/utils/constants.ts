@@ -1,7 +1,7 @@
 import { CURSOS, MATERIAS_POR_CURSO } from "@/lib/constants"
 
 
-export const ROWS_COUNT = 50
+export const ROWS_COUNT = 30
 export const MAX_BUTTONS_PAGINATION = 7
 
 export const CURSOS_ITEMS_DATA = (
@@ -75,3 +75,23 @@ export const ANIOS_REPETIBLES = Object.keys(CURSOS)
       Number(b.split(' ')[0].slice(0, -1)),
   )
   .slice(0, -1)
+
+export const PROYECCION_DATA = [
+  { value: 'Promociona' },
+  { value: 'Permanece' },
+  {
+    value: 'Egresa',
+    show: (califParcialesFilter?: string) => !califParcialesFilter,
+  },
+  {
+    value: 'Egresa (titula)',
+    show: (califParcialesFilter?: string) =>
+      Boolean(califParcialesFilter),
+  },
+  {
+    value: 'Egresa (NO titula)',
+    show: (califParcialesFilter?: string) =>
+      Boolean(califParcialesFilter),
+  },
+  { value: 'Faltan datos' },
+]

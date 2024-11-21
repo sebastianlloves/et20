@@ -7,9 +7,8 @@ import CantidadesFilter from './inputs/cantidades-filter'
 import { cn } from '@/lib/utils'
 import RepitenciaFiltering from './inputs/repitencia-filter'
 import CalifParcialesFilter from './inputs/calif-parciales'
-// import ProyeccionFilter from './viejo/proyeccion-filter'
-// import { getStudentsUniqueValues } from '@/app/analisis-academico/utils/dataOperations'
 import CursosFilter from './inputs/cursos-filter'
+import ProyeccionFilter from './inputs/proyeccion-filter'
 
 function FiltersPanel({
   searchParams = {},
@@ -20,8 +19,6 @@ function FiltersPanel({
   data?: Student[]
   className?: string
 }) {
-  // const proyeccionUniqueValues =
-  //   data && getStudentsUniqueValues(data, searchParams, 'proyeccion')
 
   return (
     <ScrollArea
@@ -42,7 +39,7 @@ function FiltersPanel({
         <MateriasFilter searchParams={searchParams} data={data} />
         <CantidadesFilter searchParams={searchParams} data={data} />
         <RepitenciaFiltering searchParams={searchParams} data={data} />
-        {/* <ProyeccionFilter uniqueValues={proyeccionUniqueValues} /> */}
+        <ProyeccionFilter searchParams={searchParams} data={data} />
       </div>
     </ScrollArea>
   )

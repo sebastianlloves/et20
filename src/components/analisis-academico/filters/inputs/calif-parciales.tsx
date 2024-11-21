@@ -1,5 +1,5 @@
 import { ChartCandlestick } from 'lucide-react'
-import Filter from '../filter'
+import Filter from './filter'
 import { TableFilterProps } from './cursos-filter'
 import {
   AGENDA_ANIO_ACTUAL,
@@ -62,8 +62,10 @@ const periodos: {
   },
 ]
 
-function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {  
+function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
   const anio = searchParams.anio || `${ANIO_ACTUAL}`
+  if (anio === '2023') return false
+
   const filterValue = searchParams.califParciales
   const filterData = periodos.find(({ value }) => value === filterValue)
   const filterTags = filterData
@@ -80,8 +82,6 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
         },
       ]
     : []
-
-  if (anio === '2023') return false
 
   return (
     <Filter

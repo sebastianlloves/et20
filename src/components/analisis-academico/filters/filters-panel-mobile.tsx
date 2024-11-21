@@ -9,11 +9,11 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ListFilter } from 'lucide-react'
-import ToggleDB from './toggle-db'
-import SearchBar from './search-bar'
-import FiltersPanel from '../filters-panel'
+import ToggleDB from './inputs/toggle-db'
+import SearchBar from './inputs/search-bar'
+import FiltersPanel from './filters-panel'
 import { Student } from '@/lib/definitions'
-import { SearchParams } from '../../../../app/analisis-academico/page'
+import { SearchParams } from '../../../app/analisis-academico/page'
 
 function FiltersPanelMobile({
   searchParams = {},

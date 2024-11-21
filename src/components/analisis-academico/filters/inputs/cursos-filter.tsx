@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import Filter from '../filter'
+import Filter from './filter'
 
 export interface TableFilterProps {
   searchParams: SearchParams

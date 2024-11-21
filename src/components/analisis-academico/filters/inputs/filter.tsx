@@ -8,7 +8,7 @@ import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { SearchParams } from '@/app/analisis-academico/page'
-import { TagsBox } from './tags-box'
+import { TagsBox } from '../tags-box'
 
 interface FilterProps {
   children: ReactNode | ReactNode[]
