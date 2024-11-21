@@ -24,7 +24,7 @@ function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
         className="block lg:hidden"
       />
       <FiltersPanel searchParams={searchParams} className="hidden lg:block" />
-      <DataTable data={paginatedSkeletonData} />
+      <DataTable skeleton data={paginatedSkeletonData} />
       <TablePagination
         paginationUtils={paginationUtils}
         searchParams={searchParams}

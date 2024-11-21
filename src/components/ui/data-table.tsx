@@ -18,13 +18,18 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { columns } from '@/app/analisis-academico/columns'
 import { useMemo } from 'react'
+import skeletonColumns from '../analisis-academico/skeletons/skeleton-columns'
 
 interface DataTableProps<TData> {
   data: TData[]
+  skeleton?: boolean
 }
 
-function DataTable<TData>({ data }: DataTableProps<TData>) {
-  const columnsTable = useMemo(() => columns as ColumnDef<TData, any>[], [])
+function DataTable<TData>({ data, skeleton }: DataTableProps<TData>) {
+  const columnsTable = useMemo(
+    () => (skeleton ? skeletonColumns : columns) as ColumnDef<TData, any>[],
+    [skeleton],
+  )
   const table = useReactTable({
     data,
     columns: columnsTable,
