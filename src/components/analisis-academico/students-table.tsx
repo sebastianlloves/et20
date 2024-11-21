@@ -3,7 +3,6 @@ import {
   fetchCalificacionesHistoricas,
 } from '@/lib/data'
 import DataTable from '../ui/data-table'
-import { columns } from '../../app/analisis-academico/columns'
 import { SearchParams } from '../../app/analisis-academico/page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
@@ -75,7 +74,7 @@ export default async function StudentsTable({
         data={allData}
         className="hidden lg:block"
       />
-      <DataTable columns={columns} data={paginatedData} />
+      <DataTable data={paginatedData} />
       <TablePagination
         paginationUtils={paginationUtils}
         searchParams={searchParams}

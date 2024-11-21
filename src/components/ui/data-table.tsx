@@ -16,27 +16,23 @@ import {
 } from '@/components/ui/table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
-// import { useState } from 'react'
+import { columns } from '@/app/analisis-academico/columns'
+import { useMemo } from 'react'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData> {
   data: TData[]
 }
 
-function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+function DataTable<TData>({ data }: DataTableProps<TData>) {
+  const columnsTable = useMemo(() => columns as ColumnDef<TData, any>[], [])
   const table = useReactTable({
     data,
-    columns,
+    columns: columnsTable,
     getCoreRowModel: getCoreRowModel(),
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,
   })
-
-  // const [border] = useState(false)
 
   return (
     <ScrollArea className="h-[75dvh] rounded-md border bg-table-body shadow-sm">

@@ -8,7 +8,6 @@ import {
   MAX_BUTTONS_PAGINATION,
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
-import skeletonColumns from './skeleton-columns'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams
@@ -25,7 +24,7 @@ function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
         className="block lg:hidden"
       />
       <FiltersPanel searchParams={searchParams} className="hidden lg:block" />
-      <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
+      <DataTable data={paginatedSkeletonData} />
       <TablePagination
         paginationUtils={paginationUtils}
         searchParams={searchParams}

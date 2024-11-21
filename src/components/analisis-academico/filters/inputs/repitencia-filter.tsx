@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
 import SliderItem from '../slider-item'
-import { getCantRepitenciasString } from '@/app/analisis-academico/utils'
+import { getCantRepitenciasString } from '@/app/analisis-academico/utils/utils'
 import { getNumbersBetween } from '@/lib/utils'
 
 function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
