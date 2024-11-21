@@ -45,7 +45,7 @@ const badgeContent: {
   'Egresa (NO titula)': {
     variant: 'outline',
     className:
-      'gap-x-2.5 px-4 text-destructive/80 border-destructive/60 rounded-lg',
+      'gap-x-2.5 px-4 text-destructive/80 border-destructive/60 rounded-lg dark:border-destructive-2/70 dark:text-destructive-2',
     icon: <GraduationCap strokeWidth="1.6px" className="w-[18px] shrink-0" />,
   },
   'Faltan datos': {

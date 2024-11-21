@@ -44,6 +44,7 @@ module.exports = {
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
+          2: 'hsl(var(--destructive2))',
         },
         success: 'hsl(var(--success))',
         muted: {
@@ -65,6 +66,7 @@ module.exports = {
         table: {
           header: 'hsl(var(--table-header))',
           body: 'hsl(var(--table-body))',
+          hover: 'hsl(var(--table-hover))',
         },
       },
       borderRadius: {

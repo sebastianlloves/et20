@@ -81,7 +81,7 @@ function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="group flex min-h-[86px] bg-inherit px-0 hover:bg-muted"
+                className="group flex min-h-[86px] bg-inherit px-0 hover:bg-table-hover"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
