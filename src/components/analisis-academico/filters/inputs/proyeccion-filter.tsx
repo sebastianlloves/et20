@@ -24,10 +24,10 @@ function ProyeccionFilter({ searchParams, data }: TableFilterProps) {
   const filterTags = filterValue.map((value) => {
     const tagText = value
     const quantity = getQuantity(value, uniqueValues)
-    const newQueryState = {
+    const newQueryState = JSON.stringify({
       ...searchParams,
       proyeccion: updateArrParamState(value, filterValue),
-    }
+    })
     return { value, tagText, quantity, newQueryState }
   })
 
@@ -56,10 +56,10 @@ function ProyeccionFilter({ searchParams, data }: TableFilterProps) {
               <MenuItem
                 value={value}
                 quantity={quantity}
-                newQueryState={{
+                newQueryState={JSON.stringify({
                   ...searchParams,
                   proyeccion: updateArrParamState(value, filterValue),
-                }}
+                })}
                 paramKeys={['proyeccion']}
               />
             </DropdownMenuCheckboxItem>

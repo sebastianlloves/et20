@@ -74,10 +74,10 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
           value: filterData.value,
           tagText: filterData.tagText,
           quantity: null,
-          newQueryState: {
+          newQueryState: JSON.stringify({
             ...searchParams,
             califParciales: undefined,
-          },
+          }),
           className: 'rounded-lg pl-1 bg-primary/15',
         },
       ]
@@ -110,10 +110,10 @@ function CalifParcialesFilter({ searchParams, data }: TableFilterProps) {
             >
               <MenuItem
                 value={itemText}
-                newQueryState={{
+                newQueryState={JSON.stringify({
                   ...searchParams,
                   califParciales: filterValue !== value ? value : undefined,
-                }}
+                })}
                 paramKeys={['califParciales']}
               />
             </DropdownMenuRadioItem>

@@ -12,7 +12,7 @@ export default function MenuItem({
   children,
 }: {
   value?: string
-  newQueryState: SearchParams
+  newQueryState: string
   paramKeys: (keyof SearchParams)[]
   quantity?: number
   children?: ReactNode
@@ -22,7 +22,7 @@ export default function MenuItem({
   return (
     <div
       className="flex w-full items-center justify-between gap-x-4 py-1.5 pl-6 pr-2 sm:gap-x-7 lg:pl-8"
-      onClick={() => updateParams(newQueryState, paramKeys)}
+      onClick={() => updateParams(JSON.parse(newQueryState), paramKeys)}
     >
       {children || (
         <>

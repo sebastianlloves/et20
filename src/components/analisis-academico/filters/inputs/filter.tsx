@@ -18,7 +18,7 @@ interface FilterProps {
   filterTags: {
     value: string
     tagText: string
-    newQueryState: SearchParams
+    newQueryState: string
     quantity?: number | null
     className?: string
   }[]

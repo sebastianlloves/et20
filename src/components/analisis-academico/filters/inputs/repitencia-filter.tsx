@@ -53,10 +53,10 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
   const repAniosTags = repAniosValue.map((value) => {
     const tagText = `Repitió ${value}`
     const quantity = getQuantity(value, aniosUniqueValues)
-    const newQueryState = {
+    const newQueryState = JSON.stringify({
       ...searchParams,
       repitenciaAnios: updateArrParamState(value, repAniosValue),
-    }
+    })
     return { value, tagText, quantity, newQueryState }
   })
 
@@ -67,10 +67,10 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
       getNumbersBetween(repCantValue).map((number) => `cant_${number}`),
       cantUniqueValues,
     ),
-    newQueryState: {
+    newQueryState: JSON.stringify({
       ...searchParams,
       repitenciaCant: undefined,
-    },
+    }),
   }
 
   const filterTags = [...repAniosTags, repCantTag].filter(
@@ -96,10 +96,10 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Repitió ${anio}`}
               quantity={aniosUniqueValues && (aniosUniqueValues.get(anio) ?? 0)}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 repitenciaAnios: updateArrParamState(anio, repAniosValue),
-              }}
+              })}
               paramKeys={['repitenciaAnios']}
             />
           </DropdownMenuCheckboxItem>

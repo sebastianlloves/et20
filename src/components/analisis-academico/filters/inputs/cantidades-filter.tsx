@@ -35,10 +35,10 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       singular: 'troncal',
     }),
     quantity: null,
-    newQueryState: {
+    newQueryState: JSON.stringify({
       ...searchParams,
       cantidadesTroncales: undefined,
-    },
+    }),
   }
   const generalesTag = cantGeneralesValue && {
     value: cantGeneralesValue.join('_'),
@@ -47,10 +47,10 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       singular: 'general',
     }),
     quantity: null,
-    newQueryState: {
+    newQueryState: JSON.stringify({
       ...searchParams,
       cantidadesGenerales: undefined,
-    },
+    }),
   }
   const enProceso2020Tag = cantEnProceso2020Value && {
     value: cantEnProceso2020Value.join('_'),
@@ -59,10 +59,10 @@ function CantidadesFilter({ searchParams, data }: TableFilterProps) {
       singular: 'en Proceso (2020)',
     }),
     quantity: null,
-    newQueryState: {
+    newQueryState: JSON.stringify({
       ...searchParams,
       cantidadesEnProceso2020: undefined,
-    },
+    }),
   }
   const filterTags = [
     troncalesTag,

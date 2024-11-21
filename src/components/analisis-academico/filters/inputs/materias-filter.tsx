@@ -41,7 +41,7 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
     value: strictInclusionValue,
     tagText: 'Inclusión estricta',
     quantity: getQuantity(filterValue[0], uniqueValues),
-    newQueryState: { ...searchParams, inclusionEstricta: undefined },
+    newQueryState: JSON.stringify({ ...searchParams, inclusionEstricta: undefined }),
     className: 'rounded-lg pl-1 bg-primary/15',
   }
   const filterTags = [
@@ -51,10 +51,10 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
       const quantity = strictInclusionValue
         ? null
         : getQuantity(value, uniqueValues)
-      const newQueryState = {
+      const newQueryState = JSON.stringify({
         ...searchParams,
         materias: updateArrParamState(value, filterValue),
-      }
+      })
       return { value, tagText, quantity, newQueryState }
     }),
   ].filter((value) => !!value)
@@ -124,13 +124,13 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                             quantity={
                               uniqueValues && (uniqueValues.get(materia) ?? 0)
                             }
-                            newQueryState={{
+                            newQueryState={JSON.stringify({
                               ...searchParams,
                               materias: updateArrParamState(
                                 materia,
                                 filterValue,
                               ),
-                            }}
+                            })}
                             paramKeys={['materias']}
                           />
                         </DropdownMenuCheckboxItem>
@@ -158,14 +158,14 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                               <MenuItem
                                 value={`TICs`}
                                 quantity={ticsQuantity}
-                                newQueryState={{
+                                newQueryState={JSON.stringify({
                                   ...searchParams,
                                   materias: updateArrParamState(
                                     materiasTICs,
                                     filterValue,
                                     specificAnioValues,
                                   ),
-                                }}
+                                })}
                                 paramKeys={['materias']}
                               />
                             </DropdownMenuRadioItem>
@@ -177,14 +177,14 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                               <MenuItem
                                 value={`Prod. Multimedial`}
                                 quantity={pmQuantity}
-                                newQueryState={{
+                                newQueryState={JSON.stringify({
                                   ...searchParams,
                                   materias: updateArrParamState(
                                     materiasPM,
                                     filterValue,
                                     specificAnioValues,
                                   ),
-                                }}
+                                })}
                                 paramKeys={['materias']}
                               />
                             </DropdownMenuRadioItem>
@@ -201,14 +201,14 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
                         <MenuItem
                           value={`Todos las materias de ${anio}`}
                           quantity={todasQuantity}
-                          newQueryState={{
+                          newQueryState={JSON.stringify({
                             ...searchParams,
                             materias: updateArrParamState(
                               todas,
                               filterValue,
                               specificAnioValues,
                             ),
-                          }}
+                          })}
                           paramKeys={['materias']}
                         />
                       </DropdownMenuCheckboxItem>
@@ -240,10 +240,10 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Ciclo Básico`}
               quantity={cbQuantity}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 materias: updateArrParamState(todasCB, filterValue),
-              }}
+              })}
               paramKeys={['materias']}
             />
           </DropdownMenuRadioItem>
@@ -255,10 +255,10 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`TICs`}
               quantity={ticsQuantity}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 materias: updateArrParamState(todasTICS, filterValue),
-              }}
+              })}
               paramKeys={['materias']}
             />
           </DropdownMenuRadioItem>
@@ -270,10 +270,10 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
             <MenuItem
               value={`Prod. Multimedial`}
               quantity={pmQuantity}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 materias: updateArrParamState(todasPM, filterValue),
-              }}
+              })}
               paramKeys={['materias']}
             />
           </DropdownMenuRadioItem>
@@ -285,13 +285,13 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
           disabled={filterValue.length === 0}
         >
           <MenuItem
-            newQueryState={{
+            newQueryState={JSON.stringify({
               ...searchParams,
               inclusionEstricta: updateArrParamState(
                 'true',
                 strictInclusionValue ? [strictInclusionValue] : [],
               ),
-            }}
+            })}
             paramKeys={['inclusionEstricta']}
           >
             <div className="flex w-full items-center justify-between gap-4 lg:gap-6">

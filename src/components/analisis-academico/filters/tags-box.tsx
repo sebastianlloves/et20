@@ -23,7 +23,7 @@ function TagsBox({
     value: string
     tagText: string
     quantity?: number | null
-    newQueryState: SearchParams
+    newQueryState: string
     className?: string
   }[]
   paramKeys: (keyof SearchParams)[]
@@ -62,7 +62,7 @@ function TagsBox({
                     'max-w-full cursor-pointer justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 py-1 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10 lg:px-2 lg:py-1.5',
                     className,
                   )}
-                  onClick={() => updateParams(newQueryState, paramKeys)}
+                  onClick={() => updateParams(JSON.parse(newQueryState), paramKeys)}
                 >
                   <div className="flex h-full items-center justify-start">
                     <div className="flex items-center justify-between gap-3 px-2 leading-3">

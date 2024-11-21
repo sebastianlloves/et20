@@ -23,16 +23,21 @@ export interface SearchParams {
   sort?: string
 }
 
-export default function Page({ searchParams }: { searchParams: SearchParams }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
+  const awaitedSearchParams = await searchParams
   return (
     <div className="grid w-full grid-rows-[auto_auto_auto] gap-x-6 gap-y-3 px-0 lg:grid-cols-[minmax(230px,1fr)_7fr] lg:px-4 xl:gap-x-8 xl:gap-y-4 2xl:px-8">
       <ToggleDB className="hidden lg:block" />
       <SearchBar className="hidden lg:block" />
       <Suspense
-        key={JSON.stringify(searchParams)}
-        fallback={<SkeletonStudentsTable searchParams={searchParams} />}
+        key={JSON.stringify(awaitedSearchParams)}
+        fallback={<SkeletonStudentsTable searchParams={awaitedSearchParams} />}
       >
-        <StudentsTable searchParams={searchParams} />
+        <StudentsTable searchParams={awaitedSearchParams} />
       </Suspense>
     </div>
   )

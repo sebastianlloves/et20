@@ -35,10 +35,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
   const filterTags = filterValue.map((value) => {
     const tagText = value
     const quantity = getQuantity(value, uniqueValues)
-    const newQueryState = {
+    const newQueryState = JSON.stringify({
       ...searchParams,
       cursos: updateArrParamState(value, filterValue),
-    }
+    })
     return { value, tagText, quantity, newQueryState }
   })
 
@@ -124,10 +124,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                               value={curso}
                               quantity={cursoQuantity}
                               paramKeys={['cursos']}
-                              newQueryState={{
+                              newQueryState={JSON.stringify({
                                 ...searchParams,
                                 cursos: updateArrParamState(curso, filterValue),
-                              }}
+                              })}
                             />
                           </DropdownMenuCheckboxItem>
                         )
@@ -153,14 +153,14 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                             value={`Turno Mañana`}
                             quantity={manianaQuantity}
                             paramKeys={['cursos']}
-                            newQueryState={{
+                            newQueryState={JSON.stringify({
                               ...searchParams,
                               cursos: updateArrParamState(
                                 turnoManiana,
                                 filterValue,
                                 anioFilterValues,
                               ),
-                            }}
+                            })}
                           />
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem
@@ -172,14 +172,14 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                             value={`Turno Tarde`}
                             quantity={tardeQuantity}
                             paramKeys={['cursos']}
-                            newQueryState={{
+                            newQueryState={JSON.stringify({
                               ...searchParams,
                               cursos: updateArrParamState(
                                 turnoTarde,
                                 filterValue,
                                 anioFilterValues,
                               ),
-                            }}
+                            })}
                           />
                         </DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
@@ -206,14 +206,14 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                                 value={`TICs`}
                                 quantity={ticsQuantity}
                                 paramKeys={['cursos']}
-                                newQueryState={{
+                                newQueryState={JSON.stringify({
                                   ...searchParams,
                                   cursos: updateArrParamState(
                                     cursosTICs,
                                     filterValue,
                                     anioFilterValues,
                                   ),
-                                }}
+                                })}
                               />
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem
@@ -225,14 +225,14 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                                 value={`Prod. Multimedial`}
                                 quantity={pmQuantity}
                                 paramKeys={['cursos']}
-                                newQueryState={{
+                                newQueryState={JSON.stringify({
                                   ...searchParams,
                                   cursos: updateArrParamState(
                                     cursosPM,
                                     filterValue,
                                     anioFilterValues,
                                   ),
-                                }}
+                                })}
                               />
                             </DropdownMenuRadioItem>
                           </DropdownMenuRadioGroup>
@@ -248,14 +248,14 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
                           value={`Todos los ${anio.split(' ')[0]}`}
                           quantity={todosQuantity}
                           paramKeys={['cursos']}
-                          newQueryState={{
+                          newQueryState={JSON.stringify({
                             ...searchParams,
                             cursos: updateArrParamState(
                               todos,
                               filterValue,
                               anioFilterValues,
                             ),
-                          }}
+                          })}
                         />
                       </DropdownMenuCheckboxItem>
                     </div>
@@ -287,10 +287,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
               value={`Turno Mañana`}
               quantity={manianaQuantity}
               paramKeys={['cursos']}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 cursos: updateArrParamState(todosManiana, filterValue),
-              }}
+              })}
             />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
@@ -302,10 +302,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
               value={`Turno Tarde`}
               quantity={tardeQuantity}
               paramKeys={['cursos']}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 cursos: updateArrParamState(todosTarde, filterValue),
-              }}
+              })}
             />
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
@@ -331,10 +331,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
               value={`Ciclo Básico`}
               quantity={cbQuantity}
               paramKeys={['cursos']}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 cursos: updateArrParamState(todosCB, filterValue),
-              }}
+              })}
             />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
@@ -346,10 +346,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
               value={`TICs`}
               quantity={ticsQuantity}
               paramKeys={['cursos']}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 cursos: updateArrParamState(todosTICS, filterValue),
-              }}
+              })}
             />
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
@@ -361,10 +361,10 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
               value={`Prod. Multimedial`}
               quantity={pmQuantity}
               paramKeys={['cursos']}
-              newQueryState={{
+              newQueryState={JSON.stringify({
                 ...searchParams,
                 cursos: updateArrParamState(todosPM, filterValue),
-              }}
+              })}
             />
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
