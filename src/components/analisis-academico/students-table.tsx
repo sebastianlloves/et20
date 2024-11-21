@@ -18,6 +18,7 @@ import {
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import { projectCalifActuales } from '@/lib/dataOperations'
+import { columns } from '@/app/analisis-academico/columns'
 
 export default async function StudentsTable({
   searchParams,
@@ -74,7 +75,7 @@ export default async function StudentsTable({
         data={allData}
         className="hidden lg:block"
       />
-      <DataTable data={paginatedData} />
+      <DataTable columns={columns} data={paginatedData} />
       <TablePagination
         paginationUtils={paginationUtils}
         searchParams={searchParams}
