@@ -2,13 +2,13 @@ import FiltersPanel from '../filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
 import FiltersPanelMobile from '../filters/filters-panel-mobile'
 import TablePagination from '../table-pagination'
-import { SearchParams } from '../../../app/analisis-academico/page'
 import { getPagination } from '@/lib/utils'
 import {
   MAX_BUTTONS_PAGINATION,
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import skeletonColumns from './skeleton-columns'
+import { SearchParams } from '../../page'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams

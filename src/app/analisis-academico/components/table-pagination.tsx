@@ -7,7 +7,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { SearchParams } from '../../app/analisis-academico/page'
+import { SearchParams } from '../page'
 
 interface TablePaginationProps {
   paginationUtils: {

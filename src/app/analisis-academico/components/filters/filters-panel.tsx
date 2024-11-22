@@ -1,6 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
-import { SearchParams } from '../../../app/analisis-academico/page'
 import MateriasFilter from './inputs/materias-filter'
 import { Student } from '@/lib/definitions'
 import CantidadesFilter from './inputs/cantidades-filter'
@@ -9,6 +8,7 @@ import RepitenciaFiltering from './inputs/repitencia-filter'
 import CalifParcialesFilter from './inputs/calif-parciales'
 import CursosFilter from './inputs/cursos-filter'
 import ProyeccionFilter from './inputs/proyeccion-filter'
+import { SearchParams } from '../../page'
 
 function FiltersPanel({
   searchParams = {},

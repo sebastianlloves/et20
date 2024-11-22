@@ -2,8 +2,6 @@ import {
   fetchCalificacionesActuales,
   fetchCalificacionesHistoricas,
 } from '@/lib/data'
-import DataTable from '../ui/data-table'
-import { SearchParams } from '../../app/analisis-academico/page'
 import FiltersPanel from './filters/filters-panel'
 import FiltersPanelMobile from './filters/filters-panel-mobile'
 import { getPagination, isValidInstancia } from '@/lib/utils'
@@ -19,6 +17,8 @@ import {
 } from '@/app/analisis-academico/utils/constants'
 import { projectCalifActuales } from '@/lib/dataOperations'
 import { columns } from '@/app/analisis-academico/columns'
+import { SearchParams } from '../page'
+import DataTable from '@/components/ui/data-table'
 
 export default async function StudentsTable({
   searchParams,

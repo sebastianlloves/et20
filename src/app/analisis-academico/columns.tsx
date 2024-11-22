@@ -1,13 +1,13 @@
 'use client'
 
-import ColumnHead from '../../components/analisis-academico/table-content/column-head'
-import ExpandButton from '../../components/analisis-academico/table-content/expand-button'
-import ExpandableRow from '../../components/analisis-academico/table-content/expandable-row'
-import ProyeccionContent from '../../components/analisis-academico/table-content/proyeccion-content'
-import RepitenciaContent from '../../components/analisis-academico/table-content/repitencia-content'
 import { Badge } from '@/components/ui/badge'
 import { Student } from '@/lib/definitions'
 import { ColumnDef, RowData } from '@tanstack/react-table'
+import ExpandButton from './components/table-content/expand-button'
+import ColumnHead from './components/table-content/column-head'
+import ExpandableRow from './components/table-content/expandable-row'
+import RepitenciaContent from './components/table-content/repitencia-content'
+import ProyeccionContent from './components/table-content/proyeccion-content'
 
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line no-unused-vars
@@ -44,7 +44,6 @@ export const columns: ColumnDef<Student>[] = [
         className="text-foreground/80"
       />
     ),
-    enableSorting: false,
     meta: {
       title: 'Expandir',
       width: 'w-[20px] lg:w-[22px] mx-1 md:mx-1.5 lg:mx-2.5 2xl:mx-3',
@@ -63,7 +62,6 @@ export const columns: ColumnDef<Student>[] = [
         {getValue<string>()}
       </Badge>
     ),
-    sortingFn: 'alphanumeric',
     meta: {
       title: 'Curso',
       width: 'w-[45px] lg:w-[55px]',
@@ -90,7 +88,6 @@ export const columns: ColumnDef<Student>[] = [
       stickyProperties:
         'left-[80px] md:left-[89px] lg:left-[115px] 2xl:left-[120px] sticky z-10',
     },
-    sortingFn: 'text',
   },
   {
     id: 'dni',
@@ -117,7 +114,6 @@ export const columns: ColumnDef<Student>[] = [
         iconColor="text-destructive dark:text-red-600/80"
       />
     ),
-    sortingFn: 'basic',
     meta: {
       title: 'Materias Troncales',
       width: 'w-36 lg:w-44',
@@ -134,7 +130,6 @@ export const columns: ColumnDef<Student>[] = [
         iconColor="text-amber-600 dark:text-amber-700"
       />
     ),
-    sortingFn: 'basic',
     size: 190,
     meta: {
       title: 'Materias Generales',
@@ -152,7 +147,6 @@ export const columns: ColumnDef<Student>[] = [
         iconColor="text-slate-500 dark:text-slate-500"
       />
     ),
-    sortingFn: 'basic',
     size: 190,
     meta: {
       title: 'Materias En Proceso (2020)',
@@ -182,6 +176,5 @@ export const columns: ColumnDef<Student>[] = [
       title: 'Proyección',
       width: 'w-[140px] lg:w-[155px]',
     },
-    sortingFn: 'text',
   },
 ]
