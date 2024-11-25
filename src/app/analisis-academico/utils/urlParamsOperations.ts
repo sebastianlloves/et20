@@ -78,6 +78,22 @@ export const formatArrValuesParam = (
   return sortedValues
 }
 
+export const formatArrValues = (
+  param: string,
+  validatingArr?: unknown[],
+  sortingFn?: (a: string, b: string) => number,
+) => {
+  const paramValues = param.split('_')
+  const filterValues = validatingArr
+    ? paramValues.filter((value) => validatingArr.includes(value))
+    : paramValues
+  const sortedValues = sortingFn
+    ? filterValues.sort(sortingFn)
+    : filterValues.sort()
+
+  return sortedValues
+}
+
 export const formatCantValuesParam = (
   param?: string,
   minMaxValidation?: number[],
@@ -85,6 +101,22 @@ export const formatCantValuesParam = (
   const paramValues = param?.split('_').map((value) => Number(value))
   if (paramValues === undefined || paramValues.length !== 2) return undefined
 
+  let minValue = Math.min(...paramValues)
+  let maxValue = Math.max(...paramValues)
+  if (minMaxValidation) {
+    const minValid = Math.min(...minMaxValidation)
+    const maxValid = Math.max(...minMaxValidation)
+    if (minValue < minValid) minValue = minValid
+    if (maxValue > maxValid) maxValue = maxValid
+  }
+  return [minValue, maxValue]
+}
+
+export const formatCantValues = (
+  param: string,
+  minMaxValidation?: number[],
+) => {
+  const paramValues = param.split('_').map((value) => Number(value))
   let minValue = Math.min(...paramValues)
   let maxValue = Math.max(...paramValues)
   if (minMaxValidation) {

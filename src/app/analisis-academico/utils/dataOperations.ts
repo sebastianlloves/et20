@@ -1,10 +1,11 @@
 import { Student } from '@/lib/definitions'
-import { SearchParams } from '../page'
+import { ParamsValues, SearchParams } from '../page'
 import {
   ANIOS_REPETIBLES,
   CURSOS_ITEMS_DATA,
   MATERIAS_ITEMS_DATA,
   PROYECCION_DATA,
+  FILTERS_FNS as FILTERS_FNS2,
 } from './constants'
 import { CARACTER_GRADO } from '@/lib/constants'
 import {
@@ -33,6 +34,28 @@ export function getFilteredStudentData(
   return filteredData
 }
 
+export const getFilteredStudents = (
+  data: Student[],
+  paramsValues: ParamsValues,
+  omitedKeys?: string[],
+) => {
+  const paramsValuesKeys = Object.keys(paramsValues)
+  const filtersFnsKeys = (
+    Object.keys(FILTERS_FNS2) as Array<keyof typeof FILTERS_FNS2>
+  ).filter(
+    (filterFnKey) =>
+      paramsValuesKeys.some((key) => key === filterFnKey) &&
+      !omitedKeys?.includes(filterFnKey),
+  )
+  const filteredStudents = data.filter((student) =>
+    filtersFnsKeys.every((filterFnKey) => {
+      const filterFn = FILTERS_FNS2[filterFnKey]?.filterFn
+      return filterFn ? filterFn(student, paramsValues) : true
+    }),
+  )
+  return filteredStudents
+}
+
 export function getStudentsUniqueValues(
   data: Student[],
   filterParams: Omit<SearchParams, 'anio'>,
@@ -51,6 +74,25 @@ export function getStudentsUniqueValues(
     filterParams,
   )
 
+  return facetedModel
+}
+
+export const getUniqueValues = (
+  allData: Student[],
+  paramsValues: ParamsValues,
+  filterKey: keyof typeof FILTERS_FNS2,
+  omitKeyInFiltering?: boolean,
+) => {
+  const partialFilteredData = getFilteredStudents(
+    allData,
+    paramsValues,
+    omitKeyInFiltering ? undefined : [filterKey],
+  )
+  const uniqueValuesFn = FILTERS_FNS2[filterKey]?.uniqueValuesFn
+  const facetedModel = new Map<any, number>()
+  if (uniqueValuesFn) {
+    uniqueValuesFn(partialFilteredData, facetedModel, paramsValues)
+  }
   return facetedModel
 }
 

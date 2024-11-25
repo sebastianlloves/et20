@@ -8,7 +8,7 @@ import { getPagination, isValidInstancia } from '@/lib/utils'
 import TablePagination from './table-pagination'
 import { ANIO_ACTUAL } from '@/lib/constants'
 import {
-  getFilteredStudentData,
+  getFilteredStudents,
   getSortedData,
 } from '@/app/analisis-academico/utils/dataOperations'
 import {
@@ -17,13 +17,15 @@ import {
 } from '@/app/analisis-academico/utils/constants'
 import { projectCalifActuales } from '@/lib/dataOperations'
 import { columns } from '@/app/analisis-academico/columns'
-import { SearchParams } from '../page'
+import { ParamsValues, SearchParams } from '../page'
 import DataTable from '@/components/ui/data-table'
 
 export default async function StudentsTable({
   searchParams,
+  paramsValues,
 }: {
   searchParams: SearchParams
+  paramsValues: ParamsValues
 }) {
   console.time('fetching + paginación en students-table')
   const {
@@ -31,34 +33,35 @@ export default async function StudentsTable({
     califParciales: califParcialesParam,
     page,
     sort: sortParam,
-    ...filterParams
-  } = searchParams
-  const anio = anioParam || `${ANIO_ACTUAL}`
+  } = paramsValues
+  const anio = (typeof anioParam === 'string' && anioParam) || `${ANIO_ACTUAL}`
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
   let allData
 
-  if (califParcialesParam && isValidInstancia(califParcialesParam)) {
-    // console.time('Tiempo proyeción')
+  if (
+    typeof califParcialesParam === 'string' &&
+    isValidInstancia(califParcialesParam)
+  ) {
     const califActuales = await fetchCalificacionesActuales(anio)
     allData = projectCalifActuales(
       califHistoricas,
       califActuales,
       califParcialesParam,
     )
-    // console.timeEnd('Tiempo proyeción')
   } else allData = califHistoricas
 
   console.time('Tiempo de filtrado')
-  const filteredData = getFilteredStudentData(allData, filterParams)
+  const filteredData = getFilteredStudents(allData, paramsValues)
   console.timeEnd('Tiempo de filtrado')
-  const sortedData = sortParam
-    ? getSortedData(filteredData, sortParam)
-    : filteredData
+  const sortedData =
+    typeof sortParam === 'string'
+      ? getSortedData(filteredData, sortParam)
+      : filteredData
 
   const { paginatedData, ...paginationUtils } = getPagination(
     ROWS_COUNT,
     MAX_BUTTONS_PAGINATION,
-    page,
+    typeof page === 'string' ? page : undefined,
     sortedData,
   )
   console.timeEnd('fetching + paginación en students-table')

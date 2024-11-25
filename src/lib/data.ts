@@ -28,7 +28,7 @@ export async function fetchCalificacionesActuales(
   // data: Student[],
   // cursosFilter?: string[],
 ) {
-  console.time('depuracion')
+  // console.time('depuracion')
   if (!(anio in DB_CALIFICACIONES))
     throw new Error(`No hay datos para el año ${anio}`)
   // Si hay aplicado filtro de cursos, una optimización posible es sólo fetchear las db de esos cursos
@@ -61,13 +61,13 @@ export async function fetchCalificacionesActuales(
       return { url, tags, anioCurso: anioKey[0] }
     },
   )
-  console.timeEnd('depuracion')
+  // console.timeEnd('depuracion')
 
   console.time('Tiempo Promise all')
   const califActuales = await Promise.all(
     fetchingData.map(async ({ url, tags, anioCurso }) => {
-      console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
-      console.time(`fetch tags: ${JSON.stringify(tags)}`)
+      // console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
+      // console.time(`fetch tags: ${JSON.stringify(tags)}`)
       const response = await fetch(url, {
         next: {
           tags: [...tags],
@@ -75,12 +75,12 @@ export async function fetchCalificacionesActuales(
         cache: 'force-cache',
       })
       const text = await response.text()
-      console.timeEnd(`fetch tags: ${JSON.stringify(tags)}`)
+      // console.timeEnd(`fetch tags: ${JSON.stringify(tags)}`)
 
-      console.time(`procesamiento tags: ${JSON.stringify(tags)}`)
+      // console.time(`procesamiento tags: ${JSON.stringify(tags)}`)
       const formatedResponse = formatCalifActualesResponse(text, anioCurso)
-      console.timeEnd(`procesamiento tags: ${JSON.stringify(tags)}`)
-      console.timeEnd(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
+      // console.timeEnd(`procesamiento tags: ${JSON.stringify(tags)}`)
+      // console.timeEnd(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
 
       return formatedResponse
     }),
