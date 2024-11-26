@@ -13,14 +13,16 @@ import ToggleDB from './inputs/toggle-db'
 import SearchBar from './inputs/search-bar'
 import FiltersPanel from './filters-panel'
 import { Student } from '@/lib/definitions'
-import { SearchParams } from '../../page'
+import { ParamsValues, SearchParams } from '../../page'
 
 function FiltersPanelMobile({
   searchParams = {},
+  paramsValues,
   data,
   className,
 }: {
   searchParams?: SearchParams
+  paramsValues: ParamsValues
   data?: Student[]
   className?: string
 }) {
@@ -49,6 +51,7 @@ function FiltersPanelMobile({
               <ToggleDB />
               <SearchBar />
               <FiltersPanel
+                paramsValues={paramsValues}
                 searchParams={searchParams}
                 data={data}
                 className={className}

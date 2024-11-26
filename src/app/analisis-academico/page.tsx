@@ -7,6 +7,7 @@ import { SEARCH_PARAMS_KEYS } from './utils/constants'
 import { formatParamsValues } from './utils/urlParamsOperations'
 
 export type SearchParams = {
+  // eslint-disable-next-line no-unused-vars
   [key in (typeof SEARCH_PARAMS_KEYS)[number]]?: string
 }
 
@@ -24,7 +25,12 @@ export default async function Page({
       <SearchBar className="hidden lg:block" />
       <Suspense
         key={JSON.stringify(awaitedSearchParams)}
-        fallback={<SkeletonStudentsTable searchParams={awaitedSearchParams} />}
+        fallback={
+          <SkeletonStudentsTable
+            paramsValues={paramsValues}
+            searchParams={awaitedSearchParams}
+          />
+        }
       >
         <StudentsTable
           searchParams={awaitedSearchParams}

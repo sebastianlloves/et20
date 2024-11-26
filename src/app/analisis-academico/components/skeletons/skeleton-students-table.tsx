@@ -8,23 +8,32 @@ import {
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import skeletonColumns from './skeleton-columns'
-import { SearchParams } from '../../page'
+import { ParamsValues, SearchParams } from '../../page'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams
+  paramsValues: ParamsValues
 }
 
-function SkeletonStudentsTable({ searchParams }: SkeletonStudentsTableProps) {
+function SkeletonStudentsTable({
+  searchParams,
+  paramsValues,
+}: SkeletonStudentsTableProps) {
   const pageParam = searchParams.page
   const { paginatedData: paginatedSkeletonData, ...paginationUtils } =
     getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, pageParam)
   return (
     <>
       <FiltersPanelMobile
+        paramsValues={paramsValues}
         searchParams={searchParams}
         className="block lg:hidden"
       />
-      <FiltersPanel searchParams={searchParams} className="hidden lg:block" />
+      <FiltersPanel
+        paramsValues={paramsValues}
+        searchParams={searchParams}
+        className="hidden lg:block"
+      />
       <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
       <TablePagination
         paginationUtils={paginationUtils}

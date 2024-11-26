@@ -63,7 +63,6 @@ export async function fetchCalificacionesActuales(
   )
   // console.timeEnd('depuracion')
 
-  console.time('Tiempo Promise all')
   const califActuales = await Promise.all(
     fetchingData.map(async ({ url, tags, anioCurso }) => {
       // console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
@@ -85,6 +84,5 @@ export async function fetchCalificacionesActuales(
       return formatedResponse
     }),
   )
-  console.timeEnd('Tiempo Promise all')
   return califActuales.flat()
 }

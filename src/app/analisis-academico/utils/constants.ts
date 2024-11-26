@@ -115,9 +115,31 @@ export const PROYECCION_DATA = [
   { value: 'Faltan datos' },
 ]
 
+export const columnsIds = [
+  'expand',
+  'curso',
+  'estudiante',
+  'dni',
+  'troncales',
+  'generales',
+  'enProceso2020',
+  'repitencia',
+  'proyeccion',
+]
+
 export const FORMAT_PARAMS_FNS: Partial<
   Record<(typeof SEARCH_PARAMS_KEYS)[number], (param: string) => string[]>
 > = {
+  sort: (param) => {
+    const validatedValues = param.split('_').map((value) => {
+      const [columnIdParam, order] = value.split('-')
+      const validValues =
+        columnsIds.includes(columnIdParam) &&
+        (order === 'asc' || order === 'desc')
+      return validValues ? `${columnIdParam}-${order}` : null
+    })
+    return validatedValues.filter((value) => value !== null)
+  },
   search: (param) => {
     const searchParam = param || ''
     const filterValue = searchParam.split(' ').map((string) =>

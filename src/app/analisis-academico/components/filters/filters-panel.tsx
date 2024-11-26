@@ -7,19 +7,21 @@ import { cn } from '@/lib/utils'
 import RepitenciaFiltering from './inputs/repitencia-filter'
 import CalifParcialesFilter from './inputs/calif-parciales'
 import CursosFilter from './inputs/cursos-filter'
+import { CursosFilter as CursosFilter2 } from './inputs/cursos/cursos-filter'
 import ProyeccionFilter from './inputs/proyeccion-filter'
-import { SearchParams } from '../../page'
+import { ParamsValues, SearchParams } from '../../page'
 
 function FiltersPanel({
   searchParams = {},
+  paramsValues,
   data,
   className,
 }: {
   searchParams?: SearchParams
+  paramsValues: ParamsValues
   data?: Student[]
   className?: string
 }) {
-
   return (
     <ScrollArea
       className={cn(
@@ -40,6 +42,7 @@ function FiltersPanel({
         <CantidadesFilter searchParams={searchParams} data={data} />
         <RepitenciaFiltering searchParams={searchParams} data={data} />
         <ProyeccionFilter searchParams={searchParams} data={data} />
+        <CursosFilter2 paramsValues={paramsValues} />
       </div>
     </ScrollArea>
   )

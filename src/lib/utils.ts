@@ -46,7 +46,7 @@ export const getPagination = (
     }
 
   const lastPage =
-    lastPageParam || Math.ceil((filteredData.length || 1) / rowsCount)
+    Math.ceil((filteredData.length || 1) / rowsCount) || lastPageParam
   const currentPage =
     currentPageParam >= firstPage && currentPageParam <= lastPage
       ? currentPageParam

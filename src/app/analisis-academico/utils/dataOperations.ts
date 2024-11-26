@@ -7,11 +7,37 @@ import {
   PROYECCION_DATA,
   FILTERS_FNS as FILTERS_FNS2,
 } from './constants'
-import { CARACTER_GRADO } from '@/lib/constants'
+import { ANIO_ACTUAL, CARACTER_GRADO } from '@/lib/constants'
 import {
   formatArrValuesParam,
   formatCantValuesParam,
 } from './urlParamsOperations'
+import {
+  fetchCalificacionesActuales,
+  fetchCalificacionesHistoricas,
+} from '@/lib/data'
+import { isValidInstancia } from '@/lib/utils'
+import { projectCalifActuales } from '@/lib/dataOperations'
+
+export const getAllData = async (paramsValues: ParamsValues) => {
+  console.log('clg desde getAllData')
+  const anioParam = paramsValues?.anio
+  const califParcialesParam = paramsValues?.califParciales
+  const anio = (typeof anioParam === 'string' && anioParam) || `${ANIO_ACTUAL}`
+  const califHistoricas = await fetchCalificacionesHistoricas(anio)
+
+  const isActiveCalifParciales =
+    typeof califParcialesParam === 'string' &&
+    isValidInstancia(califParcialesParam)
+  if (!isActiveCalifParciales) return califHistoricas
+
+  const califActuales = await fetchCalificacionesActuales(anio)
+  return projectCalifActuales(
+    califHistoricas,
+    califActuales,
+    califParcialesParam,
+  )
+}
 
 export function getFilteredStudentData(
   data: Student[],
@@ -33,10 +59,11 @@ export function getFilteredStudentData(
   })
   return filteredData
 }
+console.log('clg desde dataOperations')
 
 export const getFilteredStudents = (
   data: Student[],
-  paramsValues: ParamsValues,
+  paramsValues: ParamsValues = {},
   omitedKeys?: string[],
 ) => {
   const paramsValuesKeys = Object.keys(paramsValues)
@@ -96,13 +123,10 @@ export const getUniqueValues = (
   return facetedModel
 }
 
-export const getSortedData = (filteredData: Student[], sortParam: string) => {
-  const columnsParams = sortParam.split('_').map((value) => {
-    const [columnIdParam, order] = value.split('-')
-    return { columnIdParam, order }
-  })
-  const sortData = columnsParams
-    .map(({ columnIdParam, order }) => {
+export const getSortedData = (filteredData: Student[], sortParam: string[]) => {
+  const sortData = sortParam
+    .map((sortValue) => {
+      const [columnIdParam, order] = sortValue.split('-')
       const sortObj = SORTING_FNS.find(
         ({ columnId }) => columnId === columnIdParam,
       )
