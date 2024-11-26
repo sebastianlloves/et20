@@ -1,3 +1,6 @@
+import { ParamsValues, SearchParams } from "../page"
+import { FORMAT_PARAMS_FNS, SEARCH_PARAMS_KEYS } from "./constants"
+
 /* import { SearchParams } from '../page'
 import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
 import { FILTERS_FNS } from './dataOperations'
@@ -26,6 +29,20 @@ export const getFormatedValues = (
   const param = searchParams[key]
   return FORMAT_PARAMS_FNS[key] ? FORMAT_PARAMS_FNS[key](param) : param
 } */
+export function formatParamsValues(searchParams: SearchParams) {
+  const paramsValues: ParamsValues = {}
+  const paramsKeys = Object.keys(searchParams) as Array<keyof SearchParams>
+  paramsKeys.forEach((key) => {
+    const paramValue = searchParams[key]
+    if (SEARCH_PARAMS_KEYS.includes(key) && paramValue) {
+      const formatFn = FORMAT_PARAMS_FNS?.[key]
+      const formatedParam = formatFn ? formatFn(paramValue) : paramValue
+      paramsValues[key] = formatedParam
+    }
+  })
+  return paramsValues
+}
+
 
 export const updateArrParamState = (
   itemValue: string | string[],
