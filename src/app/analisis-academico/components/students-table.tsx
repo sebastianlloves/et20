@@ -23,7 +23,13 @@ export default async function StudentsTable({
   paramsValues: ParamsValues
 }) {
   console.time('fetching + filtrado + sorting + paginación en students-table')
-  const allData = await getAllData(paramsValues)
+  
+  console.time('Tiempo getAllData en students-table')
+  const allData = await getAllData(
+    paramsValues.anio,
+    paramsValues.califParciales,
+  )
+  console.timeEnd('Tiempo getAllData en students-table')
 
   console.time('Tiempo de filtrado')
   const filteredData = getFilteredStudents(allData, paramsValues)
@@ -48,13 +54,13 @@ export default async function StudentsTable({
       <FiltersPanelMobile
         paramsValues={paramsValues}
         searchParams={searchParams}
-        data={allData}
+        allData={allData}
         className="block lg:hidden"
       />
       <FiltersPanel
         paramsValues={paramsValues}
         searchParams={searchParams}
-        data={allData}
+        allData={allData}
         className="hidden lg:block"
       />
       <DataTable columns={columns} data={paginatedData} />

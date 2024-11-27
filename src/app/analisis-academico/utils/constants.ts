@@ -30,30 +30,30 @@ export const CURSOS_ITEMS_DATA = (
   Object.keys(CURSOS) as Array<keyof typeof CURSOS>
 ).map((anio) => {
   const todos = CURSOS[anio].map(({ curso }) => curso)
-  const turnoManiana = CURSOS[anio]
+  const maniana = CURSOS[anio]
     .filter(({ turno }) => turno === 'Mañana')
     .map(({ curso }) => curso)
-  const turnoTarde = CURSOS[anio]
+  const tarde = CURSOS[anio]
     .filter(({ turno }) => turno === 'Tarde')
     .map(({ curso }) => curso)
-  const cursosCB = CURSOS[anio]
+  const cb = CURSOS[anio]
     .filter(({ orientacion }) => orientacion === 'Ciclo Básico')
     .map(({ curso }) => curso)
-  const cursosTICs = CURSOS[anio]
+  const tics = CURSOS[anio]
     .filter(({ orientacion }) => orientacion === 'TICs')
     .map(({ curso }) => curso)
-  const cursosPM = CURSOS[anio]
+  const pm = CURSOS[anio]
     .filter(({ orientacion }) => orientacion === 'Producción Multimedial')
     .map(({ curso }) => curso)
 
   return {
     anio,
     todos,
-    turnoManiana,
-    turnoTarde,
-    cursosCB,
-    cursosTICs,
-    cursosPM,
+    maniana,
+    tarde,
+    cb,
+    tics,
+    pm,
   }
 })
 

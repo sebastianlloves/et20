@@ -19,16 +19,16 @@ import {
 import { isValidInstancia } from '@/lib/utils'
 import { projectCalifActuales } from '@/lib/dataOperations'
 
-export const getAllData = async (paramsValues: ParamsValues) => {
-  console.log('clg desde getAllData')
-  const anioParam = paramsValues?.anio
-  const califParcialesParam = paramsValues?.califParciales
+export const getAllData = async (
+  anioParam?: string | string[],
+  califParcialesParam?: string | string[],
+) => {
   const anio = (typeof anioParam === 'string' && anioParam) || `${ANIO_ACTUAL}`
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
-
+  
   const isActiveCalifParciales =
-    typeof califParcialesParam === 'string' &&
-    isValidInstancia(califParcialesParam)
+  typeof califParcialesParam === 'string' &&
+  isValidInstancia(califParcialesParam)
   if (!isActiveCalifParciales) return califHistoricas
 
   const califActuales = await fetchCalificacionesActuales(anio)

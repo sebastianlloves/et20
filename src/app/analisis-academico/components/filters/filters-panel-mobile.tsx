@@ -18,12 +18,12 @@ import { ParamsValues, SearchParams } from '../../page'
 function FiltersPanelMobile({
   searchParams = {},
   paramsValues,
-  data,
+  allData,
   className,
 }: {
   searchParams?: SearchParams
   paramsValues: ParamsValues
-  data?: Student[]
+  allData?: Student[]
   className?: string
 }) {
   return (
@@ -53,7 +53,7 @@ function FiltersPanelMobile({
               <FiltersPanel
                 paramsValues={paramsValues}
                 searchParams={searchParams}
-                data={data}
+                allData={allData}
                 className={className}
               />
             </div>

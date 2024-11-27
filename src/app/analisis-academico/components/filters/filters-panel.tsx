@@ -6,7 +6,7 @@ import CantidadesFilter from './inputs/cantidades-filter'
 import { cn } from '@/lib/utils'
 import RepitenciaFiltering from './inputs/repitencia-filter'
 import CalifParcialesFilter from './inputs/calif-parciales'
-import CursosFilter from './inputs/cursos-filter'
+// import CursosFilter from './inputs/cursos-filter'
 import { CursosFilter as CursosFilter2 } from './inputs/cursos/cursos-filter'
 import ProyeccionFilter from './inputs/proyeccion-filter'
 import { ParamsValues, SearchParams } from '../../page'
@@ -14,12 +14,12 @@ import { ParamsValues, SearchParams } from '../../page'
 function FiltersPanel({
   searchParams = {},
   paramsValues,
-  data,
+  allData,
   className,
 }: {
   searchParams?: SearchParams
   paramsValues: ParamsValues
-  data?: Student[]
+  allData?: Student[]
   className?: string
 }) {
   return (
@@ -37,12 +37,12 @@ function FiltersPanel({
           </h4>
         </div>
         <CalifParcialesFilter searchParams={searchParams} />
-        <CursosFilter searchParams={searchParams} data={data} />
-        <MateriasFilter searchParams={searchParams} data={data} />
-        <CantidadesFilter searchParams={searchParams} data={data} />
-        <RepitenciaFiltering searchParams={searchParams} data={data} />
-        <ProyeccionFilter searchParams={searchParams} data={data} />
-        <CursosFilter2 paramsValues={paramsValues} />
+        {/* <CursosFilter searchParams={searchParams} data={allData} /> */}
+        <MateriasFilter searchParams={searchParams} data={allData} />
+        <CantidadesFilter searchParams={searchParams} data={allData} />
+        <RepitenciaFiltering searchParams={searchParams} data={allData} />
+        <ProyeccionFilter searchParams={searchParams} data={allData} />
+        <CursosFilter2 paramsValues={paramsValues} allData={allData} />
       </div>
     </ScrollArea>
   )
