@@ -8,6 +8,7 @@ export default function useParamsState() {
     newQueryState: T,
     paramKeys: (keyof T)[],
   ) {
+    console.time('updateParams')
     paramKeys.forEach((key) => {
       const value = newQueryState[key]
       value === undefined
@@ -16,6 +17,7 @@ export default function useParamsState() {
     })
     if (searchParams.has('page')) searchParams.delete('page')
     replace(`${pathname}?${searchParams.toString()}`)
+    console.timeEnd('updateParams')
   }
 
   return { pathname, searchParams, replace, updateParams }
@@ -26,6 +28,7 @@ export function useStateInUrl() {
   const newSearchParams = new URLSearchParams()
   const { replace } = useRouter()
   function updateSearchParams<T extends {}>(newParamsValues: T) {
+    console.time('useStateInUrl')
     const paramsKeys = Object.keys(newParamsValues) as Array<
       Extract<keyof T, string>
     >
@@ -40,7 +43,8 @@ export function useStateInUrl() {
         newSearchParams.set(paramKey, paramValue)
       if (newSearchParams.has('page')) newSearchParams.delete('page')
       replace(`${pathname}?${newSearchParams.toString()}`)
+      console.timeEnd('useStateInUrl')
     })
-  }  
+  }
   return { pathname, newSearchParams, replace, updateSearchParams }
 }

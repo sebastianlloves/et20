@@ -1,5 +1,6 @@
-export function isValidKey<T extends {}>(
+export function isKeyOfObject<T extends {}>(
   key: string,
+  object: T,
 ): key is Extract<keyof T, string> {
-  return key in ({} as T)
+  return object[key as keyof T] !== undefined
 }

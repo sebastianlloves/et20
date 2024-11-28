@@ -1,5 +1,5 @@
-import { ParamsValues, SearchParams } from "../page"
-import { FORMAT_PARAMS_FNS, SEARCH_PARAMS_KEYS } from "./constants"
+import { ParamsValues, SearchParams } from '../page'
+import { FORMAT_PARAMS_FNS, SEARCH_PARAMS_KEYS } from './constants'
 
 /* import { SearchParams } from '../page'
 import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
@@ -43,13 +43,13 @@ export function formatParamsValues(searchParams: SearchParams) {
   return paramsValues
 }
 
-
 export const updateArrParamState = (
   itemValue: string | string[],
-  filterValue: string[],
+  filterValue?: string | string[],
   partialAlterableArr?: string[],
   sortingFn?: (a: string, b: string) => number,
 ) => {
+  if (!filterValue || typeof filterValue === 'string') return filterValue
   let newState: string[]
   if (typeof itemValue === 'string') {
     const alreadyIsInFilter = filterValue.includes(itemValue)

@@ -14,7 +14,7 @@ import MenuItem from '../menu-item'
 import { useStateInUrl } from '@/hooks/useParamsState'
 import { type ParamsValues } from '@/app/analisis-academico/page'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
-import { isValidKey } from '@/lib/typeGuards'
+import { isKeyOfObject } from '@/lib/typeGuards'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 type itemData = {
@@ -28,19 +28,18 @@ type GroupValues<T extends string> = Record<T, itemData>
 interface CursosFilterContentProps {
   filterValue: string[]
   paramsValues: ParamsValues
-  uniqueValues?: Map<any, number>
-  cursosAnioData: ({
+  cursosAnioData: {
     anio: string
-    anioFilterValues: string[]
-    cursosData: itemData[]
-  } & GroupValues<'maniana' | 'tarde' | 'tics' | 'pm' | 'todos'>)[]
+    partialFilterValues: string[]
+    cursosAnioItems: itemData[]
+    anioGroupItems: GroupValues<'maniana' | 'tarde' | 'tics' | 'pm' | 'todos'>
+  }[]
   todosValuesData: GroupValues<'maniana' | 'tarde' | 'cb' | 'tics' | 'pm'>
 }
 
 export function CursosFilterContent({
   filterValue,
   paramsValues,
-  uniqueValues,
   cursosAnioData,
   todosValuesData,
 }: CursosFilterContentProps) {
@@ -50,16 +49,9 @@ export function CursosFilterContent({
   return (
     <div className="text-xs lg:text-sm">
       {cursosAnioData.map((anioData) => {
-        const {
-          anio,
-          anioFilterValues,
-          cursosData,
-          maniana,
-          tarde,
-          tics,
-          pm,
-          todos,
-        } = anioData
+        const { anio, partialFilterValues, cursosAnioItems, anioGroupItems } =
+          anioData
+        const { maniana, tarde, tics, pm, todos } = anioGroupItems
         return (
           <DropdownMenuSub key={anio}>
             <DropdownMenuSubTrigger className="pl-3">
@@ -71,7 +63,7 @@ export function CursosFilterContent({
                   <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
                     Específicos
                   </DropdownMenuLabel>
-                  {cursosData.map(({ value, isSelected, quantity }) => (
+                  {cursosAnioItems.map(({ value, isSelected, quantity }) => (
                     <DropdownMenuCheckboxItem
                       key={`${value}`}
                       className="cursor-pointer"
@@ -101,20 +93,14 @@ export function CursosFilterContent({
                       undefined
                     }
                     onValueChange={(groupKey) => {
-                      if (
-                        isValidKey<
-                          GroupValues<
-                            'maniana' | 'tarde' | 'tics' | 'pm' | 'todos'
-                          >
-                        >(groupKey)
-                      ) {
-                        const values = anioData[groupKey].value
+                      if (isKeyOfObject(groupKey, anioGroupItems)) {
+                        const values = anioGroupItems[groupKey].value
                         const newParamsValues = {
                           ...paramsValues,
                           cursos: updateArrParamState(
                             values,
                             filterValue,
-                            anioFilterValues,
+                            partialFilterValues,
                           ),
                         }
                         updateSearchParams(newParamsValues)
@@ -142,6 +128,78 @@ export function CursosFilterContent({
                       />
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
+
+                  {tics.value.length > 0 && pm.value.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator className="mx-1 bg-muted-foreground/10" />
+                      <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+                        Orientación
+                      </DropdownMenuLabel>
+                      <DropdownMenuRadioGroup
+                        value={
+                          (!todos.isSelected &&
+                            ((tics.isSelected && 'tics') ||
+                              (pm.isSelected && 'pm'))) ||
+                          undefined
+                        }
+                        onValueChange={(groupKey) => {
+                          if (isKeyOfObject(groupKey, anioGroupItems)) {
+                            const values = anioGroupItems[groupKey].value
+                            const newParamsValues = {
+                              ...paramsValues,
+                              cursos: updateArrParamState(
+                                values,
+                                filterValue,
+                                partialFilterValues,
+                              ),
+                            }
+                            updateSearchParams(newParamsValues)
+                          }
+                        }}
+                      >
+                        <DropdownMenuRadioItem
+                          value="tics"
+                          className="cursor-pointer"
+                          disabled={tics.quantity === 0 && !tics.isSelected}
+                        >
+                          <MenuItem value={`TICs`} quantity={tics.quantity} />
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem
+                          value="pm"
+                          className="cursor-pointer"
+                          disabled={pm.quantity === 0 && !pm.isSelected}
+                        >
+                          <MenuItem
+                            value={`Prod. Multimedial`}
+                            quantity={pm.quantity}
+                          />
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </>
+                  )}
+
+                  <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+                  <DropdownMenuCheckboxItem
+                    className="cursor-pointer font-medium text-foreground/80"
+                    disabled={todos.quantity === 0 && !todos.isSelected}
+                    checked={todos.isSelected}
+                    onCheckedChange={() => {
+                      const newParamsValues = {
+                        ...paramsValues,
+                        cursos: updateArrParamState(
+                          todos.value,
+                          filterValue,
+                          partialFilterValues,
+                        ),
+                      }
+                      updateSearchParams(newParamsValues)
+                    }}
+                  >
+                    <MenuItem
+                      value={`Todos los ${anio.split(' ')[0]}`}
+                      quantity={todos.quantity}
+                    />
+                  </DropdownMenuCheckboxItem>
                 </div>
               </ScrollArea>
             </DropdownMenuSubContent>
@@ -161,7 +219,7 @@ export function CursosFilterContent({
           undefined
         }
         onValueChange={(groupKey) => {
-          if (isValidKey<typeof todosValuesData>(groupKey)) {
+          if (isKeyOfObject(groupKey, todosValuesData)) {
             const values = todosValuesData[groupKey].value
             const newParamsValues = {
               ...paramsValues,
@@ -193,13 +251,13 @@ export function CursosFilterContent({
       </DropdownMenuLabel>
       <DropdownMenuRadioGroup
         value={
-          (cb.isSelected && 'CB') ||
-          (tics.isSelected && 'TICs') ||
-          (pm.isSelected && 'PM') ||
+          (cb.isSelected && 'cb') ||
+          (tics.isSelected && 'tics') ||
+          (pm.isSelected && 'pm') ||
           undefined
         }
         onValueChange={(groupKey) => {
-          if (isValidKey<typeof todosValuesData>(groupKey)) {
+          if (isKeyOfObject(groupKey, todosValuesData)) {
             const values = todosValuesData[groupKey].value
             const newParamsValues = {
               ...paramsValues,
@@ -210,21 +268,21 @@ export function CursosFilterContent({
         }}
       >
         <DropdownMenuRadioItem
-          value="CB"
+          value="cb"
           className="cursor-pointer"
           disabled={cb.quantity === 0 && !cb.isSelected}
         >
           <MenuItem value={`Ciclo Básico`} quantity={cb.quantity} />
         </DropdownMenuRadioItem>
         <DropdownMenuRadioItem
-          value="TICs"
+          value="tics"
           className="cursor-pointer"
           disabled={tics.quantity === 0 && !tics.isSelected}
         >
           <MenuItem value={`TICs`} quantity={tics.quantity} />
         </DropdownMenuRadioItem>
         <DropdownMenuRadioItem
-          value="PM"
+          value="pm"
           className="cursor-pointer"
           disabled={pm.quantity === 0 && !pm.isSelected}
         >

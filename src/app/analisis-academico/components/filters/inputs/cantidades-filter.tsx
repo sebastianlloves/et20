@@ -2,13 +2,13 @@ import {
   FILTERS_FNS,
   // getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
-import { TableFilterProps } from './cursos-filter'
 // import { getQuantity } from '@/app/analisis-academico/utils/urlParamsOperations'
 import Filter from './filter'
 import { Calculator } from 'lucide-react'
 import SliderItem from '../slider-item'
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { formatCantValuesParam } from '@/app/analisis-academico/utils/urlParamsOperations'
+import { TableFilterProps } from '@/app/analisis-academico/utils/definitions'
 
 function CantidadesFilter({ searchParams, data }: TableFilterProps) {
   /* const uniqueValues =

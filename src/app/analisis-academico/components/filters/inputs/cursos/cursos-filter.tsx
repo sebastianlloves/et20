@@ -6,9 +6,10 @@ import {
 } from '@/app/analisis-academico/utils/dataOperations'
 import { Users } from 'lucide-react'
 import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
-import Filter from '../filter'
 import { CursosFilterContent } from './cursos-filter-content'
 import { Student } from '@/lib/definitions'
+import FilterInput from '../filter-input'
+import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
 
 const GROUP_VALUES_KEYS: Array<
   keyof Omit<(typeof CURSOS_ITEMS_DATA)[number], 'anio'>
@@ -36,7 +37,7 @@ export async function CursosFilter({
   const todosCursosData = { maniana, tarde, cb, tics, pm }
 
   const cursosAnioData = CURSOS_ITEMS_DATA.map((anioData) => {
-    const anioFilterValues = filterValue.filter(
+    const partialFilterValues = filterValue.filter(
       (curso) => curso[0] === anioData.anio[0],
     )
     const [maniana, tarde, tics, pm, todos] = GROUP_VALUES_KEYS.filter(
@@ -45,36 +46,42 @@ export async function CursosFilter({
       const groupCursos = anioData[key]
       const groupData = getGrupalItemData(
         groupCursos,
-        anioFilterValues,
+        partialFilterValues,
         uniqueValues,
       )
       return { ...groupData, value: groupCursos }
     })
-    const cursosData = anioData.todos.map((curso) => {
+    const cursosAnioItems = anioData.todos.map((curso) => {
       const quantity = getQuantity(curso, uniqueValues)
       const isSelected = filterValue.includes(curso)
       return { value: curso, quantity, isSelected }
     })
     return {
       anio: anioData.anio,
-      anioFilterValues,
-      cursosData,
-      maniana,
-      tarde,
-      tics,
-      pm,
-      todos,
+      partialFilterValues,
+      cursosAnioItems,
+      anioGroupItems: {
+        maniana,
+        tarde,
+        tics,
+        pm,
+        todos,
+      },
     }
   })
 
   const filterTags = filterValue.map((value) => {
     const tagText = value
     const quantity = getQuantity(value, uniqueValues)
-    return { value, tagText, quantity, newQueryState: '' }
+    const removeTagState = {
+      ...paramsValues,
+      cursos: updateArrParamState(value, filterValue),
+    }
+    return { value, tagText, quantity, removeTagState }
   })
 
   return (
-    <Filter
+    <FilterInput
       title="Cursos"
       maxTags={3}
       icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
@@ -84,11 +91,10 @@ export async function CursosFilter({
       <CursosFilterContent
         filterValue={filterValue}
         paramsValues={paramsValues}
-        uniqueValues={uniqueValues}
         cursosAnioData={cursosAnioData}
         todosValuesData={todosCursosData}
       />
-    </Filter>
+    </FilterInput>
   )
 }
 

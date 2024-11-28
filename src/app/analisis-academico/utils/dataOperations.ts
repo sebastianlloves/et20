@@ -59,7 +59,6 @@ export function getFilteredStudentData(
   })
   return filteredData
 }
-console.log('clg desde dataOperations')
 
 export const getFilteredStudents = (
   data: Student[],

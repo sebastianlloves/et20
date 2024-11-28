@@ -1,4 +1,4 @@
-import { SearchParams } from '@/app/analisis-academico/page'
+/* import { SearchParams } from '@/app/analisis-academico/page'
 import {
   FILTERS_FNS,
   getGrupalItemData,
@@ -373,4 +373,4 @@ function CursosFilter({ searchParams, data }: TableFilterProps) {
   )
 }
 
-export default CursosFilter
+export default CursosFilter */

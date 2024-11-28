@@ -3,7 +3,6 @@ import {
   getQuantity,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
-import { TableFilterProps } from './cursos-filter'
 import Filter from './filter'
 import { FastForward } from 'lucide-react'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
@@ -13,6 +12,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
+import { TableFilterProps } from '@/app/analisis-academico/utils/definitions'
 
 function ProyeccionFilter({ searchParams, data }: TableFilterProps) {
   const uniqueValues =

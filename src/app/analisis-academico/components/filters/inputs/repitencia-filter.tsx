@@ -3,7 +3,6 @@ import {
   getQuantity,
   getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
-import { TableFilterProps } from './cursos-filter'
 import Filter from './filter'
 import { IterationCcw } from 'lucide-react'
 // import { detectServerOrClientSide } from '@/lib/utils'
@@ -17,6 +16,7 @@ import MenuItem from '../menu-item'
 import SliderItem from '../slider-item'
 import { getCantRepitenciasString } from '@/app/analisis-academico/utils/utils'
 import { getNumbersBetween } from '@/lib/utils'
+import { TableFilterProps } from '@/app/analisis-academico/utils/definitions'
 
 function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
   // detectServerOrClientSide('RepitenciaFilter2')

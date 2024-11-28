@@ -1,6 +1,5 @@
 import { ChartCandlestick } from 'lucide-react'
 import Filter from './filter'
-import { TableFilterProps } from './cursos-filter'
 import {
   AGENDA_ANIO_ACTUAL,
   ANIO_ACTUAL,
@@ -14,6 +13,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
+import { TableFilterProps } from '@/app/analisis-academico/utils/definitions'
 
 const periodos: {
   itemText: string

@@ -1,6 +1,5 @@
 import { Book } from 'lucide-react'
 import Filter from './filter'
-import { TableFilterProps } from './cursos-filter'
 import {
   FILTERS_FNS,
   getGrupalItemData,
@@ -24,6 +23,7 @@ import MenuItem from '../menu-item'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { TableFilterProps } from '@/app/analisis-academico/utils/definitions'
 
 function MateriasFilter({ searchParams, data }: TableFilterProps) {
   const uniqueValues =
