@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { ParamsValues } from '@/app/analisis-academico/page'
 import {
   getGrupalItemData,
