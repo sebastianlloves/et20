@@ -12,10 +12,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
 import { useStateInUrl } from '@/hooks/useParamsState'
-import { type ParamsValues } from '@/app/analisis-academico/page'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { isKeyOfObject } from '@/lib/typeGuards'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { AllFiltersValues } from '@/app/analisis-academico/utils/definitions'
 
 type itemData = {
   value: string[] | string
@@ -27,7 +27,7 @@ type GroupValues<T extends string> = Record<T, itemData>
 
 interface CursosFilterContentProps {
   filterValue: string[]
-  paramsValues: ParamsValues
+  allFiltersValues: AllFiltersValues
   cursosAnioData: {
     anio: string
     partialFilterValues: string[]
@@ -39,7 +39,7 @@ interface CursosFilterContentProps {
 
 export function CursosFilterContent({
   filterValue,
-  paramsValues,
+  allFiltersValues,
   cursosAnioData,
   todosValuesData,
 }: CursosFilterContentProps) {
@@ -71,7 +71,7 @@ export function CursosFilterContent({
                       checked={isSelected}
                       onCheckedChange={() => {
                         const newParamsValues = {
-                          ...paramsValues,
+                          ...allFiltersValues,
                           cursos: updateArrParamState(value, filterValue),
                         }
                         updateSearchParams(newParamsValues)
@@ -96,7 +96,7 @@ export function CursosFilterContent({
                       if (isKeyOfObject(groupKey, anioGroupItems)) {
                         const values = anioGroupItems[groupKey].value
                         const newParamsValues = {
-                          ...paramsValues,
+                          ...allFiltersValues,
                           cursos: updateArrParamState(
                             values,
                             filterValue,
@@ -146,7 +146,7 @@ export function CursosFilterContent({
                           if (isKeyOfObject(groupKey, anioGroupItems)) {
                             const values = anioGroupItems[groupKey].value
                             const newParamsValues = {
-                              ...paramsValues,
+                              ...allFiltersValues,
                               cursos: updateArrParamState(
                                 values,
                                 filterValue,
@@ -185,7 +185,7 @@ export function CursosFilterContent({
                     checked={todos.isSelected}
                     onCheckedChange={() => {
                       const newParamsValues = {
-                        ...paramsValues,
+                        ...allFiltersValues,
                         cursos: updateArrParamState(
                           todos.value,
                           filterValue,
@@ -222,7 +222,7 @@ export function CursosFilterContent({
           if (isKeyOfObject(groupKey, todosValuesData)) {
             const values = todosValuesData[groupKey].value
             const newParamsValues = {
-              ...paramsValues,
+              ...allFiltersValues,
               cursos: updateArrParamState(values, filterValue),
             }
             updateSearchParams(newParamsValues)
@@ -260,7 +260,7 @@ export function CursosFilterContent({
           if (isKeyOfObject(groupKey, todosValuesData)) {
             const values = todosValuesData[groupKey].value
             const newParamsValues = {
-              ...paramsValues,
+              ...allFiltersValues,
               cursos: updateArrParamState(values, filterValue),
             }
             updateSearchParams(newParamsValues)

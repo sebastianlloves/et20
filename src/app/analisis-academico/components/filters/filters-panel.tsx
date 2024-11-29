@@ -9,16 +9,16 @@ import CalifParcialesFilter from './inputs/calif-parciales'
 // import CursosFilter from './inputs/cursos-filter'
 import { CursosFilter as CursosFilter2 } from './inputs/cursos/cursos-filter'
 import ProyeccionFilter from './inputs/proyeccion-filter'
-import { ParamsValues, SearchParams } from '../../page'
+import { AllFiltersValues, SearchParams } from '../../utils/definitions'
 
 function FiltersPanel({
   searchParams = {},
-  paramsValues,
+  allFiltersValues,
   allData,
   className,
 }: {
   searchParams?: SearchParams
-  paramsValues: ParamsValues
+  allFiltersValues: AllFiltersValues
   allData?: Student[]
   className?: string
 }) {
@@ -42,7 +42,7 @@ function FiltersPanel({
         <CantidadesFilter searchParams={searchParams} data={allData} />
         <RepitenciaFiltering searchParams={searchParams} data={allData} />
         <ProyeccionFilter searchParams={searchParams} data={allData} />
-        <CursosFilter2 paramsValues={paramsValues} allData={allData} />
+        <CursosFilter2 allFiltersValues={allFiltersValues} allData={allData} />
       </div>
     </ScrollArea>
   )

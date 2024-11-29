@@ -1,8 +1,8 @@
 import { CURSOS, MATERIAS_POR_CURSO } from '@/lib/constants'
-import { ParamsValues } from '../page'
 import { Student } from '@/lib/definitions'
 import { formatArrValues, formatCantValues } from './urlParamsOperations'
 import { getUniqueValues } from './dataOperations'
+import { AllFiltersValues } from './definitions'
 
 export const SEARCH_PARAMS_KEYS = [
   'anio',
@@ -127,9 +127,9 @@ export const columnsIds = [
   'proyeccion',
 ]
 
-export const FORMAT_PARAMS_FNS: Partial<
-  Record<(typeof SEARCH_PARAMS_KEYS)[number], (param: string) => string[]>
-> = {
+export const FORMAT_PARAMS_FNS: {
+  [key in keyof AllFiltersValues]?: (param: string) => AllFiltersValues[key]
+} = {
   sort: (param) => {
     const validatedValues = param.split('_').map((value) => {
       const [columnIdParam, order] = value.split('-')
@@ -162,31 +162,31 @@ export const FORMAT_PARAMS_FNS: Partial<
       MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
       FILTERS_FNS.materias?.sortParam,
     ),
-  cantidadesTroncales: (param) =>
-    formatCantValues(param).map((value) => `${value}`),
-  cantidadesGenerales: (param) =>
-    formatCantValues(param).map((value) => `${value}`),
-  cantidadesEnProceso2020: (param) =>
-    formatCantValues(param).map((value) => `${value}`),
+  cantidadesTroncales: (param) => formatCantValues(param),
+  cantidadesGenerales: (param) => formatCantValues(param),
+  cantidadesEnProceso2020: (param) => formatCantValues(param),
   proyeccion: (param) =>
     formatArrValues(
       param,
       PROYECCION_DATA.map(({ value }) => value),
     ),
   repitenciaAnios: (param) => formatArrValues(param, ANIOS_REPETIBLES),
-  repitenciaCant: (param) => formatCantValues(param).map((value) => `${value}`),
+  repitenciaCant: (param) => formatCantValues(param),
 }
 
 export const FILTERS_FNS: Partial<
   Record<
-    (typeof SEARCH_PARAMS_KEYS)[number],
+    keyof AllFiltersValues,
     {
       sortParam?: (valueA: string, valueB: string) => number
-      filterFn: (student: Student, paramsValues: ParamsValues) => boolean
+      filterFn: (
+        student: Student,
+        allFiltersValues: AllFiltersValues,
+      ) => boolean
       uniqueValuesFn?: (
         filteredData: Student[],
         facetedModel: Map<string, number>,
-        paramsValues: ParamsValues,
+        allFiltersValues: AllFiltersValues,
       ) => void
       getMinMaxCant?: (data: Student[]) => number[]
     }
@@ -294,7 +294,7 @@ export const FILTERS_FNS: Partial<
       })
     },
     getMinMaxCant: (data) => {
-      const uniqueValues = getUniqueValues(data, {}, 'cantidadesTroncales')
+      const uniqueValues = getUniqueValues({}, 'cantidadesTroncales', data)
       const values = Array.from(uniqueValues.entries()).map((value) =>
         Number(value),
       )
@@ -324,7 +324,7 @@ export const FILTERS_FNS: Partial<
       })
     },
     getMinMaxCant: (data) => {
-      const uniqueValues = getUniqueValues(data, {}, 'cantidadesGenerales')
+      const uniqueValues = getUniqueValues({}, 'cantidadesGenerales', data)
       const values = Array.from(uniqueValues.entries()).map((value) =>
         Number(value),
       )
@@ -356,7 +356,7 @@ export const FILTERS_FNS: Partial<
       })
     },
     getMinMaxCant: (data) => {
-      const uniqueValues = getUniqueValues(data, {}, 'cantidadesEnProceso2020')
+      const uniqueValues = getUniqueValues({}, 'cantidadesEnProceso2020', data)
       const values = Array.from(uniqueValues.entries()).map((value) =>
         Number(value),
       )
@@ -421,7 +421,7 @@ export const FILTERS_FNS: Partial<
       })
     },
     getMinMaxCant(data) {
-      const uniqueValues = getUniqueValues(data, {}, 'repitenciaCant')
+      const uniqueValues = getUniqueValues({}, 'repitenciaCant', data)
       const values = Array.from(uniqueValues.entries()).map((value) =>
         Number(value),
       )

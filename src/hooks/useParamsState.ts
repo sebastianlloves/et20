@@ -27,20 +27,21 @@ export function useStateInUrl() {
   const pathname = usePathname()
   const newSearchParams = new URLSearchParams()
   const { replace } = useRouter()
-  function updateSearchParams<T extends {}>(newParamsValues: T) {
+  function updateSearchParams<T extends {}>(newFiltersValues: T) {
     console.time('useStateInUrl')
-    const paramsKeys = Object.keys(newParamsValues) as Array<
+    const filtersKeys = Object.keys(newFiltersValues) as Array<
       Extract<keyof T, string>
     >
-    paramsKeys.forEach((paramKey) => {
-      const paramValue = newParamsValues[paramKey]
+    filtersKeys.forEach((filterKey) => {
+      const paramValue = newFiltersValues[filterKey]
+      if(!paramValue) newSearchParams.delete(filterKey)
       if (Array.isArray(paramValue)) {
         paramValue.length > 0
-          ? newSearchParams.set(paramKey, paramValue.join('_'))
-          : newSearchParams.delete(paramKey)
+          ? newSearchParams.set(filterKey, paramValue.join('_'))
+          : newSearchParams.delete(filterKey)
       }
       if (typeof paramValue === 'string')
-        newSearchParams.set(paramKey, paramValue)
+        newSearchParams.set(filterKey, paramValue)
       if (newSearchParams.has('page')) newSearchParams.delete('page')
       replace(`${pathname}?${newSearchParams.toString()}`)
       console.timeEnd('useStateInUrl')

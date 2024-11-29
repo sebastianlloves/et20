@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ParamsValues } from '@/app/analisis-academico/page'
 import { useStateInUrl } from '@/hooks/useParamsState'
+import { AllFiltersValues } from '@/app/analisis-academico/utils/definitions'
 
 function TagsBox({
   tags,
@@ -20,9 +21,9 @@ function TagsBox({
   maxTags,
 }: {
   tags: {
-    value: string | string[]
+    value?: string | string[] | number[]
     tagText: string
-    removeTagState: ParamsValues
+    removeTagState: AllFiltersValues
     quantity?: number | null
     className?: string
   }[]

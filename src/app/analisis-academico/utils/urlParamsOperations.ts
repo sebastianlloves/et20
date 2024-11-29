@@ -1,5 +1,5 @@
-import { ParamsValues, SearchParams } from '../page'
-import { FORMAT_PARAMS_FNS, SEARCH_PARAMS_KEYS } from './constants'
+import { FORMAT_PARAMS_FNS } from './constants'
+import { AllFiltersValues, SearchParams } from './definitions'
 
 /* import { SearchParams } from '../page'
 import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
@@ -30,17 +30,17 @@ export const getFormatedValues = (
   return FORMAT_PARAMS_FNS[key] ? FORMAT_PARAMS_FNS[key](param) : param
 } */
 export function formatParamsValues(searchParams: SearchParams) {
-  const paramsValues: ParamsValues = {}
-  const paramsKeys = Object.keys(searchParams) as Array<keyof SearchParams>
+  const allFiltersValues: AllFiltersValues = {}
+  const paramsKeys = Object.keys(searchParams) as Array<keyof AllFiltersValues>
   paramsKeys.forEach((key) => {
     const paramValue = searchParams[key]
-    if (SEARCH_PARAMS_KEYS.includes(key) && paramValue) {
+    if (paramValue) {
       const formatFn = FORMAT_PARAMS_FNS?.[key]
       const formatedParam = formatFn ? formatFn(paramValue) : paramValue
-      paramsValues[key] = formatedParam
+      allFiltersValues[key] = formatedParam as (string & string[] & number[])
     }
   })
-  return paramsValues
+  return allFiltersValues
 }
 
 export const updateArrParamState = (
@@ -76,7 +76,7 @@ export const updateArrParamState = (
       : [...unalterablePartialArr, ...itemValue]
   }
   const sortedNewState = sortingFn ? newState.sort(sortingFn) : newState.sort()
-  return sortedNewState.length ? sortedNewState.join('_') : undefined
+  return sortedNewState.length ? sortedNewState : undefined
 }
 
 export const formatArrValuesParam = (

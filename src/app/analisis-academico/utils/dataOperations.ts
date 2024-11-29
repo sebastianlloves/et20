@@ -1,5 +1,4 @@
 import { Student } from '@/lib/definitions'
-import { ParamsValues, SearchParams } from '../page'
 import {
   ANIOS_REPETIBLES,
   CURSOS_ITEMS_DATA,
@@ -18,6 +17,7 @@ import {
 } from '@/lib/data'
 import { isValidInstancia } from '@/lib/utils'
 import { projectCalifActuales } from '@/lib/dataOperations'
+import { AllFiltersValues, SearchParams } from './definitions'
 
 export const getAllData = async (
   anioParam?: string | string[],
@@ -62,21 +62,21 @@ export function getFilteredStudentData(
 
 export const getFilteredStudents = (
   data: Student[],
-  paramsValues: ParamsValues = {},
+  allFiltersValues: AllFiltersValues = {},
   omitedKeys?: string[],
 ) => {
-  const paramsValuesKeys = Object.keys(paramsValues)
+  const filtersValuesKeys = Object.keys(allFiltersValues)
   const filtersFnsKeys = (
     Object.keys(FILTERS_FNS2) as Array<keyof typeof FILTERS_FNS2>
   ).filter(
     (filterFnKey) =>
-      paramsValuesKeys.some((key) => key === filterFnKey) &&
+      filtersValuesKeys.some((key) => key === filterFnKey) &&
       !omitedKeys?.includes(filterFnKey),
   )
   const filteredStudents = data.filter((student) =>
     filtersFnsKeys.every((filterFnKey) => {
       const filterFn = FILTERS_FNS2[filterFnKey]?.filterFn
-      return filterFn ? filterFn(student, paramsValues) : true
+      return filterFn ? filterFn(student, allFiltersValues) : true
     }),
   )
   return filteredStudents
@@ -104,21 +104,21 @@ export function getStudentsUniqueValues(
 }
 
 export const getUniqueValues = (
-  paramsValues: ParamsValues,
+  allFiltersValues: AllFiltersValues,
   filterKey: keyof typeof FILTERS_FNS2,
   allData?: Student[],
   omitKeyInFiltering?: boolean,
 ) => {
   const facetedModel = new Map<any, number>()
-  if(!allData) return facetedModel
+  if (!allData) return facetedModel
   const partialFilteredData = getFilteredStudents(
     allData,
-    paramsValues,
+    allFiltersValues,
     omitKeyInFiltering ? undefined : [filterKey],
   )
   const uniqueValuesFn = FILTERS_FNS2[filterKey]?.uniqueValuesFn
   if (uniqueValuesFn) {
-    uniqueValuesFn(partialFilteredData, facetedModel, paramsValues)
+    uniqueValuesFn(partialFilteredData, facetedModel, allFiltersValues)
   }
   return facetedModel
 }

@@ -1,6 +1,5 @@
 import FiltersPanel from '../filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
-import FiltersPanelMobile from '../filters/filters-responsive-wrapper'
 import TablePagination from '../table-pagination'
 import { getPagination } from '@/lib/utils'
 import {
@@ -8,29 +7,31 @@ import {
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import skeletonColumns from './skeleton-columns'
-import { ParamsValues, SearchParams } from '../../page'
+import { AllFiltersValues, SearchParams } from '../../utils/definitions'
+import FiltersResponsiveWrapper from '../filters/filters-responsive-wrapper'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams
-  paramsValues: ParamsValues
+  allFiltersValues: AllFiltersValues
 }
 
 function SkeletonStudentsTable({
   searchParams,
-  paramsValues,
+  allFiltersValues,
 }: SkeletonStudentsTableProps) {
   const pageParam = searchParams.page
   const { paginatedData: paginatedSkeletonData, ...paginationUtils } =
     getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, pageParam)
   return (
     <>
-      <FiltersPanelMobile
-        paramsValues={paramsValues}
-        searchParams={searchParams}
-        className="block lg:hidden"
-      />
+      <FiltersResponsiveWrapper className="block lg:hidden">
+        <FiltersPanel
+          allFiltersValues={allFiltersValues}
+          searchParams={searchParams}
+        />
+      </FiltersResponsiveWrapper>
       <FiltersPanel
-        paramsValues={paramsValues}
+        allFiltersValues={allFiltersValues}
         searchParams={searchParams}
         className="hidden lg:block"
       />

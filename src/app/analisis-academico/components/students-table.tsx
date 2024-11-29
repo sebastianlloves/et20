@@ -12,37 +12,37 @@ import {
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import { columns } from '@/app/analisis-academico/columns'
-import { ParamsValues, SearchParams } from '../page'
 import DataTable from '@/components/ui/data-table'
+import { AllFiltersValues, SearchParams } from '../utils/definitions'
 
 export default async function StudentsTable({
   searchParams,
-  paramsValues,
+  allFiltersValues,
 }: {
   searchParams: SearchParams
-  paramsValues: ParamsValues
+  allFiltersValues: AllFiltersValues
 }) {
   console.time('fetching + filtrado + sorting + paginación en students-table')
 
   console.time('Tiempo getAllData en students-table')
   const allData = await getAllData(
-    paramsValues.anio,
-    paramsValues.califParciales,
+    allFiltersValues.anio,
+    allFiltersValues.califParciales,
   )
   console.timeEnd('Tiempo getAllData en students-table')
 
   console.time('Tiempo de filtrado')
-  const filteredData = getFilteredStudents(allData, paramsValues)
+  const filteredData = getFilteredStudents(allData, allFiltersValues)
   console.timeEnd('Tiempo de filtrado')
 
-  const sortedData = Array.isArray(paramsValues.sort)
-    ? getSortedData(filteredData, paramsValues.sort)
+  const sortedData = Array.isArray(allFiltersValues.sort)
+    ? getSortedData(filteredData, allFiltersValues.sort)
     : filteredData
 
   const { paginatedData, ...paginationUtils } = getPagination(
     ROWS_COUNT,
     MAX_BUTTONS_PAGINATION,
-    typeof paramsValues.page === 'string' ? paramsValues.page : undefined,
+    typeof allFiltersValues.page === 'string' ? allFiltersValues.page : undefined,
     sortedData,
   )
   console.timeEnd(
@@ -53,13 +53,13 @@ export default async function StudentsTable({
     <>
       <FiltersResponsiveWrapper className="block lg:hidden">
         <FiltersPanel
-          paramsValues={paramsValues}
+          allFiltersValues={allFiltersValues}
           searchParams={searchParams}
           allData={allData}
         />
       </FiltersResponsiveWrapper>
       <FiltersPanel
-        paramsValues={paramsValues}
+        allFiltersValues={allFiltersValues}
         searchParams={searchParams}
         allData={allData}
         className="hidden lg:block"

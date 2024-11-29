@@ -1,6 +1,5 @@
 import 'server-only'
 
-import { ParamsValues } from '@/app/analisis-academico/page'
 import {
   getGrupalItemData,
   getQuantity,
@@ -12,23 +11,22 @@ import { CursosFilterContent } from './cursos-filter-content'
 import { Student } from '@/lib/definitions'
 import FilterInput from '../filter-input'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
+import { AllFiltersValues } from '@/app/analisis-academico/utils/definitions'
+import { TagsBox } from '../../tags/tags-box'
 
 const GROUP_VALUES_KEYS: Array<
   keyof Omit<(typeof CURSOS_ITEMS_DATA)[number], 'anio'>
 > = ['maniana', 'tarde', 'cb', 'tics', 'pm', 'todos']
 
 export async function CursosFilter({
-  paramsValues = {},
+  allFiltersValues = {},
   allData,
 }: {
-  paramsValues: ParamsValues
+  allFiltersValues: AllFiltersValues
   allData?: Student[]
 }) {
-  const uniqueValues = getUniqueValues(paramsValues, 'cursos', allData)
-  const filterValue =
-    !paramsValues.cursos || typeof paramsValues.cursos === 'string'
-      ? []
-      : paramsValues.cursos
+  const uniqueValues = getUniqueValues(allFiltersValues, 'cursos', allData)
+  const filterValue = allFiltersValues.cursos || []
 
   const [maniana, tarde, cb, tics, pm] = GROUP_VALUES_KEYS.map((key) => {
     const todosCursos = CURSOS_ITEMS_DATA.flatMap((data) => data[key])
@@ -75,27 +73,30 @@ export async function CursosFilter({
     const tagText = value
     const quantity = getQuantity(value, uniqueValues)
     const removeTagState = {
-      ...paramsValues,
+      ...allFiltersValues,
       cursos: updateArrParamState(value, filterValue),
     }
     return { value, tagText, quantity, removeTagState }
   })
 
   return (
-    <FilterInput
-      title="Cursos"
-      maxTags={3}
-      icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
-      filterTags={filterTags}
-      paramKeys={['cursos']}
-    >
-      <CursosFilterContent
-        filterValue={filterValue}
-        paramsValues={paramsValues}
-        cursosAnioData={cursosAnioData}
-        todosValuesData={todosCursosData}
+    <div className="w-full rounded-md border">
+      <FilterInput
+        title="Cursos"
+        icon={<Users strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
+        content={
+          <CursosFilterContent
+            filterValue={filterValue}
+            allFiltersValues={allFiltersValues}
+            cursosAnioData={cursosAnioData}
+            todosValuesData={todosCursosData}
+          />
+        }
       />
-    </FilterInput>
+      {filterTags.length > 0 && (
+        <TagsBox tags={filterTags} maxTags={3} paramKeys={[]} />
+      )}
+    </div>
   )
 }
 

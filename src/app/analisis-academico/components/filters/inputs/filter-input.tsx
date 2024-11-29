@@ -7,34 +7,20 @@ import {
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ReactNode } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ParamsValues } from '@/app/analisis-academico/page'
-import { TagsBox } from '../tags/tags-box'
 
 interface FilterProps {
-  children: ReactNode | ReactNode[]
+  content: ReactNode | ReactNode[]
   title: string
-  maxTags: number
   icon?: ReactNode
-  filterTags: {
-    value: string | string[]
-    tagText: string
-    removeTagState: ParamsValues
-    quantity?: number | null
-    className?: string
-  }[]
-  paramKeys: (keyof ParamsValues)[]
 }
 
 function FilterInput({
-  children,
+  content,
   title,
-  maxTags,
   icon,
-  filterTags,
-  paramKeys,
 }: FilterProps) {
   return (
-    <div className="w-full rounded-md border text-xs lg:text-sm">
+    <div className="text-xs lg:text-sm">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -62,15 +48,11 @@ function FilterInput({
         >
           <ScrollArea className="pr-1">
             <div className="max-h-[calc(var(--radix-dropdown-menu-content-available-height)-20px)] sm:max-h-[80vh]">
-              {children}
+              {content}
             </div>
           </ScrollArea>
         </DropdownMenuContent>
-      </DropdownMenu>
-
-      {filterTags.length > 0 && (
-        <TagsBox tags={filterTags} maxTags={maxTags} paramKeys={paramKeys} />
-      )}
+      </DropdownMenu>      
     </div>
   )
 }
