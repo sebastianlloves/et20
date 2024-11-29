@@ -1,5 +1,5 @@
 import FiltersPanel from './filters/filters-panel'
-import FiltersPanelMobile from './filters/filters-panel-mobile'
+import FiltersResponsiveWrapper from './filters/filters-responsive-wrapper'
 import { getPagination } from '@/lib/utils'
 import TablePagination from './table-pagination'
 import {
@@ -23,7 +23,7 @@ export default async function StudentsTable({
   paramsValues: ParamsValues
 }) {
   console.time('fetching + filtrado + sorting + paginación en students-table')
-  
+
   console.time('Tiempo getAllData en students-table')
   const allData = await getAllData(
     paramsValues.anio,
@@ -51,12 +51,13 @@ export default async function StudentsTable({
 
   return (
     <>
-      <FiltersPanelMobile
-        paramsValues={paramsValues}
-        searchParams={searchParams}
-        allData={allData}
-        className="block lg:hidden"
-      />
+      <FiltersResponsiveWrapper className="block lg:hidden">
+        <FiltersPanel
+          paramsValues={paramsValues}
+          searchParams={searchParams}
+          allData={allData}
+        />
+      </FiltersResponsiveWrapper>
       <FiltersPanel
         paramsValues={paramsValues}
         searchParams={searchParams}

@@ -24,8 +24,7 @@ export async function CursosFilter({
   paramsValues: ParamsValues
   allData?: Student[]
 }) {
-  const uniqueValues =
-    allData && getUniqueValues(allData, paramsValues, 'cursos')
+  const uniqueValues = getUniqueValues(paramsValues, 'cursos', allData)
   const filterValue =
     !paramsValues.cursos || typeof paramsValues.cursos === 'string'
       ? []

@@ -11,23 +11,18 @@ import {
 import { ListFilter } from 'lucide-react'
 import ToggleDB from './inputs/toggle-db'
 import SearchBar from './inputs/search-bar'
-import FiltersPanel from './filters-panel'
-import { Student } from '@/lib/definitions'
-import { ParamsValues, SearchParams } from '../../page'
+import { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
 
-function FiltersPanelMobile({
-  searchParams = {},
-  paramsValues,
-  allData,
-  className,
+function FiltersResponsiveWrapper({
+  children,
+  className
 }: {
-  searchParams?: SearchParams
-  paramsValues: ParamsValues
-  allData?: Student[]
+  children: ReactNode
   className?: string
 }) {
   return (
-    <div className="flex gap-x-3 lg:hidden">
+    <div className={cn("flex gap-x-3", className)}>
       <Sheet>
         <SheetTrigger asChild>
           <Button size="sm" className="justify-start gap-x-2">
@@ -50,12 +45,7 @@ function FiltersPanelMobile({
             <div className="flex flex-col gap-10">
               <ToggleDB />
               <SearchBar />
-              <FiltersPanel
-                paramsValues={paramsValues}
-                searchParams={searchParams}
-                allData={allData}
-                className={className}
-              />
+              {children}
             </div>
           </ScrollArea>
         </SheetContent>
@@ -64,4 +54,4 @@ function FiltersPanelMobile({
   )
 }
 
-export default FiltersPanelMobile
+export default FiltersResponsiveWrapper

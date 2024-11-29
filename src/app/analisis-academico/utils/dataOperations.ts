@@ -104,18 +104,19 @@ export function getStudentsUniqueValues(
 }
 
 export const getUniqueValues = (
-  allData: Student[],
   paramsValues: ParamsValues,
   filterKey: keyof typeof FILTERS_FNS2,
+  allData?: Student[],
   omitKeyInFiltering?: boolean,
 ) => {
+  const facetedModel = new Map<any, number>()
+  if(!allData) return facetedModel
   const partialFilteredData = getFilteredStudents(
     allData,
     paramsValues,
     omitKeyInFiltering ? undefined : [filterKey],
   )
   const uniqueValuesFn = FILTERS_FNS2[filterKey]?.uniqueValuesFn
-  const facetedModel = new Map<any, number>()
   if (uniqueValuesFn) {
     uniqueValuesFn(partialFilteredData, facetedModel, paramsValues)
   }
