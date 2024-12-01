@@ -51,13 +51,7 @@ function TagsBox({
 
           <div className="mt-0.5 flex flex-wrap justify-start gap-1.5 overflow-hidden lg:mt-1">
             {tags.map(
-              ({
-                value,
-                tagText,
-                removeTagState,
-                quantity,
-                className,
-              }) => {
+              ({ value, tagText, removeTagState, quantity, className }) => {
                 return (
                   <Badge
                     key={`${value}`}

@@ -1,23 +1,23 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
-import MateriasFilter from './inputs/materias-filter'
-import { Student } from '@/lib/definitions'
-import CantidadesFilter from './inputs/cantidades-filter'
 import { cn } from '@/lib/utils'
-import RepitenciaFiltering from './inputs/repitencia-filter'
-import CalifParcialesFilter from './inputs/calif-parciales'
+import { Student } from '@/lib/definitions'
+// import MateriasFilter from './inputs/materias-filter'
+// import CantidadesFilter from './inputs/cantidades-filter'
+// import RepitenciaFiltering from './inputs/repitencia-filter'
+// import CalifParcialesFilter from './inputs/calif-parciales'
 // import CursosFilter from './inputs/cursos-filter'
+// import ProyeccionFilter from './inputs/proyeccion-filter'
 import { CursosFilter as CursosFilter2 } from './inputs/cursos/cursos-filter'
-import ProyeccionFilter from './inputs/proyeccion-filter'
-import { AllFiltersValues, SearchParams } from '../../utils/definitions'
+import { AllFiltersValues /* , SearchParams */ } from '../../utils/definitions'
 
 function FiltersPanel({
-  searchParams = {},
+  // searchParams = {},
   allFiltersValues,
   allData,
   className,
 }: {
-  searchParams?: SearchParams
+  // searchParams?: SearchParams
   allFiltersValues: AllFiltersValues
   allData?: Student[]
   className?: string
@@ -36,12 +36,12 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
-        <CalifParcialesFilter searchParams={searchParams} />
+        {/* <CalifParcialesFilter searchParams={searchParams} /> */}
         {/* <CursosFilter searchParams={searchParams} data={allData} /> */}
-        <MateriasFilter searchParams={searchParams} data={allData} />
-        <CantidadesFilter searchParams={searchParams} data={allData} />
-        <RepitenciaFiltering searchParams={searchParams} data={allData} />
-        <ProyeccionFilter searchParams={searchParams} data={allData} />
+        {/* <MateriasFilter searchParams={searchParams} data={allData} /> */}
+        {/* <CantidadesFilter searchParams={searchParams} data={allData} /> */}
+        {/* <RepitenciaFiltering searchParams={searchParams} data={allData} /> */}
+        {/* <ProyeccionFilter searchParams={searchParams} data={allData} /> */}
         <CursosFilter2 allFiltersValues={allFiltersValues} allData={allData} />
       </div>
     </ScrollArea>

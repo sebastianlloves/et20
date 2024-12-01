@@ -41,7 +41,10 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
     value: strictInclusionValue,
     tagText: 'Inclusión estricta',
     quantity: getQuantity(filterValue[0], uniqueValues),
-    newQueryState: JSON.stringify({ ...searchParams, inclusionEstricta: undefined }),
+    newQueryState: JSON.stringify({
+      ...searchParams,
+      inclusionEstricta: undefined,
+    }),
     className: 'rounded-lg pl-1 bg-primary/15',
   }
   const filterTags = [

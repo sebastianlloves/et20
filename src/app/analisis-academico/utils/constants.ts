@@ -141,8 +141,7 @@ export const FORMAT_PARAMS_FNS: {
     return validatedValues.filter((value) => value !== null)
   },
   search: (param) => {
-    const searchParam = param || ''
-    const filterValue = searchParam.split(' ').map((string) =>
+    const filterValue = param.split(' ').map((string) =>
       string
         .trim()
         .toLowerCase()
@@ -277,14 +276,9 @@ export const FILTERS_FNS: Partial<
     filterFn: (student, paramsValues) => {
       const cantStudent = student.troncales.cantidad
       const filterValue = paramsValues.cantidadesTroncales
-      if (
-        cantStudent === null ||
-        filterValue === undefined ||
-        typeof filterValue === 'string'
-      )
-        return true
-      const minValue = Number(filterValue[0])
-      const maxValue = Number(filterValue[1])
+      if (cantStudent === null || filterValue === undefined) return true
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
       return cantStudent >= minValue && cantStudent <= maxValue
     },
     uniqueValuesFn: (filteredData, facetedModel) => {
@@ -307,14 +301,9 @@ export const FILTERS_FNS: Partial<
     filterFn: (student, paramsValues) => {
       const cantStudent = student.generales.cantidad
       const filterValue = paramsValues.cantidadesGenerales
-      if (
-        cantStudent === null ||
-        filterValue === undefined ||
-        typeof filterValue === 'string'
-      )
-        return true
-      const minValue = Number(filterValue[0])
-      const maxValue = Number(filterValue[1])
+      if (cantStudent === null || filterValue === undefined) return true
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
       return cantStudent >= minValue && cantStudent <= maxValue
     },
     uniqueValuesFn: (filteredData, facetedModel) => {
@@ -341,12 +330,11 @@ export const FILTERS_FNS: Partial<
       if (
         cantStudent === null ||
         filterValue === undefined ||
-        typeof filterValue === 'string' ||
         hideEnProceso2020
       )
         return true
-      const minValue = Number(filterValue[0])
-      const maxValue = Number(filterValue[1])
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
       return cantStudent >= minValue && cantStudent <= maxValue
     },
     uniqueValuesFn: (filteredData, facetedModel) => {
@@ -368,8 +356,7 @@ export const FILTERS_FNS: Partial<
   proyeccion: {
     filterFn(student, paramsValues) {
       const filterValue = paramsValues.proyeccion
-      if (filterValue === undefined || typeof filterValue === 'string')
-        return true
+      if (filterValue === undefined) return true
       return filterValue.some((value) => student.proyeccion === value)
     },
     uniqueValuesFn(filteredData, facetedModel) {
@@ -382,8 +369,7 @@ export const FILTERS_FNS: Partial<
   repitenciaAnios: {
     filterFn(student, paramsValues) {
       const filterValue = paramsValues.repitenciaAnios
-      if (filterValue === undefined || typeof filterValue === 'string')
-        return true
+      if (filterValue === undefined) return true
       return student.repitencia.some((anioRepetido) =>
         filterValue.includes(anioRepetido),
       )
@@ -403,12 +389,12 @@ export const FILTERS_FNS: Partial<
   repitenciaCant: {
     filterFn(student, paramsValues) {
       const filterValue = paramsValues.repitenciaCant
-      if (filterValue === undefined || typeof filterValue === 'string')
-        return true
-      const min = Number(filterValue[0])
-      const max = Number(filterValue[1])
+      if (filterValue === undefined) return true
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
       return (
-        student.repitencia.length >= min && student.repitencia.length <= max
+        student.repitencia.length >= minValue &&
+        student.repitencia.length <= maxValue
       )
     },
     uniqueValuesFn(filteredData, facetedModel) {

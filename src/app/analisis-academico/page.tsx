@@ -28,7 +28,7 @@ export default async function Page({
         }
       >
         <StudentsTable
-          searchParams={awaitedSearchParams}
+          // searchParams={awaitedSearchParams}
           allFiltersValues={allFiltersValues}
         />
       </Suspense>
