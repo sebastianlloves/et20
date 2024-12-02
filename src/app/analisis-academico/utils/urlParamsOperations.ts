@@ -1,5 +1,6 @@
-import { FORMAT_PARAMS_FNS } from './constants'
-import { AllFiltersValues, SearchParams } from './definitions'
+import { isKeyOfObject } from '@/lib/typeGuards'
+import { FILTERS_FNS, FORMAT_PARAMS_FNS } from './constants'
+import { AllFiltersValues, FiltersValues, SearchParams } from './definitions'
 
 /* import { SearchParams } from '../page'
 import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
@@ -29,15 +30,16 @@ export const getFormatedValues = (
   const param = searchParams[key]
   return FORMAT_PARAMS_FNS[key] ? FORMAT_PARAMS_FNS[key](param) : param
 } */
-export function formatParamsValues(searchParams: SearchParams) {
-  const allFiltersValues: AllFiltersValues = {}
-  const paramsKeys = Object.keys(searchParams) as Array<keyof AllFiltersValues>
+export function getFiltersValues(searchParams: SearchParams) {
+  const allFiltersValues: FiltersValues = {}
+  const paramsKeys = Object.keys(searchParams) as Array<keyof SearchParams>
   paramsKeys.forEach((key) => {
     const paramValue = searchParams[key]
     if (paramValue) {
-      const formatFn = FORMAT_PARAMS_FNS?.[key]
+      const formatFn =
+        isKeyOfObject(key, FILTERS_FNS) && FILTERS_FNS[key].formatParam
       const formatedParam = formatFn ? formatFn(paramValue) : paramValue
-      allFiltersValues[key] = formatedParam as (string & string[] & number[])
+      allFiltersValues[key] = formatedParam as string & string[] & number[]
     }
   })
   return allFiltersValues

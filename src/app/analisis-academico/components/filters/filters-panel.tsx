@@ -9,7 +9,7 @@ import { Student } from '@/lib/definitions'
 // import CursosFilter from './inputs/cursos-filter'
 // import ProyeccionFilter from './inputs/proyeccion-filter'
 import { CursosFilter as CursosFilter2 } from './inputs/cursos/cursos-filter'
-import { AllFiltersValues /* , SearchParams */ } from '../../utils/definitions'
+import { FiltersValues} from '../../utils/definitions'
 
 function FiltersPanel({
   // searchParams = {},
@@ -18,7 +18,7 @@ function FiltersPanel({
   className,
 }: {
   // searchParams?: SearchParams
-  allFiltersValues: AllFiltersValues
+  allFiltersValues: FiltersValues
   allData?: Student[]
   className?: string
 }) {

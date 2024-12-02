@@ -1,23 +1,13 @@
 import { Student } from '@/lib/definitions'
-import {
-  ANIOS_REPETIBLES,
-  CURSOS_ITEMS_DATA,
-  MATERIAS_ITEMS_DATA,
-  PROYECCION_DATA,
-  FILTERS_FNS as FILTERS_FNS2,
-} from './constants'
+import { columnsIds, FILTERS_FNS } from './constants'
 import { ANIO_ACTUAL, CARACTER_GRADO } from '@/lib/constants'
-import {
-  formatArrValuesParam,
-  formatCantValuesParam,
-} from './urlParamsOperations'
 import {
   fetchCalificacionesActuales,
   fetchCalificacionesHistoricas,
 } from '@/lib/data'
 import { isValidInstancia } from '@/lib/utils'
 import { projectCalifActuales } from '@/lib/dataOperations'
-import { AllFiltersValues, SearchParams } from './definitions'
+import { FiltersValues, SearchParams } from './definitions'
 
 export const getAllData = async (
   anioParam?: string | string[],
@@ -25,10 +15,10 @@ export const getAllData = async (
 ) => {
   const anio = (typeof anioParam === 'string' && anioParam) || `${ANIO_ACTUAL}`
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
-  
+
   const isActiveCalifParciales =
-  typeof califParcialesParam === 'string' &&
-  isValidInstancia(califParcialesParam)
+    typeof califParcialesParam === 'string' &&
+    isValidInstancia(califParcialesParam)
   if (!isActiveCalifParciales) return califHistoricas
 
   const califActuales = await fetchCalificacionesActuales(anio)
@@ -39,7 +29,7 @@ export const getAllData = async (
   )
 }
 
-export function getFilteredStudentData(
+/* export function getFilteredStudentData(
   data: Student[],
   filterParams: SearchParams = {},
   omitedKey?: string,
@@ -58,16 +48,18 @@ export function getFilteredStudentData(
     )
   })
   return filteredData
-}
+} */
 
 export const getFilteredStudents = (
   data: Student[],
-  allFiltersValues: AllFiltersValues = {},
+  filtersValues: FiltersValues = {},
   omitedKeys?: string[],
 ) => {
-  const filtersValuesKeys = Object.keys(allFiltersValues)
+  const filtersValuesKeys = Object.keys(filtersValues) as Array<
+    keyof FiltersValues
+  >
   const filtersFnsKeys = (
-    Object.keys(FILTERS_FNS2) as Array<keyof typeof FILTERS_FNS2>
+    Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>
   ).filter(
     (filterFnKey) =>
       filtersValuesKeys.some((key) => key === filterFnKey) &&
@@ -75,14 +67,14 @@ export const getFilteredStudents = (
   )
   const filteredStudents = data.filter((student) =>
     filtersFnsKeys.every((filterFnKey) => {
-      const filterFn = FILTERS_FNS2[filterFnKey]?.filterFn
-      return filterFn ? filterFn(student, allFiltersValues) : true
+      const filterFn = FILTERS_FNS[filterFnKey].filterFn
+      return filterFn(student, filtersValues)
     }),
   )
   return filteredStudents
 }
 
-export function getStudentsUniqueValues(
+/* export function getStudentsUniqueValues(
   data: Student[],
   filterParams: Omit<SearchParams, 'anio'>,
   filterKey: keyof typeof FILTERS_FNS,
@@ -101,30 +93,55 @@ export function getStudentsUniqueValues(
   )
 
   return facetedModel
+} */
+
+export const getUniqueValuesModel = (
+  filtersValues: FiltersValues = {},
+  allData?: Student[],
+) => {
+  if (!allData) return null
+  const cursos = getUniqueValues(filtersValues, 'cursos', allData)
+  const materias = getUniqueValues(
+    filtersValues,
+    'materias',
+    allData,
+    filtersValues.inclusionEstricta === 'true',
+  )
 }
 
 export const getUniqueValues = (
-  allFiltersValues: AllFiltersValues,
-  filterKey: keyof typeof FILTERS_FNS2,
-  allData?: Student[],
+  filtersValues: FiltersValues = {},
+  filterKey: keyof typeof FILTERS_FNS,
+  allData: Student[],
   omitKeyInFiltering?: boolean,
 ) => {
-  const facetedModel = new Map<any, number>()
-  if (!allData) return facetedModel
+  const uniqueValues = new Map<any, number>()
+  if (!allData) return uniqueValues
   const partialFilteredData = getFilteredStudents(
     allData,
-    allFiltersValues,
+    filtersValues,
     omitKeyInFiltering ? undefined : [filterKey],
   )
-  const uniqueValuesFn = FILTERS_FNS2[filterKey]?.uniqueValuesFn
+  const uniqueValuesFn = FILTERS_FNS[filterKey].uniqueValuesFn
   if (uniqueValuesFn) {
-    uniqueValuesFn(partialFilteredData, facetedModel, allFiltersValues)
+    uniqueValuesFn(partialFilteredData, uniqueValues, filtersValues)
   }
-  return facetedModel
+  return uniqueValues
 }
 
-export const getSortedData = (filteredData: Student[], sortParam: string[]) => {
-  const sortData = sortParam
+export const getSortedData = (filteredData: Student[], sortParam?: string) => {
+  if (!sortParam) return filteredData
+  const validatedValues = sortParam
+    .split('_')
+    .map((value) => {
+      const [columnIdParam, order] = value.split('-')
+      const validValues =
+        columnsIds.includes(columnIdParam) &&
+        (order === 'asc' || order === 'desc')
+      return validValues ? `${columnIdParam}-${order}` : null
+    })
+    .filter((value) => value !== null)
+  const sortData = validatedValues
     .map((sortValue) => {
       const [columnIdParam, order] = sortValue.split('-')
       const sortObj = SORTING_FNS.find(
@@ -148,7 +165,7 @@ export const getSortedData = (filteredData: Student[], sortParam: string[]) => {
   return sortedData
 }
 
-export const FILTERS_FNS = {
+/* export const FILTERS_FNS = {
   search: {
     formatParam: (param?: string) => {
       const searchParam = param || ''
@@ -436,7 +453,7 @@ export const FILTERS_FNS = {
       return repitenciaCantMinMax
     },
   },
-} as const
+} as const */
 
 export const SORTING_FNS = [
   {

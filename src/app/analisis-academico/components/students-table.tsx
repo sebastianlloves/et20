@@ -13,37 +13,32 @@ import {
 } from '@/app/analisis-academico/utils/constants'
 import { columns } from '@/app/analisis-academico/columns'
 import DataTable from '@/components/ui/data-table'
-import { AllFiltersValues /* , SearchParams */ } from '../utils/definitions'
+import { FiltersValues, SearchParams } from '../utils/definitions'
 
 export default async function StudentsTable({
-  // searchParams,
-  allFiltersValues,
+  searchParams,
+  filtersValues,
 }: {
-  // searchParams: SearchParams
-  allFiltersValues: AllFiltersValues
+  searchParams: SearchParams
+  filtersValues: FiltersValues
 }) {
   // console.time('fetching + filtrado + sorting + paginación en students-table')
-
   // console.time('Tiempo getAllData en students-table')
   const allData = await getAllData(
-    allFiltersValues.anio,
-    allFiltersValues.califParciales,
+    filtersValues.anio,
+    filtersValues.califParciales,
   )
   // console.timeEnd('Tiempo getAllData en students-table')
-
   // console.time('Tiempo de filtrado')
-  const filteredData = getFilteredStudents(allData, allFiltersValues)
+  const filteredData = getFilteredStudents(allData, filtersValues)
   // console.timeEnd('Tiempo de filtrado')
-
-  const sortedData = Array.isArray(allFiltersValues.sort)
-    ? getSortedData(filteredData, allFiltersValues.sort)
-    : filteredData
+  const sortedData = getSortedData(filteredData, filtersValues.sort)
 
   const { paginatedData /* , ...paginationUtils */ } = getPagination(
     ROWS_COUNT,
     MAX_BUTTONS_PAGINATION,
-    typeof allFiltersValues.page === 'string'
-      ? allFiltersValues.page
+    typeof filtersValues.page === 'string'
+      ? filtersValues.page
       : undefined,
     sortedData,
   )
@@ -55,13 +50,13 @@ export default async function StudentsTable({
     <>
       <FiltersResponsiveWrapper className="block lg:hidden">
         <FiltersPanel
-          allFiltersValues={allFiltersValues}
+          allFiltersValues={filtersValues}
           // searchParams={searchParams}
           allData={allData}
         />
       </FiltersResponsiveWrapper>
       <FiltersPanel
-        allFiltersValues={allFiltersValues}
+        allFiltersValues={filtersValues}
         // searchParams={searchParams}
         allData={allData}
         className="hidden lg:block"

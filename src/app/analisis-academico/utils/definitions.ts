@@ -1,4 +1,5 @@
 import { Student } from '@/lib/definitions'
+import { FILTERS_FNS, SEARCH_PARAMS_KEYS } from './constants'
 
 export type AllFiltersValues = {
   anio?: string
@@ -19,7 +20,20 @@ export type AllFiltersValues = {
   sort?: string[]
 }
 
-export type SearchParams = Partial<Record<keyof AllFiltersValues, string>>
+export type SearchParams = Partial<Record<typeof SEARCH_PARAMS_KEYS[number], string>>
+
+
+type FormatReturnType = {
+  [key in keyof typeof FILTERS_FNS]?: ReturnType<
+    (typeof FILTERS_FNS)[key]['formatParam']
+  >
+}
+
+export type FiltersValues = {
+  [key in (typeof SEARCH_PARAMS_KEYS)[number]]?: key extends keyof FormatReturnType
+    ? FormatReturnType[key]
+    : string
+}
 
 export interface TableFilterProps {
   searchParams: SearchParams

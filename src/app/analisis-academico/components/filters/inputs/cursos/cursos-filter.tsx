@@ -11,7 +11,7 @@ import { CursosFilterContent } from './cursos-filter-content'
 import { Student } from '@/lib/definitions'
 import FilterInput from '../filter-input'
 import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
-import { AllFiltersValues } from '@/app/analisis-academico/utils/definitions'
+import { FiltersValues, SearchParams } from '@/app/analisis-academico/utils/definitions'
 import { TagsBox } from '../../tags/tags-box'
 
 const GROUP_VALUES_KEYS: Array<
@@ -19,13 +19,15 @@ const GROUP_VALUES_KEYS: Array<
 > = ['maniana', 'tarde', 'cb', 'tics', 'pm', 'todos']
 
 export async function CursosFilter({
+  searchParams = {},
   allFiltersValues = {},
   allData,
 }: {
-  allFiltersValues: AllFiltersValues
+  allFiltersValues: FiltersValues
+  searchParams: SearchParams,
   allData?: Student[]
 }) {
-  const uniqueValues = getUniqueValues(allFiltersValues, 'cursos', allData)
+  const uniqueValues = getUniqueValues(searchParams, 'cursos', allData)
   const filterValue = allFiltersValues.cursos || []
 
   const [maniana, tarde, cb, tics, pm] = GROUP_VALUES_KEYS.map((key) => {

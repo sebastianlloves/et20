@@ -7,12 +7,12 @@ import {
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import skeletonColumns from './skeleton-columns'
-import { AllFiltersValues, SearchParams } from '../../utils/definitions'
+import { FiltersValues, SearchParams } from '../../utils/definitions'
 import FiltersResponsiveWrapper from '../filters/filters-responsive-wrapper'
 
 interface SkeletonStudentsTableProps {
   searchParams: SearchParams
-  allFiltersValues: AllFiltersValues
+  allFiltersValues: FiltersValues
 }
 
 function SkeletonStudentsTable({
