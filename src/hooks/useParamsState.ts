@@ -1,3 +1,4 @@
+import { SearchParams } from '@/app/analisis-academico/utils/definitions'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 export default function useParamsState() {
@@ -25,27 +26,26 @@ export default function useParamsState() {
 
 export function useStateInUrl() {
   const pathname = usePathname()
-  const newSearchParams = new URLSearchParams()
+  const searchParams = new URLSearchParams(useSearchParams())
   const { replace } = useRouter()
-  function updateSearchParams<T extends {}>(newFiltersValues: T) {
-    console.time('useStateInUrl')
-    const filtersKeys = Object.keys(newFiltersValues) as Array<
-      Extract<keyof T, string>
-    >
-    filtersKeys.forEach((filterKey) => {
-      const paramValue = newFiltersValues[filterKey]
-      if(!paramValue) newSearchParams.delete(filterKey)
-      if (Array.isArray(paramValue)) {
-        paramValue.length > 0
-          ? newSearchParams.set(filterKey, paramValue.join('_'))
-          : newSearchParams.delete(filterKey)
+
+  function updateSearchParams(
+    updateData: {
+      newState?: string | Array<string | number>
+      keyParam: keyof SearchParams
+    }[],
+  ) {
+    updateData.forEach(({ newState, keyParam }) => {
+      if (!newState) searchParams.delete(keyParam)
+      else {
+        const newParamString = Array.isArray(newState)
+          ? newState.join('_')
+          : newState
+        searchParams.set(keyParam, newParamString)
       }
-      if (typeof paramValue === 'string')
-        newSearchParams.set(filterKey, paramValue)
-      if (newSearchParams.has('page')) newSearchParams.delete('page')
-      replace(`${pathname}?${newSearchParams.toString()}`)
-      console.timeEnd('useStateInUrl')
+      if (searchParams.has('page')) searchParams.delete('page')
+      replace(`${pathname}?${searchParams.toString()}`)
     })
   }
-  return { pathname, newSearchParams, replace, updateSearchParams }
+  return { pathname, searchParams, replace, updateSearchParams }
 }

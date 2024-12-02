@@ -7,7 +7,7 @@ import {
 } from '@/lib/data'
 import { isValidInstancia } from '@/lib/utils'
 import { projectCalifActuales } from '@/lib/dataOperations'
-import { FiltersValues, SearchParams } from './definitions'
+import { FiltersValues } from './definitions'
 
 export const getAllData = async (
   anioParam?: string | string[],
@@ -99,7 +99,7 @@ export const getUniqueValuesModel = (
   filtersValues: FiltersValues = {},
   allData?: Student[],
 ) => {
-  if (!allData) return null
+  if (!allData) return undefined
   const cursos = getUniqueValues(filtersValues, 'cursos', allData)
   const materias = getUniqueValues(
     filtersValues,
@@ -107,9 +107,21 @@ export const getUniqueValuesModel = (
     allData,
     filtersValues.inclusionEstricta === 'true',
   )
+  const proyeccion = getUniqueValues(filtersValues, 'proyeccion', allData)
+  const repitenciaAnios = getUniqueValues(
+    filtersValues,
+    'repitenciaAnios',
+    allData,
+  )
+  const repitenciaCant = getUniqueValues(
+    filtersValues,
+    'repitenciaCant',
+    allData,
+  )
+  return { cursos, materias, proyeccion, repitenciaAnios, repitenciaCant }
 }
 
-export const getUniqueValues = (
+const getUniqueValues = (
   filtersValues: FiltersValues = {},
   filterKey: keyof typeof FILTERS_FNS,
   allData: Student[],
@@ -163,6 +175,19 @@ export const getSortedData = (filteredData: Student[], sortParam?: string) => {
   })
 
   return sortedData
+}
+
+export const getMinMaxValues = (
+  data: Student[],
+  filterKey: keyof typeof FILTERS_FNS,
+) => {
+  const uniqueValues = getUniqueValues({}, filterKey, data)
+  const values = Array.from(uniqueValues.entries()).map((value) =>
+    Number(value),
+  )
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  return [min, max]
 }
 
 /* export const FILTERS_FNS = {

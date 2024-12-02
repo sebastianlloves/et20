@@ -1,4 +1,3 @@
-import { Student } from '@/lib/definitions'
 import { FILTERS_FNS, SEARCH_PARAMS_KEYS } from './constants'
 
 export type AllFiltersValues = {
@@ -20,8 +19,9 @@ export type AllFiltersValues = {
   sort?: string[]
 }
 
-export type SearchParams = Partial<Record<typeof SEARCH_PARAMS_KEYS[number], string>>
-
+export type SearchParams = Partial<
+  Record<(typeof SEARCH_PARAMS_KEYS)[number], string>
+>
 
 type FormatReturnType = {
   [key in keyof typeof FILTERS_FNS]?: ReturnType<
@@ -35,7 +35,10 @@ export type FiltersValues = {
     : string
 }
 
-export interface TableFilterProps {
-  searchParams: SearchParams
-  data?: Student[]
+export type ItemData = {
+  value: string[] | string
+  itemText: string
+  isSelected?: boolean
+  isDisabled?: boolean
+  quantity?: number
 }

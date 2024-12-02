@@ -1,45 +1,38 @@
 import FiltersPanel from '../filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
-import TablePagination from '../table-pagination'
 import { getPagination } from '@/lib/utils'
 import {
   MAX_BUTTONS_PAGINATION,
   ROWS_COUNT,
 } from '@/app/analisis-academico/utils/constants'
 import skeletonColumns from './skeleton-columns'
-import { FiltersValues, SearchParams } from '../../utils/definitions'
+import { FiltersValues } from '../../utils/definitions'
 import FiltersResponsiveWrapper from '../filters/filters-responsive-wrapper'
 
 interface SkeletonStudentsTableProps {
-  searchParams: SearchParams
-  allFiltersValues: FiltersValues
+  filtersValues: FiltersValues
 }
 
-function SkeletonStudentsTable({
-  searchParams,
-  allFiltersValues,
-}: SkeletonStudentsTableProps) {
-  const pageParam = searchParams.page
-  const { paginatedData: paginatedSkeletonData, ...paginationUtils } =
-    getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, pageParam)
+function SkeletonStudentsTable({ filtersValues }: SkeletonStudentsTableProps) {
+  const { paginatedData: paginatedSkeletonData/* , ...paginationUtils */ } =
+    getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, filtersValues.page)
   return (
     <>
-      <FiltersResponsiveWrapper className="block lg:hidden">
-        <FiltersPanel
-          allFiltersValues={allFiltersValues}
-          searchParams={searchParams}
-        />
+      <FiltersResponsiveWrapper
+        allFiltersValues={filtersValues}
+        className="block lg:hidden"
+      >
+        <FiltersPanel allFiltersValues={filtersValues} />
       </FiltersResponsiveWrapper>
       <FiltersPanel
-        allFiltersValues={allFiltersValues}
-        searchParams={searchParams}
+        allFiltersValues={filtersValues}
         className="hidden lg:block"
       />
       <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
-      <TablePagination
+      {/* <TablePagination
         paginationUtils={paginationUtils}
         searchParams={searchParams}
-      />
+      /> */}
     </>
   )
 }

@@ -8,18 +8,21 @@ import { Student } from '@/lib/definitions'
 // import CalifParcialesFilter from './inputs/calif-parciales'
 // import CursosFilter from './inputs/cursos-filter'
 // import ProyeccionFilter from './inputs/proyeccion-filter'
-import { CursosFilter as CursosFilter2 } from './inputs/cursos/cursos-filter'
-import { FiltersValues} from '../../utils/definitions'
+import { CursosFilter } from './inputs/cursos/cursos-filter'
+import { FiltersValues } from '../../utils/definitions'
+import { getUniqueValuesModel } from '../../utils/dataOperations'
+import ProyeccionFilter from './inputs/proyeccion/proyeccion-filter'
+import CalifParcialesFilter from './inputs/calif-parciales/calif-parciales-filter'
 
 function FiltersPanel({
-  // searchParams = {},
   allFiltersValues,
   allData,
+  uniqueValuesModel,
   className,
 }: {
-  // searchParams?: SearchParams
   allFiltersValues: FiltersValues
   allData?: Student[]
+  uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
   className?: string
 }) {
   return (
@@ -36,13 +39,18 @@ function FiltersPanel({
             Filtros
           </h4>
         </div>
-        {/* <CalifParcialesFilter searchParams={searchParams} /> */}
-        {/* <CursosFilter searchParams={searchParams} data={allData} /> */}
+        <CalifParcialesFilter allFiltersValues={allFiltersValues} />
+        <CursosFilter
+          allFiltersValues={allFiltersValues}
+          uniqueValues={uniqueValuesModel?.cursos}
+        />
         {/* <MateriasFilter searchParams={searchParams} data={allData} /> */}
         {/* <CantidadesFilter searchParams={searchParams} data={allData} /> */}
         {/* <RepitenciaFiltering searchParams={searchParams} data={allData} /> */}
-        {/* <ProyeccionFilter searchParams={searchParams} data={allData} /> */}
-        <CursosFilter2 allFiltersValues={allFiltersValues} allData={allData} />
+        <ProyeccionFilter
+          allFiltersValues={allFiltersValues}
+          uniqueValues={uniqueValuesModel?.proyeccion}
+        />
       </div>
     </ScrollArea>
   )

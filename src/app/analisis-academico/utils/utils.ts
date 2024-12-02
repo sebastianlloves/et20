@@ -1,3 +1,6 @@
+import { AGENDA_ANIO_ACTUAL, ANIO_ACTUAL } from "@/lib/constants"
+import { PERIODOS } from "../components/filters/inputs/calif-parciales/calif-parciales-filter"
+
 export function getSliderFilterData(
   paramValue: string | null,
   stringGeneratorFn: (filterValue: number[], extra?: any) => string,
@@ -50,3 +53,4 @@ export function getCantMateriasString(
     return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
   return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
 }
+

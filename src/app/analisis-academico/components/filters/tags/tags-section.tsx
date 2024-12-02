@@ -11,26 +11,32 @@ import { ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ParamsValues } from '@/app/analisis-academico/page'
 import { useStateInUrl } from '@/hooks/useParamsState'
-import { AllFiltersValues } from '@/app/analisis-academico/utils/definitions'
+import {
+  FiltersValues,
+  SearchParams,
+} from '@/app/analisis-academico/utils/definitions'
 
-function TagsBox({
+function TagsSection({
   tags,
-  paramKeys,
   maxTags,
 }: {
   tags: {
-    value?: string | string[] | number[]
+    value: string
     tagText: string
-    removeTagState: AllFiltersValues
+    newFilterState?: FiltersValues[keyof FiltersValues]
+    keyParam: keyof SearchParams
     quantity?: number | null
     className?: string
   }[]
-  paramKeys: (keyof ParamsValues)[]
   maxTags: number
 }) {
   const { updateSearchParams } = useStateInUrl()
+  const removeAllFilterData = [
+    ...new Set(tags.map(({ keyParam }) => keyParam)),
+  ].map((keyParam) => {
+    return { keyParam, newState: undefined }
+  })
 
   return (
     <div className="w-full bg-muted/20 p-2 shadow-inner">
@@ -44,14 +50,21 @@ function TagsBox({
               <X
                 strokeWidth="1.5px"
                 className="-mr-0.5 ml-auto h-3.5 w-3.5 cursor-pointer text-foreground/80 hover:text-foreground"
-                onClick={() => undefined}
+                onClick={() => updateSearchParams(removeAllFilterData)}
               />
             </div>
           )}
 
           <div className="mt-0.5 flex flex-wrap justify-start gap-1.5 overflow-hidden lg:mt-1">
             {tags.map(
-              ({ value, tagText, removeTagState, quantity, className }) => {
+              ({
+                value,
+                tagText,
+                newFilterState,
+                keyParam,
+                quantity,
+                className,
+              }) => {
                 return (
                   <Badge
                     key={`${value}`}
@@ -60,7 +73,11 @@ function TagsBox({
                       'max-w-full cursor-pointer justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 py-1 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10 lg:px-2 lg:py-1.5',
                       className,
                     )}
-                    onClick={() => updateSearchParams(removeTagState)}
+                    onClick={() =>
+                      updateSearchParams([
+                        { keyParam, newState: newFilterState },
+                      ])
+                    }
                   >
                     <div className="flex h-full items-center justify-start">
                       <div className="flex items-center justify-between gap-3 px-2 leading-3">
@@ -145,4 +162,4 @@ function ConditionalWrapper({
   )
 }
 
-export { TagsBox }
+export { TagsSection }

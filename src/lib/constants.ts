@@ -24,7 +24,7 @@ export const AGENDA_ANIO_ACTUAL: {
   },
   cuartoBimestre: {
     fechaCierre: { dia: 6, mes: 12, anio: 2024 },
-    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 4, mes: 12, anio: 2024 },
   },
   primerCuatrimestre: {
     fechaCierre: { dia: 12, mes: 7, anio: 2024 },
@@ -32,15 +32,15 @@ export const AGENDA_ANIO_ACTUAL: {
   },
   segundoCuatrimestre: {
     fechaCierre: { dia: 6, mes: 12, anio: 2024 },
-    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 4, mes: 12, anio: 2024 },
   },
   anual: {
     fechaCierre: { dia: 6, mes: 12, anio: 2024 },
-    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 4, mes: 12, anio: 2024 },
   },
   acreditacion: {
     fechaCierre: { dia: 28, mes: 2, anio: 2025 },
-    fechaInicioCarga: { dia: 30, mes: 11, anio: 2024 },
+    fechaInicioCarga: { dia: 4, mes: 12, anio: 2024 },
   },
 }
 

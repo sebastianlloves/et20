@@ -3,38 +3,47 @@ import 'server-only'
 import {
   getGrupalItemData,
   getQuantity,
-  getUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { Users } from 'lucide-react'
 import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import { CursosFilterContent } from './cursos-filter-content'
-import { Student } from '@/lib/definitions'
 import FilterInput from '../filter-input'
-import { updateArrParamState } from '@/app/analisis-academico/utils/urlParamsOperations'
-import { FiltersValues, SearchParams } from '@/app/analisis-academico/utils/definitions'
-import { TagsBox } from '../../tags/tags-box'
+import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
+import CursosTags from '../../tags/cursos-tags'
+// import { TagsBox } from '../../tags/tags-box'
 
-const GROUP_VALUES_KEYS: Array<
-  keyof Omit<(typeof CURSOS_ITEMS_DATA)[number], 'anio'>
-> = ['maniana', 'tarde', 'cb', 'tics', 'pm', 'todos']
+const GROUP_VALUES_KEYS: {
+  key: keyof Omit<(typeof CURSOS_ITEMS_DATA)[number], 'anio'>
+  itemText: string
+}[] = [
+  { key: 'maniana', itemText: 'Turno Mañana' },
+  { key: 'tarde', itemText: 'Turno Tarde' },
+  { key: 'cb', itemText: 'Ciclo Básico' },
+  { key: 'tics', itemText: 'TICs' },
+  { key: 'pm', itemText: 'Prod. Multimedial' },
+  { key: 'todos', itemText: 'Todos los ' },
+]
 
 export async function CursosFilter({
-  searchParams = {},
   allFiltersValues = {},
-  allData,
+  uniqueValues,
 }: {
   allFiltersValues: FiltersValues
-  searchParams: SearchParams,
-  allData?: Student[]
+  uniqueValues?: Map<any, number>
 }) {
-  const uniqueValues = getUniqueValues(searchParams, 'cursos', allData)
   const filterValue = allFiltersValues.cursos || []
 
-  const [maniana, tarde, cb, tics, pm] = GROUP_VALUES_KEYS.map((key) => {
-    const todosCursos = CURSOS_ITEMS_DATA.flatMap((data) => data[key])
-    const todosData = getGrupalItemData(todosCursos, filterValue, uniqueValues)
-    return { ...todosData, value: todosCursos }
-  })
+  const [maniana, tarde, cb, tics, pm] = GROUP_VALUES_KEYS.map(
+    ({ key, itemText }) => {
+      const todosCursos = CURSOS_ITEMS_DATA.flatMap((data) => data[key])
+      const todosData = getGrupalItemData(
+        todosCursos,
+        filterValue,
+        uniqueValues,
+      )
+      return { ...todosData, value: todosCursos, itemText }
+    },
+  )
   const todosCursosData = { maniana, tarde, cb, tics, pm }
 
   const cursosAnioData = CURSOS_ITEMS_DATA.map((anioData) => {
@@ -42,20 +51,20 @@ export async function CursosFilter({
       (curso) => curso[0] === anioData.anio[0],
     )
     const [maniana, tarde, tics, pm, todos] = GROUP_VALUES_KEYS.filter(
-      (key) => key !== 'cb',
-    ).map((key) => {
+      ({ key }) => key !== 'cb',
+    ).map(({ key, itemText }) => {
       const groupCursos = anioData[key]
       const groupData = getGrupalItemData(
         groupCursos,
         partialFilterValues,
         uniqueValues,
       )
-      return { ...groupData, value: groupCursos }
+      return { ...groupData, value: groupCursos, itemText }
     })
     const cursosAnioItems = anioData.todos.map((curso) => {
       const quantity = getQuantity(curso, uniqueValues)
       const isSelected = filterValue.includes(curso)
-      return { value: curso, quantity, isSelected }
+      return { value: curso, itemText: curso, quantity, isSelected }
     })
     return {
       anio: anioData.anio,
@@ -71,16 +80,6 @@ export async function CursosFilter({
     }
   })
 
-  const filterTags = filterValue.map((value) => {
-    const tagText = value
-    const quantity = getQuantity(value, uniqueValues)
-    const removeTagState = {
-      ...allFiltersValues,
-      cursos: updateArrParamState(value, filterValue),
-    }
-    return { value, tagText, quantity, removeTagState }
-  })
-
   return (
     <div className="w-full rounded-md border">
       <FilterInput
@@ -89,15 +88,12 @@ export async function CursosFilter({
         content={
           <CursosFilterContent
             filterValue={filterValue}
-            allFiltersValues={allFiltersValues}
-            cursosAnioData={cursosAnioData}
-            todosValuesData={todosCursosData}
+            cursosItemsData={cursosAnioData}
+            todosItemsData={todosCursosData}
           />
         }
       />
-      {filterTags.length > 0 && (
-        <TagsBox tags={filterTags} maxTags={3} paramKeys={[]} />
-      )}
+      <CursosTags filterValue={filterValue} uniqueValues={uniqueValues} />
     </div>
   )
 }

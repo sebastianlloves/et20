@@ -1,6 +1,6 @@
 import { isKeyOfObject } from '@/lib/typeGuards'
-import { FILTERS_FNS, FORMAT_PARAMS_FNS } from './constants'
-import { AllFiltersValues, FiltersValues, SearchParams } from './definitions'
+import { FILTERS_FNS } from './constants'
+import { FiltersValues, SearchParams } from './definitions'
 
 /* import { SearchParams } from '../page'
 import { CURSOS_ITEMS_DATA, MATERIAS_ITEMS_DATA } from './constants'
@@ -34,24 +34,25 @@ export function getFiltersValues(searchParams: SearchParams) {
   const allFiltersValues: FiltersValues = {}
   const paramsKeys = Object.keys(searchParams) as Array<keyof SearchParams>
   paramsKeys.forEach((key) => {
-    const paramValue = searchParams[key]
-    if (paramValue) {
-      const formatFn =
-        isKeyOfObject(key, FILTERS_FNS) && FILTERS_FNS[key].formatParam
-      const formatedParam = formatFn ? formatFn(paramValue) : paramValue
+    const formatFn =
+      isKeyOfObject(key, FILTERS_FNS) && FILTERS_FNS[key].formatParam
+    const formatedParam = formatFn ? formatFn(searchParams) : searchParams[key]
+    if (
+      (Array.isArray(formatedParam) && formatedParam.length) ||
+      typeof formatedParam === 'string'
+    )
       allFiltersValues[key] = formatedParam as string & string[] & number[]
-    }
   })
   return allFiltersValues
 }
 
-export const updateArrParamState = (
+export const updateArrFilterState = (
   itemValue: string | string[],
   filterValue?: string | string[],
   partialAlterableArr?: string[],
   sortingFn?: (a: string, b: string) => number,
 ) => {
-  if (!filterValue || typeof filterValue === 'string') return filterValue
+  if (!filterValue || typeof filterValue === 'string') return itemValue
   let newState: string[]
   if (typeof itemValue === 'string') {
     const alreadyIsInFilter = filterValue.includes(itemValue)

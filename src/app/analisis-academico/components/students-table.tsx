@@ -6,6 +6,7 @@ import {
   getAllData,
   getFilteredStudents,
   getSortedData,
+  getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import {
   MAX_BUTTONS_PAGINATION,
@@ -13,13 +14,11 @@ import {
 } from '@/app/analisis-academico/utils/constants'
 import { columns } from '@/app/analisis-academico/columns'
 import DataTable from '@/components/ui/data-table'
-import { FiltersValues, SearchParams } from '../utils/definitions'
+import { FiltersValues } from '../utils/definitions'
 
 export default async function StudentsTable({
-  searchParams,
   filtersValues,
 }: {
-  searchParams: SearchParams
   filtersValues: FiltersValues
 }) {
   // console.time('fetching + filtrado + sorting + paginación en students-table')
@@ -28,6 +27,7 @@ export default async function StudentsTable({
     filtersValues.anio,
     filtersValues.califParciales,
   )
+  const uniqueValuesModel = getUniqueValuesModel(filtersValues, allData)
   // console.timeEnd('Tiempo getAllData en students-table')
   // console.time('Tiempo de filtrado')
   const filteredData = getFilteredStudents(allData, filtersValues)
@@ -37,9 +37,7 @@ export default async function StudentsTable({
   const { paginatedData /* , ...paginationUtils */ } = getPagination(
     ROWS_COUNT,
     MAX_BUTTONS_PAGINATION,
-    typeof filtersValues.page === 'string'
-      ? filtersValues.page
-      : undefined,
+    filtersValues.page,
     sortedData,
   )
   // console.timeEnd(
@@ -48,17 +46,20 @@ export default async function StudentsTable({
 
   return (
     <>
-      <FiltersResponsiveWrapper className="block lg:hidden">
+      <FiltersResponsiveWrapper
+        allFiltersValues={filtersValues}
+        className="block lg:hidden"
+      >
         <FiltersPanel
           allFiltersValues={filtersValues}
-          // searchParams={searchParams}
           allData={allData}
+          uniqueValuesModel={uniqueValuesModel}
         />
       </FiltersResponsiveWrapper>
       <FiltersPanel
         allFiltersValues={filtersValues}
-        // searchParams={searchParams}
         allData={allData}
+        uniqueValuesModel={uniqueValuesModel}
         className="hidden lg:block"
       />
       <DataTable columns={columns} data={paginatedData} />

@@ -13,16 +13,19 @@ import ToggleDB from './inputs/toggle-db'
 import SearchBar from './inputs/search-bar'
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { FiltersValues } from '../../utils/definitions'
 
 function FiltersResponsiveWrapper({
   children,
-  className
+  allFiltersValues,
+  className,
 }: {
   children: ReactNode
+  allFiltersValues: FiltersValues
   className?: string
 }) {
   return (
-    <div className={cn("flex gap-x-3", className)}>
+    <div className={cn('flex gap-x-3', className)}>
       <Sheet>
         <SheetTrigger asChild>
           <Button size="sm" className="justify-start gap-x-2">
@@ -44,7 +47,7 @@ function FiltersResponsiveWrapper({
           <ScrollArea className="h-[90dvh] pr-3">
             <div className="flex flex-col gap-10">
               <ToggleDB />
-              <SearchBar />
+              <SearchBar allFiltersValues={allFiltersValues} />
               {children}
             </div>
           </ScrollArea>

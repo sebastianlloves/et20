@@ -1,8 +1,7 @@
 import { CURSOS, MATERIAS_POR_CURSO } from '@/lib/constants'
 import { Student } from '@/lib/definitions'
 import { formatArrValues, formatCantValues } from './urlParamsOperations'
-import { getUniqueValues } from './dataOperations'
-import { FiltersValues } from './definitions'
+import { FiltersValues, SearchParams } from './definitions'
 
 export const SEARCH_PARAMS_KEYS = [
   'anio',
@@ -175,15 +174,17 @@ export const columnsIds = [
  */
 export const FILTERS_FNS = {
   search: {
-    formatParam: (param: string) => {
-      const filterValue = param.split(' ').map((string) =>
-        string
-          .trim()
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''),
-      )
-      return filterValue
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.search
+      return param
+        ? param.split(' ').map((string) =>
+            string
+              .trim()
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, ''),
+          )
+        : undefined
     },
     filterFn: (student: Student, paramsValues: FiltersValues) => {
       const filterValue = paramsValues.search
@@ -202,11 +203,15 @@ export const FILTERS_FNS = {
     ) => undefined,
   },
   cursos: {
-    formatParam: (param: string) =>
-      formatArrValues(
-        param,
-        CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
-      ),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cursos
+      return param
+        ? formatArrValues(
+            param,
+            CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
+          )
+        : undefined
+    },
     filterFn: (student: Student, paramsValues: FiltersValues) => {
       const filterValue = paramsValues.cursos
       const { anio, division } = student
@@ -234,12 +239,16 @@ export const FILTERS_FNS = {
       if (anioA !== anioB) return anioA - anioB
       return materiaA.localeCompare(materiaB)
     },
-    formatParam: (param: string) =>
-      formatArrValues(
-        param,
-        MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
-        FILTERS_FNS.materias.sortParam,
-      ),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.materias
+      return param
+        ? formatArrValues(
+            param,
+            MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
+            FILTERS_FNS.materias.sortParam,
+          )
+        : undefined
+    },
     filterFn: (student: Student, paramsValues: FiltersValues) => {
       const filterValue = paramsValues.materias
       if (filterValue === undefined) return true
@@ -281,7 +290,10 @@ export const FILTERS_FNS = {
     },
   },
   cantidadesTroncales: {
-    formatParam: (param: string) => formatCantValues(param),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cantidadesTroncales
+      return param ? formatCantValues(param) : undefined
+    },
     filterFn: (student: Student, paramsValues: FiltersValues) => {
       const cantStudent = student.troncales.cantidad
       const filterValue = paramsValues.cantidadesTroncales
@@ -299,18 +311,12 @@ export const FILTERS_FNS = {
         facetedModel.set(`${cant}`, (facetedModel.get(`${cant}`) ?? 0) + 1)
       })
     },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getUniqueValues({}, 'cantidadesTroncales', data)
-      const values = Array.from(uniqueValues.entries()).map((value) =>
-        Number(value),
-      )
-      const min = Math.min(...values)
-      const max = Math.max(...values)
-      return [min, max]
-    },
   },
   cantidadesGenerales: {
-    formatParam: (param: string) => formatCantValues(param),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cantidadesGenerales
+      return param ? formatCantValues(param) : undefined
+    },
     filterFn: (student: Student, paramsValues: FiltersValues) => {
       const cantStudent = student.generales.cantidad
       const filterValue = paramsValues.cantidadesGenerales
@@ -328,18 +334,12 @@ export const FILTERS_FNS = {
         facetedModel.set(`${cant}`, (facetedModel.get(`${cant}`) ?? 0) + 1)
       })
     },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getUniqueValues({}, 'cantidadesGenerales', data)
-      const values = Array.from(uniqueValues.entries()).map((value) =>
-        Number(value),
-      )
-      const min = Math.min(...values)
-      const max = Math.max(...values)
-      return [min, max]
-    },
   },
   cantidadesEnProceso2020: {
-    formatParam: (param: string) => formatCantValues(param),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cantidadesEnProceso2020
+      return param ? formatCantValues(param) : undefined
+    },
     filterFn: (student: Student, paramsValues: FiltersValues) => {
       const cantStudent = student.enProceso2020.cantidad
       const filterValue = paramsValues.cantidadesEnProceso2020
@@ -363,22 +363,25 @@ export const FILTERS_FNS = {
         facetedModel.set(`${cant}`, (facetedModel.get(`${cant}`) ?? 0) + 1)
       })
     },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getUniqueValues({}, 'cantidadesEnProceso2020', data)
-      const values = Array.from(uniqueValues.entries()).map((value) =>
-        Number(value),
-      )
-      const min = Math.min(...values)
-      const max = Math.max(...values)
-      return [min, max]
-    },
   },
   proyeccion: {
-    formatParam: (param: string) =>
-      formatArrValues(
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.proyeccion
+      console.log(param)
+      if (param === undefined) return param
+      const califParcialesParam = searchParams.califParciales
+      const comparedData = califParcialesParam
+        ? PROYECCION_DATA.filter(({ value }) => value !== 'Egresa')
+        : PROYECCION_DATA.filter(
+            ({ value }) =>
+              value !== 'Egresa (titula)' && value !== 'Egresa (NO titula)',
+          )
+      console.log(comparedData)
+      return formatArrValues(
         param,
-        PROYECCION_DATA.map(({ value }) => value),
-      ),
+        comparedData.map(({ value }) => value),
+      )
+    },
     filterFn(student: Student, paramsValues: FiltersValues) {
       const filterValue = paramsValues.proyeccion
       if (filterValue === undefined) return true
@@ -392,7 +395,10 @@ export const FILTERS_FNS = {
     },
   },
   repitenciaAnios: {
-    formatParam: (param: string) => formatArrValues(param, ANIOS_REPETIBLES),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.repitenciaAnios
+      return param ? formatArrValues(param, ANIOS_REPETIBLES) : undefined
+    },
     filterFn(student: Student, paramsValues: FiltersValues) {
       const filterValue = paramsValues.repitenciaAnios
       if (filterValue === undefined) return true
@@ -413,7 +419,10 @@ export const FILTERS_FNS = {
     },
   },
   repitenciaCant: {
-    formatParam: (param: string) => formatCantValues(param),
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.repitenciaCant
+      return param ? formatCantValues(param) : undefined
+    },
     filterFn(student: Student, paramsValues: FiltersValues) {
       const filterValue = paramsValues.repitenciaCant
       if (filterValue === undefined) return true
@@ -430,15 +439,6 @@ export const FILTERS_FNS = {
           (facetedModel.get(`${catRepitencias}`) ?? 0) + 1,
         )
       })
-    },
-    getMinMaxCant(data: Student[]) {
-      const uniqueValues = getUniqueValues({}, 'repitenciaCant', data)
-      const values = Array.from(uniqueValues.entries()).map((value) =>
-        Number(value),
-      )
-      const min = Math.min(...values)
-      const max = Math.max(...values)
-      return [min, max]
     },
   },
 }
