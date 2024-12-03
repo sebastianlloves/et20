@@ -2,12 +2,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Student } from '@/lib/definitions'
-// import MateriasFilter from './inputs/materias-filter'
-// import CantidadesFilter from './inputs/cantidades-filter'
-// import RepitenciaFiltering from './inputs/repitencia-filter'
-// import CalifParcialesFilter from './inputs/calif-parciales'
-// import CursosFilter from './inputs/cursos-filter'
-// import ProyeccionFilter from './inputs/proyeccion-filter'
 import { CursosFilter } from './inputs/cursos/cursos-filter'
 import { FiltersValues } from '../../utils/definitions'
 import { getUniqueValuesModel } from '../../utils/dataOperations'
@@ -16,14 +10,14 @@ import CalifParcialesFilter from './inputs/calif-parciales/calif-parciales-filte
 
 function FiltersPanel({
   allFiltersValues,
-  allData,
   uniqueValuesModel,
   className,
+  allData,
 }: {
   allFiltersValues: FiltersValues
-  allData?: Student[]
   uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
   className?: string
+  allData?: Student[]
 }) {
   return (
     <ScrollArea

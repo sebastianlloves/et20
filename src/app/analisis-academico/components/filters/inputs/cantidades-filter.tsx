@@ -1,4 +1,4 @@
-import {
+/* import {
   FILTERS_FNS,
   // getStudentsUniqueValues,
 } from '@/app/analisis-academico/utils/dataOperations'
@@ -11,8 +11,6 @@ import { formatCantValuesParam } from '@/app/analisis-academico/utils/urlParamsO
 import { TableFilterProps } from '@/app/analisis-academico/utils/definitions'
 
 function CantidadesFilter({ searchParams, data }: TableFilterProps) {
-  /* const uniqueValues =
-    data && getStudentsUniqueValues(data, searchParams, 'cantidades', true) */
   const minMaxValues = data && FILTERS_FNS.cantidades.getMinMaxCant(data)
   const cantTroncalesValue = formatCantValuesParam(
     searchParams.cantidadesTroncales,
@@ -130,3 +128,4 @@ const getCantMateriasString = (
     return `${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
   return `Entre ${min} y ${max} materia${max > 1 ? 's' : ''} ${max > 1 ? materiaType.plural : materiaType.singular}`
 }
+ */

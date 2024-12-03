@@ -7,7 +7,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { SearchParams } from '../page'
+import { SearchParams } from '../utils/definitions'
 
 interface TablePaginationProps {
   paginationUtils: {

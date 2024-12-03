@@ -1,4 +1,3 @@
-import FiltersPanel from '../filters/filters-panel'
 import DataTable from '@/components/ui/data-table'
 import { getPagination } from '@/lib/utils'
 import {
@@ -8,13 +7,14 @@ import {
 import skeletonColumns from './skeleton-columns'
 import { FiltersValues } from '../../utils/definitions'
 import FiltersResponsiveWrapper from '../filters/filters-responsive-wrapper'
+import FiltersPanel from '../filters/filters-panel'
 
-interface SkeletonStudentsTableProps {
+function SkeletonStudentsTable({
+  filtersValues,
+}: {
   filtersValues: FiltersValues
-}
-
-function SkeletonStudentsTable({ filtersValues }: SkeletonStudentsTableProps) {
-  const { paginatedData: paginatedSkeletonData/* , ...paginationUtils */ } =
+}) {
+  const { paginatedData: paginatedSkeletonData /* , ...paginationUtils */ } =
     getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, filtersValues.page)
   return (
     <>

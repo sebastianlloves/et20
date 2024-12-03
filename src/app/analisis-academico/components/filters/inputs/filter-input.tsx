@@ -25,7 +25,7 @@ function FilterInput({
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="h-min min-h-9 w-full py-2 text-[length:inherit] font-medium tracking-wide shadow-sm lg:min-h-10"
+            className="h-9 w-full py-2 text-[length:inherit] font-medium tracking-wide shadow-sm lg:h-10"
           >
             <div className="flex w-full items-center gap-3 lg:gap-4">
               {icon}
@@ -52,7 +52,7 @@ function FilterInput({
             </div>
           </ScrollArea>
         </DropdownMenuContent>
-      </DropdownMenu>      
+      </DropdownMenu>
     </div>
   )
 }

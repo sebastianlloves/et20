@@ -52,15 +52,15 @@ export default async function StudentsTable({
       >
         <FiltersPanel
           allFiltersValues={filtersValues}
-          allData={allData}
           uniqueValuesModel={uniqueValuesModel}
+          allData={allData}
         />
       </FiltersResponsiveWrapper>
       <FiltersPanel
         allFiltersValues={filtersValues}
-        allData={allData}
         uniqueValuesModel={uniqueValuesModel}
         className="hidden lg:block"
+        allData={allData}
       />
       <DataTable columns={columns} data={paginatedData} />
       {/* <TablePagination

@@ -1,4 +1,4 @@
-import { Book } from 'lucide-react'
+/* import { Book } from 'lucide-react'
 import Filter from './filter'
 import {
   FILTERS_FNS,
@@ -318,3 +318,4 @@ function MateriasFilter({ searchParams, data }: TableFilterProps) {
 }
 
 export default MateriasFilter
+ */

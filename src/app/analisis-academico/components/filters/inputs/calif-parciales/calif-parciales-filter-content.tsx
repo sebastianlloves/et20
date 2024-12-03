@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useStateInUrl } from '@/hooks/useParamsState'
 import MenuItem from '../menu-item'
-import { CARACTER_GRADO } from '@/lib/constants'
 
 function CalifParcialesFilterContent({
   filterValue,

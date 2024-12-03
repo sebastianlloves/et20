@@ -1,4 +1,4 @@
-import {
+/* import {
   FILTERS_FNS,
   getQuantity,
   getStudentsUniqueValues,
@@ -120,3 +120,4 @@ function RepitenciaFilter({ searchParams, data }: TableFilterProps) {
 }
 
 export default RepitenciaFilter
+ */

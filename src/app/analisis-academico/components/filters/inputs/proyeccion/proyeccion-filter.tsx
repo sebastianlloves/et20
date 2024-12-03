@@ -1,10 +1,10 @@
 import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
-import FilterInput from '../filter-input'
 import { FastForward } from 'lucide-react'
 import ProyeccionFilterContent from './proyeccion-filter-content'
 import { PROYECCION_DATA } from '@/app/analisis-academico/utils/constants'
 import { getQuantity } from '@/app/analisis-academico/utils/dataOperations'
 import ProyeccionTags from '../../tags/proyeccion-tags'
+import FilterInput from '../filter-input'
 
 function ProyeccionFilter({
   allFiltersValues = {},
@@ -15,8 +15,6 @@ function ProyeccionFilter({
 }) {
   const filterValue = allFiltersValues.proyeccion || []
   const califParcialFilter = allFiltersValues.califParciales
-  /* if (califParcialFilter)
-    filterValue = filterValue.filter((value) => value !== 'Egresa') */
   const showedItems = PROYECCION_DATA.filter(
     ({ show }) => !show || show(califParcialFilter),
   )
