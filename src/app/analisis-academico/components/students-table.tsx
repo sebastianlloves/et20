@@ -21,17 +21,12 @@ export default async function StudentsTable({
 }: {
   filtersValues: FiltersValues
 }) {
-  // console.time('fetching + filtrado + sorting + paginación en students-table')
-  // console.time('Tiempo getAllData en students-table')
   const allData = await getAllData(
     filtersValues.anio,
     filtersValues.califParciales,
   )
   const uniqueValuesModel = getUniqueValuesModel(filtersValues, allData)
-  // console.timeEnd('Tiempo getAllData en students-table')
-  // console.time('Tiempo de filtrado')
   const filteredData = getFilteredStudents(allData, filtersValues)
-  // console.timeEnd('Tiempo de filtrado')
   const sortedData = getSortedData(filteredData, filtersValues.sort)
 
   const { paginatedData /* , ...paginationUtils */ } = getPagination(
@@ -40,9 +35,6 @@ export default async function StudentsTable({
     filtersValues.page,
     sortedData,
   )
-  // console.timeEnd(
-  //   'fetching + filtrado + sorting + paginación en students-table',
-  // )
 
   return (
     <>

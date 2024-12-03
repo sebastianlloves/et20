@@ -1,10 +1,12 @@
+import 'server-only'
+
 import { getQuantity } from '@/app/analisis-academico/utils/dataOperations'
 import {
   FiltersValues,
   SearchParams,
 } from '@/app/analisis-academico/utils/definitions'
 import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOperations'
-import { TagsSection } from './tags-section'
+import { TagsSection } from '../tags-section'
 
 function ProyeccionTags({
   filterValue,

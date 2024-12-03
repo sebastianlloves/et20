@@ -154,7 +154,10 @@ export function CursosFilterContent({
                           className="cursor-pointer"
                           disabled={tics.quantity === 0 && !tics.isSelected}
                         >
-                          <MenuItem value={tics.itemText} quantity={tics.quantity} />
+                          <MenuItem
+                            value={tics.itemText}
+                            quantity={tics.quantity}
+                          />
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem
                           value="pm"

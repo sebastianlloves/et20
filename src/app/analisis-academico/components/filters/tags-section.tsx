@@ -12,25 +12,9 @@ import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useStateInUrl } from '@/hooks/useParamsState'
-import {
-  FiltersValues,
-  SearchParams,
-} from '@/app/analisis-academico/utils/definitions'
+import { TagData } from '@/app/analisis-academico/utils/definitions'
 
-function TagsSection({
-  tags,
-  maxTags,
-}: {
-  tags: {
-    value: string
-    tagText: string
-    newFilterState?: FiltersValues[keyof FiltersValues]
-    keyParam: keyof SearchParams
-    quantity?: number | null
-    className?: string
-  }[]
-  maxTags: number
-}) {
+function TagsSection({ tags, maxTags }: { tags: TagData[]; maxTags: number }) {
   const { updateSearchParams } = useStateInUrl()
   const removeAllFilterData = [
     ...new Set(tags.map(({ keyParam }) => keyParam)),
@@ -58,7 +42,6 @@ function TagsSection({
           <div className="mt-0.5 flex flex-wrap justify-start gap-1.5 overflow-hidden lg:mt-1">
             {tags.map(
               ({
-                value,
                 tagText,
                 newFilterState,
                 keyParam,
@@ -67,7 +50,7 @@ function TagsSection({
               }) => {
                 return (
                   <Badge
-                    key={`${value}`}
+                    key={tagText}
                     variant="default"
                     className={cn(
                       'max-w-full cursor-pointer justify-center rounded-2xl border-primary/60 bg-primary/5 px-1.5 py-1 text-xs font-normal leading-tight shadow-sm hover:bg-primary/10 lg:px-2 lg:py-1.5',

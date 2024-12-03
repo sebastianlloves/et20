@@ -1,42 +1,35 @@
 'use client'
 
+import { useStateInUrl } from '@/hooks/useParamsState'
+import { useState } from 'react'
+import { SearchParams } from '../../utils/definitions'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Slider } from '@/components/ui/slider'
-import useParamsState from '@/hooks/useParamsState'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 function SliderItem({
   title,
-  min,
-  max,
-  paramKey,
+  minMaxValues,
   filterValue,
+  keyParam,
   className,
 }: {
   title: string
-  min: number
-  max: number
-  paramKey: string
-  filterValue?: number[]
+  minMaxValues: {
+    min: number
+    max: number
+  }
+  filterValue?: {
+    min: number
+    max: number
+  }
+  keyParam: keyof SearchParams
   className?: string
 }) {
-  const [rangeValue, setRangeValue] = useState(filterValue || [min, max])
-  const { pathname, searchParams, replace } = useParamsState()
-  const updateParams = (
-    paramKey: string,
-    value: number[],
-    min: number,
-    max: number,
-  ) => {
-    value[0] === min && value[1] === max
-      ? searchParams.delete(paramKey)
-      : searchParams.set(paramKey, value.join('_'))
-    if (searchParams.has('page')) searchParams.delete('page')
-    replace(`${pathname}?${searchParams}`)
-  }
-  const debounceUpdateParams = useDebouncedCallback(updateParams, 600)
+  const { updateSearchParams } = useStateInUrl()
+  const [rangeValue, setRangeValue] = useState(filterValue || minMaxValues)
+  const debounceUpdateParams = useDebouncedCallback(updateSearchParams, 600)
 
   return (
     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -46,21 +39,29 @@ function SliderItem({
         </h4>
         <div className="flex items-center gap-x-1 px-0.5">
           <span className="w-4 text-center text-[length:inherit] font-light">
-            {rangeValue[0]}
+            {rangeValue.min}
           </span>
           <Slider
-            defaultValue={filterValue || [min, max]}
-            min={min}
-            max={max}
+            defaultValue={[rangeValue.min, rangeValue.max]}
+            min={minMaxValues.min}
+            max={minMaxValues.max}
             step={1}
             className={cn('min-w-20 max-w-40 sm:w-40', className)}
-            onValueChange={(value) => {
-              setRangeValue(value)
-              debounceUpdateParams(paramKey, value, min, max)
+            onValueChange={(rangeValue) => {
+              setRangeValue({ min: rangeValue[0], max: rangeValue[1] })
+            }}
+            onValueCommit={() => {
+              const newState =
+                rangeValue.min === minMaxValues.min &&
+                rangeValue.max === minMaxValues.max
+                  ? undefined
+                  : [rangeValue.min, rangeValue.max]
+              console.log(newState)
+              debounceUpdateParams([{ keyParam, newState }])
             }}
           />
           <span className="w-4 text-right text-[length:inherit] font-light">
-            {rangeValue[1]}
+            {rangeValue.max}
           </span>
         </div>
       </div>

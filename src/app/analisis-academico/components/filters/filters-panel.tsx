@@ -2,11 +2,12 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Student } from '@/lib/definitions'
-import { CursosFilter } from './inputs/cursos/cursos-filter'
+import { CursosFilter } from './cursos/cursos-filter'
 import { FiltersValues } from '../../utils/definitions'
 import { getUniqueValuesModel } from '../../utils/dataOperations'
-import ProyeccionFilter from './inputs/proyeccion/proyeccion-filter'
-import CalifParcialesFilter from './inputs/calif-parciales/calif-parciales-filter'
+import ProyeccionFilter from './proyeccion/proyeccion-filter'
+import CalifParcialesFilter from './calif-parciales/calif-parciales-filter'
+import RepitenciaFilter from './repitencia/repitencia-filter'
 
 function FiltersPanel({
   allFiltersValues,
@@ -37,6 +38,11 @@ function FiltersPanel({
         <CursosFilter
           allFiltersValues={allFiltersValues}
           uniqueValues={uniqueValuesModel?.cursos}
+        />
+        <RepitenciaFilter
+          allFiltersValues={allFiltersValues}
+          aniosUniqueValues={uniqueValuesModel?.repitenciaAnios}
+          cantUniqueValues={uniqueValuesModel?.repitenciaCant}
         />
         {/* <MateriasFilter searchParams={searchParams} data={allData} /> */}
         {/* <CantidadesFilter searchParams={searchParams} data={allData} /> */}

@@ -9,8 +9,7 @@ import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import { CursosFilterContent } from './cursos-filter-content'
 import FilterInput from '../filter-input'
 import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
-import CursosTags from '../../tags/cursos-tags'
-// import { TagsBox } from '../../tags/tags-box'
+import CursosTags from './cursos-tags'
 
 const GROUP_VALUES_KEYS: {
   key: keyof Omit<(typeof CURSOS_ITEMS_DATA)[number], 'anio'>

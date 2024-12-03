@@ -2,8 +2,8 @@ import {
   FiltersValues,
   SearchParams,
 } from '@/app/analisis-academico/utils/definitions'
-import { TagsSection } from './tags-section'
-import { PERIODOS } from '../inputs/calif-parciales/calif-parciales-filter'
+import { TagsSection } from '../tags-section'
+import { PERIODOS } from './calif-parciales-filter'
 
 function CalifParcialesTags({
   filterValue,

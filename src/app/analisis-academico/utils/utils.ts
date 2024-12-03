@@ -29,7 +29,13 @@ export function getSliderFilterData(
   }
 }
 
-export function getCantRepitenciasString([min, max]: number[]) {
+export function getCantRepitenciasString({
+  min,
+  max,
+}: {
+  min: number
+  max: number
+}) {
   if (min === 0) {
     if (max === 0) return `Nunca repitió`
     return `Repitió hasta ${max} ve${max > 1 ? 'ces' : 'z'}`
@@ -39,7 +45,13 @@ export function getCantRepitenciasString([min, max]: number[]) {
 }
 
 export function getCantMateriasString(
-  [min, max]: number[],
+  {
+    min,
+    max,
+  }: {
+    min: number
+    max: number
+  },
   materiaType: { singular: string; plural: string },
 ) {
   if (min === 0) {

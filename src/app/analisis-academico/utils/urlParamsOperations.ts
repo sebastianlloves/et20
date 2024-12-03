@@ -48,11 +48,11 @@ export function getFiltersValues(searchParams: SearchParams) {
 
 export const updateArrFilterState = (
   itemValue: string | string[],
-  filterValue?: string | string[],
+  filterValues?: string[],
   partialAlterableArr?: string[],
   sortingFn?: (a: string, b: string) => number,
 ) => {
-  if (!filterValue || typeof filterValue === 'string') return itemValue
+  const filterValue = filterValues || []
   let newState: string[]
   if (typeof itemValue === 'string') {
     const alreadyIsInFilter = filterValue.includes(itemValue)
@@ -114,7 +114,7 @@ export const formatArrValues = (
   return sortedValues
 }
 
-export const formatCantValuesParam = (
+/* export const formatCantValuesParam = (
   param?: string,
   minMaxValidation?: number[],
 ) => {
@@ -130,7 +130,7 @@ export const formatCantValuesParam = (
     if (maxValue > maxValid) maxValue = maxValid
   }
   return [minValue, maxValue]
-}
+} */
 
 export const formatCantValues = (
   param: string,

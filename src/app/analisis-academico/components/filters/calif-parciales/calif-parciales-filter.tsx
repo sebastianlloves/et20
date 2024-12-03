@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
 import {
   AGENDA_ANIO_ACTUAL,
@@ -8,7 +10,7 @@ import { StudentCalifActuales } from '@/lib/definitions'
 import FilterInput from '../filter-input'
 import { ChartCandlestick } from 'lucide-react'
 import CalifParcialesFilterContent from './calif-parciales-filter-content'
-import CalifParcialesTags from '../../tags/calif-parciales-tags'
+import CalifParcialesTags from './calif-parciales-tags'
 
 export const PERIODOS: {
   itemText: string

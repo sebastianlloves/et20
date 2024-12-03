@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+/* import { useEffect, useState } from 'react'
 
 interface WindowSize {
   width?: number
@@ -20,4 +20,4 @@ export function useWindowSize(): WindowSize {
   }, [])
 
   return windowSize
-}
+} */

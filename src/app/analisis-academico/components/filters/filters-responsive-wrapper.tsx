@@ -9,8 +9,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ListFilter } from 'lucide-react'
-import ToggleDB from './inputs/toggle-db'
-import SearchBar from './inputs/search-bar'
+import ToggleDB from './toggle-db'
+import SearchBar from './search/search-bar'
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { FiltersValues } from '../../utils/definitions'

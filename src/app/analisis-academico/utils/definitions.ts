@@ -38,7 +38,16 @@ export type FiltersValues = {
 export type ItemData = {
   value: string[] | string
   itemText: string
+  quantity?: number
   isSelected?: boolean
   isDisabled?: boolean
-  quantity?: number
+}
+
+export type TagData = {
+  value?: string
+  tagText: string
+  newFilterState?: FiltersValues[keyof FiltersValues]
+  keyParam: keyof SearchParams
+  quantity?: number | null
+  className?: string
 }

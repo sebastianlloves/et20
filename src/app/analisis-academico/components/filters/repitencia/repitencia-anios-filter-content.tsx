@@ -1,47 +1,42 @@
 'use client'
 
-import {
-  DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
+import { ItemData } from '@/app/analisis-academico/utils/definitions'
+import { DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu'
 import MenuItem from '../menu-item'
 import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { useStateInUrl } from '@/hooks/useParamsState'
-import { ItemData } from '@/app/analisis-academico/utils/definitions'
 
-function ProyeccionFilterContent({
+function RepitenciaAniosFilterContent({
   filterValue,
   filterItemsData,
 }: {
-  filterValue: string[]
+  filterValue?: string[]
   filterItemsData: ItemData[]
 }) {
   const { updateSearchParams } = useStateInUrl()
 
   return (
     <>
-      {filterItemsData.map(({ value, itemText, quantity, isSelected }) => (
-        <div key={itemText}>
-          {value === 'Faltan datos' && (
-            <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
-          )}
+      {filterItemsData.map(
+        ({ value, itemText, quantity, isSelected, isDisabled }) => (
           <DropdownMenuCheckboxItem
+            key={itemText}
             className="cursor-pointer sm:w-full"
-            disabled={quantity === 0}
             checked={isSelected}
+            disabled={isDisabled}
             onCheckedChange={() => {
               const newFilterState = updateArrFilterState(value, filterValue)
               updateSearchParams([
-                { keyParam: 'proyeccion', newState: newFilterState },
+                { keyParam: 'repitenciaAnios', newState: newFilterState },
               ])
             }}
           >
             <MenuItem value={itemText} quantity={quantity} />
           </DropdownMenuCheckboxItem>
-        </div>
-      ))}
+        ),
+      )}
     </>
   )
 }
 
-export default ProyeccionFilterContent
+export default RepitenciaAniosFilterContent

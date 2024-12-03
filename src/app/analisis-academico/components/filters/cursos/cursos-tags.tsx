@@ -4,7 +4,7 @@ import {
   SearchParams,
 } from '@/app/analisis-academico/utils/definitions'
 import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOperations'
-import { TagsSection } from './tags-section'
+import { TagsSection } from '../tags-section'
 
 function CursosTags({
   filterValue,

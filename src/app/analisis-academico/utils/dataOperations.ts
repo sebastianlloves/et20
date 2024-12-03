@@ -113,11 +113,7 @@ export const getUniqueValuesModel = (
     'repitenciaAnios',
     allData,
   )
-  const repitenciaCant = getUniqueValues(
-    filtersValues,
-    'repitenciaCant',
-    allData,
-  )
+  const repitenciaCant = getUniqueValues({}, 'repitenciaCant', allData)
   return { cursos, materias, proyeccion, repitenciaAnios, repitenciaCant }
 }
 
@@ -177,17 +173,34 @@ export const getSortedData = (filteredData: Student[], sortParam?: string) => {
   return sortedData
 }
 
-export const getMinMaxValues = (
-  data: Student[],
-  filterKey: keyof typeof FILTERS_FNS,
-) => {
-  const uniqueValues = getUniqueValues({}, filterKey, data)
-  const values = Array.from(uniqueValues.entries()).map((value) =>
-    Number(value),
-  )
+const getMinMaxValues = (uniqueValues?: Map<any, number>) => {
+  if (!uniqueValues) return { min: 0, max: 0 }
+  const values = Array.from(uniqueValues.keys()).map((value) => Number(value))
   const min = Math.min(...values)
   const max = Math.max(...values)
-  return [min, max]
+  return { min, max }
+}
+
+export const getCantFilterData = (
+  uniqueValues?: Map<any, number>,
+  filterValue?: number[],
+) => {
+  const cantMinMax = getMinMaxValues(uniqueValues)
+  const minFilterValue = Math.max(
+    filterValue?.[0] || cantMinMax.min,
+    cantMinMax.min,
+  )
+  const maxFilterValue = Math.min(
+    filterValue?.[1] || cantMinMax.max,
+    cantMinMax.max,
+  )
+  return {
+    cantMinMax,
+    filterValue:
+      minFilterValue === cantMinMax.min && maxFilterValue === cantMinMax.max
+        ? undefined
+        : { min: minFilterValue, max: maxFilterValue },
+  }
 }
 
 /* export const FILTERS_FNS = {

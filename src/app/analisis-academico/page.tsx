@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
-import ToggleDB from './components/filters/inputs/toggle-db'
-import SearchBar from './components/filters/inputs/search-bar'
+import ToggleDB from './components/filters/toggle-db'
+import SearchBar from './components/filters/search/search-bar'
 import SkeletonStudentsTable from './components/skeletons/skeleton-students-table'
 import StudentsTable from './components/students-table'
 import { getFiltersValues } from './utils/urlParamsOperations'

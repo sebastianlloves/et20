@@ -3,7 +3,7 @@ import { FastForward } from 'lucide-react'
 import ProyeccionFilterContent from './proyeccion-filter-content'
 import { PROYECCION_DATA } from '@/app/analisis-academico/utils/constants'
 import { getQuantity } from '@/app/analisis-academico/utils/dataOperations'
-import ProyeccionTags from '../../tags/proyeccion-tags'
+import ProyeccionTags from './proyeccion-tags'
 import FilterInput from '../filter-input'
 
 function ProyeccionFilter({
@@ -13,7 +13,7 @@ function ProyeccionFilter({
   allFiltersValues: FiltersValues
   uniqueValues?: Map<any, number>
 }) {
-  const filterValue = allFiltersValues.proyeccion || []
+  const filterValue = allFiltersValues.proyeccion
   const califParcialFilter = allFiltersValues.califParciales
   const showedItems = PROYECCION_DATA.filter(
     ({ show }) => !show || show(califParcialFilter),
@@ -21,8 +21,9 @@ function ProyeccionFilter({
   const filterItemsData = showedItems.map(({ value }) => {
     const itemText = value
     const quantity = getQuantity(value, uniqueValues)
-    const isSelected = filterValue.includes(value)
-    return { value, itemText, quantity, isSelected }
+    const isSelected = filterValue?.includes(value) || false
+    const isDisabled = quantity === 0
+    return { value, itemText, quantity, isSelected, isDisabled }
   })
 
   return (
