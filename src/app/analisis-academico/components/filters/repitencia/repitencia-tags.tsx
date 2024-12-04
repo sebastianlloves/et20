@@ -1,10 +1,10 @@
 import {
   getCantFilterData,
   getQuantity,
+  getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import {
   FiltersValues,
-  SearchParams,
   TagData,
 } from '@/app/analisis-academico/utils/definitions'
 import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOperations'
@@ -14,25 +14,29 @@ import { getNumbersBetween } from '@/lib/utils'
 
 function RepitenciaTags({
   aniosFilterValue,
-  aniosUniqueValues,
   cantFilterValue,
-  cantUniqueValues,
+  uniqueValuesModel,
 }: {
   aniosFilterValue?: FiltersValues['repitenciaAnios']
-  aniosUniqueValues?: Map<any, number>
   cantFilterValue?: FiltersValues['repitenciaCant']
-  cantUniqueValues?: Map<any, number>
+  uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
 }) {
-  if (!aniosFilterValue || !aniosFilterValue.length) return false
+  const aniosUniqueValues = uniqueValuesModel?.repitenciaAnios
+  const cantUniqueValues = uniqueValuesModel?.repitenciaCant
 
-  const aniosTags: TagData[] = aniosFilterValue.map((anio) => {
+  const aniosTags: TagData[] = (aniosFilterValue || []).map((anio) => {
     const value = anio
     const tagText = `Repitió ${anio}`
     const quantity = getQuantity(anio, aniosUniqueValues)
     const newFilterState = updateArrFilterState(value, aniosFilterValue)
-    const keyParam = 'repitenciaAnios' as keyof SearchParams
 
-    return { value, tagText, quantity, newFilterState, keyParam }
+    return {
+      value,
+      tagText,
+      quantity,
+      newFilterState,
+      keyParam: 'repitenciaAnios',
+    }
   })
 
   const filterTags = [...aniosTags]
@@ -44,7 +48,7 @@ function RepitenciaTags({
   if (cantValue) {
     const cantTag: TagData = {
       tagText: getCantRepitenciasString(cantValue),
-      keyParam: 'repitenciaCant' as keyof SearchParams,
+      keyParam: 'repitenciaCant',
       quantity: getQuantity(
         getNumbersBetween([cantValue.min, cantValue.max]).map(
           (number) => `${number}`,

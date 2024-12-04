@@ -2,19 +2,24 @@ import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
 import { FastForward } from 'lucide-react'
 import ProyeccionFilterContent from './proyeccion-filter-content'
 import { PROYECCION_DATA } from '@/app/analisis-academico/utils/constants'
-import { getQuantity } from '@/app/analisis-academico/utils/dataOperations'
+import {
+  getQuantity,
+  getUniqueValuesModel,
+} from '@/app/analisis-academico/utils/dataOperations'
 import ProyeccionTags from './proyeccion-tags'
 import FilterInput from '../filter-input'
 
 function ProyeccionFilter({
   allFiltersValues = {},
-  uniqueValues,
+  uniqueValuesModel,
 }: {
   allFiltersValues: FiltersValues
-  uniqueValues?: Map<any, number>
+  uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
 }) {
   const filterValue = allFiltersValues.proyeccion
   const califParcialFilter = allFiltersValues.califParciales
+  const uniqueValues = uniqueValuesModel?.proyeccion
+
   const showedItems = PROYECCION_DATA.filter(
     ({ show }) => !show || show(califParcialFilter),
   )
@@ -40,7 +45,9 @@ function ProyeccionFilter({
           />
         }
       />
-      <ProyeccionTags filterValue={filterValue} uniqueValues={uniqueValues} />
+      {filterValue && (
+        <ProyeccionTags filterValue={filterValue} uniqueValues={uniqueValues} />
+      )}
     </div>
   )
 }

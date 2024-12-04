@@ -56,7 +56,7 @@ export const CURSOS_ITEMS_DATA = (
   }
 })
 
-export const MATERIAS_ITEMS_DATA = (
+const MATERIAS_ANIOS_ITEMS_DATA = (
   Object.keys(MATERIAS_POR_CURSO) as Array<keyof typeof MATERIAS_POR_CURSO>
 ).map((anio) => {
   const formatFn = (obj: (typeof MATERIAS_POR_CURSO)[typeof anio][number]) =>
@@ -87,6 +87,26 @@ export const MATERIAS_ITEMS_DATA = (
     materiasPM,
   }
 })
+
+export const MATERIAS_ITEMS_DATA = {
+  aniosEspecificos: MATERIAS_ANIOS_ITEMS_DATA,
+  todosAnios: [
+    {
+      value: MATERIAS_ANIOS_ITEMS_DATA.flatMap(({ materiasCB }) => materiasCB),
+      itemText: 'Ciclo Básico',
+    },
+    {
+      value: MATERIAS_ANIOS_ITEMS_DATA.flatMap(
+        ({ materiasTICs }) => materiasTICs,
+      ),
+      itemText: 'TICs',
+    },
+    {
+      value: MATERIAS_ANIOS_ITEMS_DATA.flatMap(({ materiasPM }) => materiasPM),
+      itemText: 'Prod. Multimedial',
+    },
+  ],
+}
 
 export const ANIOS_REPETIBLES = Object.keys(CURSOS)
   .sort(
@@ -244,7 +264,7 @@ export const FILTERS_FNS = {
       return param
         ? formatArrValues(
             param,
-            MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
+            MATERIAS_ANIOS_ITEMS_DATA.flatMap(({ todas }) => todas),
             FILTERS_FNS.materias.sortParam,
           )
         : undefined

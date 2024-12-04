@@ -8,6 +8,8 @@ import { getUniqueValuesModel } from '../../utils/dataOperations'
 import ProyeccionFilter from './proyeccion/proyeccion-filter'
 import CalifParcialesFilter from './calif-parciales/calif-parciales-filter'
 import RepitenciaFilter from './repitencia/repitencia-filter'
+import CantidadesFilter from './cantidades/cantidades-filter'
+import MateriasFilter from './materias/materias-filter'
 
 function FiltersPanel({
   allFiltersValues,
@@ -37,19 +39,23 @@ function FiltersPanel({
         <CalifParcialesFilter allFiltersValues={allFiltersValues} />
         <CursosFilter
           allFiltersValues={allFiltersValues}
-          uniqueValues={uniqueValuesModel?.cursos}
+          uniqueValuesModel={uniqueValuesModel}
+        />
+        <MateriasFilter
+          allFiltersValues={allFiltersValues}
+          uniqueValuesModel={uniqueValuesModel}
+        />
+        <CantidadesFilter
+          allFiltersValues={allFiltersValues}
+          uniqueValuesModel={uniqueValuesModel}
         />
         <RepitenciaFilter
           allFiltersValues={allFiltersValues}
-          aniosUniqueValues={uniqueValuesModel?.repitenciaAnios}
-          cantUniqueValues={uniqueValuesModel?.repitenciaCant}
+          uniqueValuesModel={uniqueValuesModel}
         />
-        {/* <MateriasFilter searchParams={searchParams} data={allData} /> */}
-        {/* <CantidadesFilter searchParams={searchParams} data={allData} /> */}
-        {/* <RepitenciaFiltering searchParams={searchParams} data={allData} /> */}
         <ProyeccionFilter
           allFiltersValues={allFiltersValues}
-          uniqueValues={uniqueValuesModel?.proyeccion}
+          uniqueValuesModel={uniqueValuesModel}
         />
       </div>
     </ScrollArea>

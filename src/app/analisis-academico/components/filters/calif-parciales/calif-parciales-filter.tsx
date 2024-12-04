@@ -70,7 +70,8 @@ function CalifParcialesFilter({
   const filterValue = allFiltersValues.califParciales
   const filterItemsData = PERIODOS.map(({ value, itemText }) => {
     const isSelected = filterValue === value
-    const isDisabled = isDisabledPeriod(anioValue, value)
+    const isDisabled =
+      isDisabledPeriod(anioValue, value) || value === 'acreditacion'
     return { value, itemText, isSelected, isDisabled }
   })
 
@@ -91,7 +92,7 @@ function CalifParcialesFilter({
           />
         }
       />
-      <CalifParcialesTags filterValue={filterValue} />
+      {filterValue && <CalifParcialesTags filterValue={filterValue} />}
     </div>
   )
 }

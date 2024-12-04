@@ -27,7 +27,7 @@ export function CursosFilterContent({
   filterValue: string[]
   cursosItemsData: {
     anio: string
-    partialFilterValues: string[]
+    partialFilterValues?: string[]
     cursosAnioItems: ItemData[]
     anioGroupItems: GroupValues<'maniana' | 'tarde' | 'tics' | 'pm' | 'todos'>
   }[]

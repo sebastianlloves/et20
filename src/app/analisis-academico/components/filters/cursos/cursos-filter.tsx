@@ -3,6 +3,7 @@ import 'server-only'
 import {
   getGrupalItemData,
   getQuantity,
+  getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { Users } from 'lucide-react'
 import { CURSOS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
@@ -25,12 +26,13 @@ const GROUP_VALUES_KEYS: {
 
 export async function CursosFilter({
   allFiltersValues = {},
-  uniqueValues,
+  uniqueValuesModel,
 }: {
   allFiltersValues: FiltersValues
-  uniqueValues?: Map<any, number>
+  uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
 }) {
   const filterValue = allFiltersValues.cursos || []
+  const uniqueValues = uniqueValuesModel?.cursos
 
   const [maniana, tarde, cb, tics, pm] = GROUP_VALUES_KEYS.map(
     ({ key, itemText }) => {
@@ -92,7 +94,9 @@ export async function CursosFilter({
           />
         }
       />
-      <CursosTags filterValue={filterValue} uniqueValues={uniqueValues} />
+      {allFiltersValues.cursos && (
+        <CursosTags filterValue={filterValue} uniqueValues={uniqueValues} />
+      )}
     </div>
   )
 }

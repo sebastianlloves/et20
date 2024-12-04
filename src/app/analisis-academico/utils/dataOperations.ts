@@ -107,6 +107,21 @@ export const getUniqueValuesModel = (
     allData,
     filtersValues.inclusionEstricta === 'true',
   )
+  const cantidadesTroncales = getUniqueValues(
+    {},
+    'cantidadesTroncales',
+    allData,
+  )
+  const cantidadesGenerales = getUniqueValues(
+    {},
+    'cantidadesGenerales',
+    allData,
+  )
+  const cantidadesEnProceso2020 = getUniqueValues(
+    {},
+    'cantidadesEnProceso2020',
+    allData,
+  )
   const proyeccion = getUniqueValues(filtersValues, 'proyeccion', allData)
   const repitenciaAnios = getUniqueValues(
     filtersValues,
@@ -114,7 +129,16 @@ export const getUniqueValuesModel = (
     allData,
   )
   const repitenciaCant = getUniqueValues({}, 'repitenciaCant', allData)
-  return { cursos, materias, proyeccion, repitenciaAnios, repitenciaCant }
+  return {
+    cursos,
+    materias,
+    cantidadesTroncales,
+    cantidadesGenerales,
+    cantidadesEnProceso2020,
+    proyeccion,
+    repitenciaAnios,
+    repitenciaCant,
+  }
 }
 
 const getUniqueValues = (
@@ -173,8 +197,7 @@ export const getSortedData = (filteredData: Student[], sortParam?: string) => {
   return sortedData
 }
 
-const getMinMaxValues = (uniqueValues?: Map<any, number>) => {
-  if (!uniqueValues) return { min: 0, max: 0 }
+const getMinMaxValues = (uniqueValues: Map<any, number>) => {
   const values = Array.from(uniqueValues.keys()).map((value) => Number(value))
   const min = Math.min(...values)
   const max = Math.max(...values)
@@ -185,21 +208,32 @@ export const getCantFilterData = (
   uniqueValues?: Map<any, number>,
   filterValue?: number[],
 ) => {
-  const cantMinMax = getMinMaxValues(uniqueValues)
-  const minFilterValue = Math.max(
-    filterValue?.[0] || cantMinMax.min,
-    cantMinMax.min,
-  )
-  const maxFilterValue = Math.min(
-    filterValue?.[1] || cantMinMax.max,
-    cantMinMax.max,
-  )
-  return {
-    cantMinMax,
-    filterValue:
-      minFilterValue === cantMinMax.min && maxFilterValue === cantMinMax.max
-        ? undefined
-        : { min: minFilterValue, max: maxFilterValue },
+  if (uniqueValues) {
+    const cantMinMax = getMinMaxValues(uniqueValues)
+    if (filterValue === undefined) return { cantMinMax, filterValue }
+
+    const minFilterValue = Math.max(filterValue[0], cantMinMax.min)
+    const maxFilterValue = Math.min(filterValue[1], cantMinMax.max)
+    return {
+      cantMinMax,
+      filterValue:
+        minFilterValue === cantMinMax.min && maxFilterValue === cantMinMax.max
+          ? undefined
+          : {
+              min: minFilterValue,
+              max: maxFilterValue,
+            },
+    }
+  } else {
+    return {
+      cantMinMax: undefined,
+      filterValue: filterValue
+        ? {
+            min: filterValue[0],
+            max: filterValue[1],
+          }
+        : undefined,
+    }
   }
 }
 
@@ -573,11 +607,12 @@ export const SORTING_FNS = [
 
 export const getGrupalItemData = (
   valuesItem: string[],
-  filterValue: string[],
+  filterValue?: string[],
   uniqueValues?: Map<string, number>,
 ) => {
   const arraysAreEquals =
-    JSON.stringify(valuesItem.sort()) === JSON.stringify(filterValue.sort())
+    JSON.stringify(valuesItem.sort()) ===
+    JSON.stringify((filterValue || []).sort())
   const isSelected = valuesItem.length ? arraysAreEquals : undefined
   const quantity = getQuantity(valuesItem, uniqueValues)
   return { isSelected, quantity }

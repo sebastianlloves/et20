@@ -22,6 +22,8 @@ function TagsSection({ tags, maxTags }: { tags: TagData[]; maxTags: number }) {
     return { keyParam, newState: undefined }
   })
 
+  if(!tags.length) return false
+
   return (
     <div className="w-full bg-muted/20 p-2 shadow-inner">
       <ConditionalWrapper

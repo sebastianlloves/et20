@@ -7,19 +7,21 @@ import { ANIOS_REPETIBLES } from '@/app/analisis-academico/utils/constants'
 import {
   getCantFilterData,
   getQuantity,
+  getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import RepitenciaTags from './repitencia-tags'
 import SliderItem from '../slider-item'
 
 function RepitenciaFilter({
   allFiltersValues = {},
-  aniosUniqueValues,
-  cantUniqueValues,
+  uniqueValuesModel,
 }: {
   allFiltersValues: FiltersValues
-  aniosUniqueValues?: Map<any, number>
-  cantUniqueValues?: Map<any, number>
+  uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
 }) {
+  const aniosUniqueValues = uniqueValuesModel?.repitenciaAnios
+  const cantUniqueValues = uniqueValuesModel?.repitenciaCant
+
   const aniosFilterValue = allFiltersValues.repitenciaAnios
   const aniosItemsData = ANIOS_REPETIBLES.map((anio) => {
     const value = anio
@@ -58,12 +60,13 @@ function RepitenciaFilter({
           </div>
         }
       />
-      <RepitenciaTags
-        aniosFilterValue={aniosFilterValue}
-        aniosUniqueValues={aniosUniqueValues}
-        cantFilterValue={allFiltersValues.repitenciaCant}
-        cantUniqueValues={cantUniqueValues}
-      />
+      {(aniosFilterValue || cantFilterValue) && (
+        <RepitenciaTags
+          aniosFilterValue={aniosFilterValue}
+          cantFilterValue={allFiltersValues.repitenciaCant}
+          uniqueValuesModel={uniqueValuesModel}
+        />
+      )}
     </div>
   )
 }

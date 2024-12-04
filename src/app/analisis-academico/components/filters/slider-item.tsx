@@ -16,7 +16,7 @@ function SliderItem({
   className,
 }: {
   title: string
-  minMaxValues: {
+  minMaxValues?: {
     min: number
     max: number
   }
@@ -39,29 +39,27 @@ function SliderItem({
         </h4>
         <div className="flex items-center gap-x-1 px-0.5">
           <span className="w-4 text-center text-[length:inherit] font-light">
-            {rangeValue.min}
+            {rangeValue ? rangeValue.min : 'Loading...'}
           </span>
           <Slider
-            defaultValue={[rangeValue.min, rangeValue.max]}
-            min={minMaxValues.min}
-            max={minMaxValues.max}
+            defaultValue={[rangeValue?.min ?? 0, rangeValue?.max ?? 100]}
+            min={minMaxValues?.min}
+            max={minMaxValues?.max}
             step={1}
+            minStepsBetweenThumbs={0}
             className={cn('min-w-20 max-w-40 sm:w-40', className)}
-            onValueChange={(rangeValue) => {
-              setRangeValue({ min: rangeValue[0], max: rangeValue[1] })
-            }}
-            onValueCommit={() => {
+            onValueChange={(sliderValue) => {
+              setRangeValue({ min: sliderValue[0], max: sliderValue[1] })
               const newState =
-                rangeValue.min === minMaxValues.min &&
-                rangeValue.max === minMaxValues.max
+                sliderValue[0] === minMaxValues?.min &&
+                sliderValue[1] === minMaxValues?.max
                   ? undefined
-                  : [rangeValue.min, rangeValue.max]
-              console.log(newState)
+                  : [sliderValue[0], sliderValue[1]]
               debounceUpdateParams([{ keyParam, newState }])
             }}
           />
           <span className="w-4 text-right text-[length:inherit] font-light">
-            {rangeValue.max}
+            {rangeValue ? rangeValue.max : 'Loading...'}
           </span>
         </div>
       </div>

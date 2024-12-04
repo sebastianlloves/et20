@@ -1,6 +1,6 @@
 import {
   FiltersValues,
-  SearchParams,
+  TagData,
 } from '@/app/analisis-academico/utils/definitions'
 import { TagsSection } from '../tags-section'
 import { PERIODOS } from './calif-parciales-filter'
@@ -13,11 +13,11 @@ function CalifParcialesTags({
   const tagText = PERIODOS.find(({ value }) => value === filterValue)?.tagText
   if (!filterValue || !filterValue.length || !tagText) return false
 
-  const filterTag = {
+  const filterTag: TagData = {
     value: filterValue,
     tagText,
     quantity: null,
-    keyParam: 'califParciales' as keyof SearchParams,
+    keyParam: 'califParciales',
     className: 'rounded-lg pl-1 bg-primary/15',
   }
   return <TagsSection tags={[filterTag]} maxTags={3} />
