@@ -7,6 +7,7 @@ import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 import { useDebouncedCallback } from 'use-debounce'
+import { Skeleton } from '@/components/ui/skeleton'
 
 function SliderItem({
   title,
@@ -17,12 +18,12 @@ function SliderItem({
 }: {
   title: string
   minMaxValues: {
-    min: number
-    max: number
+    min?: number
+    max?: number
   }
   filterValue?: {
-    min: number
-    max: number
+    min?: number
+    max?: number
   }
   keyParam: keyof SearchParams
   className?: string
@@ -38,11 +39,13 @@ function SliderItem({
           {title}
         </h4>
         <div className="flex items-center gap-x-1 px-0.5">
-          <span className="w-4 text-center text-[length:inherit] font-light">
-            {rangeValue.min}
+          <span className="w-4 h-6 flex items-center text-center text-[length:inherit] font-light">
+            {rangeValue.min || (
+              <Skeleton className="h-2 w-full my-auto rounded-full bg-primary/30" />
+            )}
           </span>
           <Slider
-            defaultValue={[rangeValue.min, rangeValue.max]}
+            defaultValue={[rangeValue.min || 0, rangeValue.max || 100]}
             min={minMaxValues.min}
             max={minMaxValues.max}
             step={1}
@@ -51,17 +54,24 @@ function SliderItem({
               setRangeValue({ min: rangeValue[0], max: rangeValue[1] })
             }}
             onValueCommit={() => {
-              const newState =
-                rangeValue.min === minMaxValues.min &&
-                rangeValue.max === minMaxValues.max
-                  ? undefined
-                  : [rangeValue.min, rangeValue.max]
-              console.log(newState)
-              debounceUpdateParams([{ keyParam, newState }])
+              if (
+                rangeValue.min !== undefined &&
+                rangeValue.max !== undefined
+              ) {
+                const newState =
+                  rangeValue.min === minMaxValues.min &&
+                  rangeValue.max === minMaxValues.max
+                    ? undefined
+                    : [rangeValue.min, rangeValue.max]
+                console.log(newState)
+                debounceUpdateParams([{ keyParam, newState }])
+              }
             }}
           />
-          <span className="w-4 text-right text-[length:inherit] font-light">
-            {rangeValue.max}
+          <span className="w-4 h-6 flex items-center text-right text-[length:inherit] font-light">
+            {rangeValue.max || (
+              <Skeleton className="h-2 w-full my-auto rounded-full bg-primary/30" />
+            )}
           </span>
         </div>
       </div>

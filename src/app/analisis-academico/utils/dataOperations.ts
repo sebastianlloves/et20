@@ -174,7 +174,7 @@ export const getSortedData = (filteredData: Student[], sortParam?: string) => {
 }
 
 const getMinMaxValues = (uniqueValues?: Map<any, number>) => {
-  if (!uniqueValues) return { min: 0, max: 0 }
+  if (!uniqueValues) return { min: undefined, max: undefined }
   const values = Array.from(uniqueValues.keys()).map((value) => Number(value))
   const min = Math.min(...values)
   const max = Math.max(...values)
@@ -186,14 +186,14 @@ export const getCantFilterData = (
   filterValue?: number[],
 ) => {
   const cantMinMax = getMinMaxValues(uniqueValues)
-  const minFilterValue = Math.max(
-    filterValue?.[0] || cantMinMax.min,
-    cantMinMax.min,
-  )
-  const maxFilterValue = Math.min(
-    filterValue?.[1] || cantMinMax.max,
-    cantMinMax.max,
-  )
+  const minFilterValue =
+    cantMinMax.min && filterValue
+      ? Math.max(cantMinMax.min, filterValue[0])
+      : filterValue?.[0]
+  const maxFilterValue =
+    cantMinMax.max && filterValue
+      ? Math.min(cantMinMax.max, filterValue[1])
+      : filterValue?.[1]
   return {
     cantMinMax,
     filterValue:
