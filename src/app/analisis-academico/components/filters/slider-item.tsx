@@ -7,6 +7,7 @@ import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 import { useDebouncedCallback } from 'use-debounce'
+import { Skeleton } from '@/components/ui/skeleton'
 
 function SliderItem({
   title,
@@ -21,8 +22,8 @@ function SliderItem({
     max: number
   }
   filterValue?: {
-    min: number
-    max: number
+    min?: number
+    max?: number
   }
   keyParam: keyof SearchParams
   className?: string
