@@ -5,9 +5,9 @@ import { Button } from './ui/button'
 import { Moon, Sun } from 'lucide-react'
 
 function ModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const handleClick = () =>
-    theme === 'dark' ? setTheme('light') : setTheme('dark')
+    resolvedTheme === 'dark' ? setTheme('light') : setTheme('dark')
 
   return (
     <Button variant="outline" size="icon" onClick={handleClick}>
