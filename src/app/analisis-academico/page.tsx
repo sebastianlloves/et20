@@ -3,8 +3,8 @@ import ToggleDB from './components/filters/toggle-db'
 import SearchBar from './components/filters/search/search-bar'
 import SkeletonStudentsTable from './components/skeletons/skeleton-students-table'
 import StudentsTable from './components/students-table'
-import { getFiltersValues } from './utils/urlParamsOperations'
 import { SearchParams } from './utils/definitions'
+import { getFiltersValues } from './utils/filtersOperations'
 
 export default async function Page({
   searchParams,

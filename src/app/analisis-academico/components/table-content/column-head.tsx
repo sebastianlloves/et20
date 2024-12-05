@@ -53,7 +53,6 @@ function ColumnHead<TData, TValue>({
 
     replace(`${pathname}?${searchParams}`)
   }
-  // console.log(`sortingValue: ${JSON.stringify(sortingValue)}`)
 
   return (
     <Button

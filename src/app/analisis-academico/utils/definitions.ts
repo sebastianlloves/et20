@@ -1,5 +1,6 @@
-import {  SEARCH_PARAMS_KEYS } from './constants'
-import { FILTERS_FNS } from './dataOperations'
+import 'server-only'
+import { SEARCH_PARAMS_KEYS } from './constants'
+import { FILTERS_FNS } from './filtersOperations'
 
 export type AllFiltersValues = {
   anio?: string

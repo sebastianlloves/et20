@@ -1,19 +1,20 @@
+import 'server-only'
 import {
   FiltersValues,
   ItemData,
 } from '@/app/analisis-academico/utils/definitions'
 import MateriasFilterContent from './materias-filter-content'
-import {
-  getGrupalItemData,
-  getQuantity,
-  getUniqueValuesModel,
-} from '@/app/analisis-academico/utils/dataOperations'
+import { getUniqueValuesModel } from '@/app/analisis-academico/utils/dataOperations'
 import FilterInput from '../filter-input'
 import { Book } from 'lucide-react'
 import MateriasTags from './materias-tags'
 import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import InclusionEstrictaFilterContent from './inclusion-estricta-filter-content'
+import {
+  getGrupalItemData,
+  getQuantity,
+} from '@/app/analisis-academico/utils/filtersOperations'
 
 function MateriasFilter({
   allFiltersValues,

@@ -1,3 +1,4 @@
+import 'server-only'
 import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
 import FilterInput from '../filter-input'
 import { IterationCcw } from 'lucide-react'
@@ -6,11 +7,11 @@ import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { ANIOS_REPETIBLES } from '@/app/analisis-academico/utils/constants'
 import {
   getCantFilterData,
-  getQuantity,
   getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import RepitenciaTags from './repitencia-tags'
 import SliderItem from '../slider-item'
+import { getQuantity } from '@/app/analisis-academico/utils/filtersOperations'
 
 function RepitenciaFilter({
   allFiltersValues = {},

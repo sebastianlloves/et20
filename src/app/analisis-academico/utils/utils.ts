@@ -1,3 +1,4 @@
+import 'server-only'
 export function getSliderFilterData(
   paramValue: string | null,
   stringGeneratorFn: (filterValue: number[], extra?: any) => string,

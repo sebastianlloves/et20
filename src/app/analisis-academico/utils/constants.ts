@@ -1,3 +1,4 @@
+import 'server-only'
 import { CURSOS, MATERIAS_POR_CURSO } from '@/lib/constants'
 
 export const SEARCH_PARAMS_KEYS = [

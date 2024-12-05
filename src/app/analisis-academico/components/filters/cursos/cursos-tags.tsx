@@ -1,10 +1,11 @@
-import { getQuantity } from '@/app/analisis-academico/utils/dataOperations'
+import 'server-only'
 import {
   FiltersValues,
   TagData,
 } from '@/app/analisis-academico/utils/definitions'
 import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOperations'
 import { TagsSection } from '../tags-section'
+import { getQuantity } from '@/app/analisis-academico/utils/filtersOperations'
 
 function CursosTags({
   filterValue,

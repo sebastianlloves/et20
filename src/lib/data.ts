@@ -63,8 +63,6 @@ export async function fetchCalificacionesActuales(
 
   const califActuales = await Promise.all(
     fetchingData.map(async ({ url, tags, anioCurso }) => {
-      // console.time(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
-      // console.time(`fetch tags: ${JSON.stringify(tags)}`)
       const response = await fetch(url, {
         next: {
           tags: [...tags],
@@ -72,12 +70,7 @@ export async function fetchCalificacionesActuales(
         cache: 'force-cache',
       })
       const text = await response.text()
-      // console.timeEnd(`fetch tags: ${JSON.stringify(tags)}`)
-
-      // console.time(`procesamiento tags: ${JSON.stringify(tags)}`)
       const formatedResponse = formatCalifActualesResponse(text, anioCurso)
-      // console.timeEnd(`procesamiento tags: ${JSON.stringify(tags)}`)
-      // console.timeEnd(`fetch + procesamiento tags: ${JSON.stringify(tags)}`)
 
       return formatedResponse
     }),

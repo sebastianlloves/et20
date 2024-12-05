@@ -63,7 +63,6 @@ const PaginationLink = ({
 )
 PaginationLink.displayName = 'PaginationLink'
 
-
 const PaginationPrevious = ({
   className,
   isDisabled,
@@ -129,12 +128,12 @@ const PaginationEllipsis = ({
         variant: 'ghost',
         size: 'icon',
       }),
-      'flex items-end justify-center pb-1 lg:pb-1.5 hover:bg-[inherit]',
+      'flex items-end justify-center p-0 hover:bg-[inherit]',
       className,
     )}
     {...props}
   >
-    <MoreHorizontal strokeWidth={1} className="h-4 w-4" />
+    <MoreHorizontal strokeWidth={1} className="mb-1 h-4 w-4 lg:mb-1.5" />
     <span className="sr-only">More pages</span>
   </span>
 )

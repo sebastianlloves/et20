@@ -34,6 +34,7 @@ export function useStateInUrl() {
       newState?: string | Array<string | number>
       keyParam: keyof SearchParams
     }[],
+    resetPage: boolean = true,
   ) {
     updateData.forEach(({ newState, keyParam }) => {
       if (!newState) searchParams.delete(keyParam)
@@ -43,7 +44,7 @@ export function useStateInUrl() {
           : newState
         searchParams.set(keyParam, newParamString)
       }
-      if (searchParams.has('page')) searchParams.delete('page')
+      if (resetPage && searchParams.has('page')) searchParams.delete('page')
       replace(`${pathname}?${searchParams.toString()}`)
     })
   }

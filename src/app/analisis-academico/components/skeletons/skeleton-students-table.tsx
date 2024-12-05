@@ -1,3 +1,4 @@
+import 'server-only'
 import DataTable from '@/components/ui/data-table'
 import { getPagination } from '@/lib/utils'
 import {
@@ -15,7 +16,7 @@ function SkeletonStudentsTable({
 }: {
   filtersValues: FiltersValues
 }) {
-  const { paginatedData: paginatedSkeletonData , ...paginationUtils } =
+  const { paginatedData: paginatedSkeletonData, ...paginationUtils } =
     getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, filtersValues.page)
   return (
     <>
@@ -30,10 +31,7 @@ function SkeletonStudentsTable({
         className="hidden lg:block"
       />
       <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
-      <TablePagination
-        paginationUtils={paginationUtils}
-        filtersValues={filtersValues}
-      />
+      <TablePagination paginationUtils={paginationUtils} />
     </>
   )
 }

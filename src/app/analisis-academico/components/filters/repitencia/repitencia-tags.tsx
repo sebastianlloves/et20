@@ -1,6 +1,6 @@
+import 'server-only'
 import {
   getCantFilterData,
-  getQuantity,
   getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import {
@@ -11,6 +11,7 @@ import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOp
 import { TagsSection } from '../tags-section'
 import { getCantRepitenciasString } from '@/app/analisis-academico/utils/utils'
 import { getNumbersBetween } from '@/lib/utils'
+import { getQuantity } from '@/app/analisis-academico/utils/filtersOperations'
 
 function RepitenciaTags({
   aniosFilterValue,

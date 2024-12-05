@@ -1,13 +1,12 @@
+import 'server-only'
 import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
 import { FastForward } from 'lucide-react'
 import ProyeccionFilterContent from './proyeccion-filter-content'
 import { PROYECCION_DATA } from '@/app/analisis-academico/utils/constants'
-import {
-  getQuantity,
-  getUniqueValuesModel,
-} from '@/app/analisis-academico/utils/dataOperations'
+import { getUniqueValuesModel } from '@/app/analisis-academico/utils/dataOperations'
 import ProyeccionTags from './proyeccion-tags'
 import FilterInput from '../filter-input'
+import { getQuantity } from '@/app/analisis-academico/utils/filtersOperations'
 
 function ProyeccionFilter({
   allFiltersValues = {},

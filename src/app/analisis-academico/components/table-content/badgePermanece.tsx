@@ -1,3 +1,4 @@
+import 'server-only'
 import { Badge } from '@/components/ui/badge'
 import { BadgeCheck } from 'lucide-react'
 

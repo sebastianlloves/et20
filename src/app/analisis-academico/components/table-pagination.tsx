@@ -1,17 +1,16 @@
+import 'server-only'
 import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { FiltersValues } from '../utils/definitions'
 import PaginationButton from './pagination-button'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-interface TablePaginationProps {
+function TablePagination({
+  paginationUtils,
+}: {
   paginationUtils: {
     currentPage: number | null
     lastPage: number | null
@@ -20,13 +19,7 @@ interface TablePaginationProps {
     totalSize: number | null
     pagesButtons: (string | number | null)[]
   }
-  filtersValues: FiltersValues
-}
-
-function TablePagination({
-  paginationUtils,
-  filtersValues,
-}: TablePaginationProps) {
+}) {
   const {
     currentPage,
     lastPage,
@@ -35,13 +28,10 @@ function TablePagination({
     totalSize,
     pagesButtons,
   } = paginationUtils
-  const getPageQuery = (pageNumber: number | string) => {
-    return { ...filtersValues, page: [pageNumber, lastPage].join('_') }
-  }
 
   return (
     <div className="my-0 flex flex-col items-center justify-between gap-y-2.5 md:flex-row lg:col-start-2 xl:px-4">
-      <div className="flex h-6 w-fit shrink-0 items-center self-start align-middle sm:h-9">
+      <div className="flex h-7 w-fit shrink-0 items-center self-start align-middle sm:h-10">
         {totalSize === null ? (
           <Skeleton className="h-3 w-56 rounded-full bg-muted-foreground/20" />
         ) : (
@@ -58,11 +48,13 @@ function TablePagination({
       <Pagination className="mx-0 w-fit">
         <PaginationContent className="w-full">
           <PaginationButton
-            newState={[currentPage - 1, lastPage].join('_')}
+            className="mr-1 h-7 px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
             isDisabled={currentPage === 1 || !totalSize}
-            className="mr-1 h-6 w-full px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
+            newState={
+              currentPage ? [currentPage - 1, lastPage].join('_') : undefined
+            }
           >
-            <div className="flex gap-1.5 pl-2.5">
+            <div className="flex items-center justify-center gap-1.5">
               <ChevronLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
               <span>Anterior</span>
             </div>
@@ -72,36 +64,35 @@ function TablePagination({
               return (
                 <Skeleton
                   key={index}
-                  className="h-6 w-6 rounded-md bg-muted-foreground/15 sm:h-9 sm:w-9"
+                  className="h-7 w-7 rounded-md bg-muted-foreground/15 sm:h-9 sm:w-10"
                 />
               )
             return buttonNumber !== '...' ? (
-              <PaginationLink
+              <PaginationButton
                 key={index}
-                href={{
-                  pathname: '/analisis-academico',
-                  query: getPageQuery(buttonNumber),
-                }}
+                className="h-7 w-7 text-xs sm:h-9 sm:w-10 xl:text-sm"
                 isActive={buttonNumber === currentPage}
-                className="h-6 w-6 text-xs sm:h-9 sm:w-9 xl:text-sm"
+                newState={[buttonNumber, lastPage].join('_')}
               >
                 {buttonNumber}
-              </PaginationLink>
+              </PaginationButton>
             ) : (
               <PaginationEllipsis
                 key={index}
-                className="h-6 w-6 sm:h-9 sm:w-9"
+                className="h-7 w-7 sm:h-9 sm:w-10"
               />
             )
           })}
-          <PaginationNext
-            href={{
-              pathname: '/analisis-academico',
-              query: currentPage ? getPageQuery(currentPage + 1) : '',
-            }}
+          <PaginationButton
+            className="ml-1 h-7 px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
             isDisabled={currentPage === lastPage || !totalSize}
-            className="ml-1 h-6 px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
-          />
+            newState={[currentPage ? currentPage + 1 : 2, lastPage].join('_')}
+          >
+            <div className="flex items-center justify-center gap-1.5">
+              <span>Siguiente</span>
+              <ChevronRight className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+            </div>
+          </PaginationButton>
         </PaginationContent>
       </Pagination>
     </div>

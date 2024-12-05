@@ -1,13 +1,12 @@
-import {
-  getQuantity,
-  getUniqueValuesModel,
-} from '@/app/analisis-academico/utils/dataOperations'
+import 'server-only'
+import { getUniqueValuesModel } from '@/app/analisis-academico/utils/dataOperations'
 import {
   FiltersValues,
   TagData,
 } from '@/app/analisis-academico/utils/definitions'
 import { TagsSection } from '../tags-section'
 import { updateArrFilterState } from '@/app/analisis-academico/utils/urlParamsOperations'
+import { getQuantity } from '@/app/analisis-academico/utils/filtersOperations'
 
 function MateriasTags({
   filtersValues,
@@ -31,7 +30,7 @@ function MateriasTags({
     }
   })
 
-  if(strictInclusionFilterValue){
+  if (strictInclusionFilterValue) {
     const strictInclusionTag: TagData = {
       tagText: 'Inclusión estricta',
       quantity: getQuantity(materiasFilterValue?.[0], uniqueValues),

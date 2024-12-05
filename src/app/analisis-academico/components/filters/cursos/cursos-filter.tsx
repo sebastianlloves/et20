@@ -1,8 +1,6 @@
 import 'server-only'
 
 import {
-  getGrupalItemData,
-  getQuantity,
   getUniqueValuesModel,
 } from '@/app/analisis-academico/utils/dataOperations'
 import { Users } from 'lucide-react'
@@ -11,6 +9,7 @@ import { CursosFilterContent } from './cursos-filter-content'
 import FilterInput from '../filter-input'
 import { FiltersValues } from '@/app/analisis-academico/utils/definitions'
 import CursosTags from './cursos-tags'
+import { getGrupalItemData, getQuantity } from '@/app/analisis-academico/utils/filtersOperations'
 
 const GROUP_VALUES_KEYS: {
   key: keyof Omit<(typeof CURSOS_ITEMS_DATA)[number], 'anio'>

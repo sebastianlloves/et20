@@ -13,7 +13,7 @@ function PaginationButton({
   isDisabled,
   children,
 }: {
-  newState: string
+  newState?: string
   className?: string
   isActive?: boolean
   isDisabled?: boolean
@@ -24,8 +24,11 @@ function PaginationButton({
     <PaginationItem>
       <Button
         variant={isActive ? 'outline' : 'ghost'}
-        className={cn('h-6 w-6 text-xs sm:h-9 sm:w-9 xl:text-sm', className)}
-        onClick={() => updateSearchParams([{ keyParam: 'page', newState }])}
+        className={cn('p-0', className)}
+        disabled={isDisabled}
+        onClick={() =>
+          updateSearchParams([{ keyParam: 'page', newState }], false)
+        }
       >
         {children}
       </Button>

@@ -1,3 +1,4 @@
+import 'server-only'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,11 +15,7 @@ interface FilterProps {
   icon?: ReactNode
 }
 
-function FilterInput({
-  content,
-  title,
-  icon,
-}: FilterProps) {
+function FilterInput({ content, title, icon }: FilterProps) {
   return (
     <div className="text-xs lg:text-sm">
       <DropdownMenu>
