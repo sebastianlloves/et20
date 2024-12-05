@@ -1,4 +1,8 @@
-import { CURSOS, MATERIAS_POR_CURSO } from './constants'
+import {
+  CURSOS,
+  INTERPRETACION_CONDICIONES_ESPECIALES,
+  MATERIAS_POR_CURSO,
+} from './constants'
 import { Student, StudentCalifActuales } from './definitions'
 import { defineProyeccion, evaluarCalificacion } from './formatData'
 
@@ -118,16 +122,21 @@ export const projectCalifActuales = (
           : undefined,
     }
 
-    return {
+    const analyzedStudent = {
       ...student,
       troncales,
       generales,
+    }
+    INTERPRETACION_CONDICIONES_ESPECIALES.forEach((mutatorFn) => mutatorFn(analyzedStudent))
+
+    return {
+      ...analyzedStudent,
       proyeccion: defineProyeccion(
-        student.anio,
+        analyzedStudent.anio,
         ultimoAnio,
-        troncales,
-        generales,
-        student.enProceso2020,
+        analyzedStudent.troncales,
+        analyzedStudent.generales,
+        analyzedStudent.enProceso2020,
         true,
       ),
     }

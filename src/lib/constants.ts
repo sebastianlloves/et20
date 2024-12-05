@@ -1,4 +1,4 @@
-import { StudentCalifActuales } from './definitions'
+import { Student, StudentCalifActuales } from './definitions'
 
 export const ANIO_ACTUAL = 2024
 export const CARACTER_GRADO = '°'
@@ -709,3 +709,19 @@ export const INSTANCIAS_ANIO = [
   'febrero',
   'definitiva',
 ] as const
+
+export const INTERPRETACION_CONDICIONES_ESPECIALES = [
+  (student: Student) => {
+    const troncales = student.troncales.detalle
+    if (
+      troncales.includes(
+        `Taller de Tecnol. y del Control (3${CARACTER_GRADO})`,
+      ) &&
+      (troncales.includes(`Taller de TICs (3${CARACTER_GRADO})`) ||
+        troncales.includes(`Taller de Prod. Multimedial (3${CARACTER_GRADO})`))
+    ) {
+      const cantTroncales = student.troncales.cantidad
+      if (cantTroncales !== null) student.troncales.cantidad = cantTroncales - 1
+    }
+  },
+]
