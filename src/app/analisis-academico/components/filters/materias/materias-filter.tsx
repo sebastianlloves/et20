@@ -12,9 +12,11 @@ import FilterInput from '../filter-input'
 import { Book } from 'lucide-react'
 import MateriasTags from './materias-tags'
 import { MATERIAS_ITEMS_DATA } from '@/app/analisis-academico/utils/constants'
+import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import InclusionEstrictaFilterContent from './inclusion-estricta-filter-content'
 
 function MateriasFilter({
-  allFiltersValues = {},
+  allFiltersValues,
   uniqueValuesModel,
 }: {
   allFiltersValues: FiltersValues
@@ -22,7 +24,6 @@ function MateriasFilter({
 }) {
   const filterValue = allFiltersValues.materias
   const uniqueValues = uniqueValuesModel?.materias
-  const strictInclusionValue = allFiltersValues.inclusionEstricta
 
   const aniosItemsData = MATERIAS_ITEMS_DATA.aniosEspecificos.map(
     ({ anio, materiasPM, materiasTICs, todas }) => {
@@ -83,9 +84,32 @@ function MateriasFilter({
     },
   )
 
-  const todosAniosItemsData = MATERIAS_ITEMS_DATA.todosAnios.map(({value, itemText}) => {
-    
-  })
+  const todosAniosItemsData: ItemData[] = MATERIAS_ITEMS_DATA.todosAnios.map(
+    ({ value, itemText }) => {
+      const { quantity, isSelected } = getGrupalItemData(
+        value,
+        filterValue,
+        uniqueValues,
+      )
+      return {
+        value,
+        itemText,
+        quantity,
+        isSelected,
+        isDisabled: !isSelected && !quantity,
+      }
+    },
+  )
+
+  const strictInclusionValue = allFiltersValues.inclusionEstricta
+  const strictInclusionIsSelected = strictInclusionValue === 'true'
+  const strictInclusionItemData: ItemData = {
+    value: 'true',
+    itemText: 'Inclusión estricta',
+    isSelected: strictInclusionIsSelected,
+    isDisabled:
+      (!filterValue || filterValue.length <= 1) && !strictInclusionIsSelected,
+  }
 
   return (
     <div className="w-full rounded-md border">
@@ -93,13 +117,25 @@ function MateriasFilter({
         title="Materias"
         icon={<Book strokeWidth={1.4} className="w-[14px] lg:w-[15px]" />}
         content={
-          <MateriasFilterContent
-            aniosItemsData={aniosItemsData}
-            filterValue={filterValue}
-          />
+          <div className="text-xs lg:text-sm">
+            <MateriasFilterContent
+              aniosItemsData={aniosItemsData}
+              todosItemsData={todosAniosItemsData}
+              filterValue={filterValue}
+            />
+            <DropdownMenuSeparator className="mx-1" />
+            <InclusionEstrictaFilterContent
+              itemData={strictInclusionItemData}
+            />
+          </div>
         }
       />
-      {(filterValue || strictInclusionValue) && <MateriasTags />}
+      {(filterValue || strictInclusionValue) && (
+        <MateriasTags
+          filtersValues={allFiltersValues}
+          uniqueValuesModel={uniqueValuesModel}
+        />
+      )}
     </div>
   )
 }

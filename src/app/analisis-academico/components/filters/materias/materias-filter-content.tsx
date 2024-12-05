@@ -19,6 +19,7 @@ import { useStateInUrl } from '@/hooks/useParamsState'
 function MateriasFilterContent({
   filterValue,
   aniosItemsData,
+  todosItemsData,
 }: {
   aniosItemsData: {
     anio: '1° año' | '2° año' | '3° año' | '4° año' | '5° año' | '6° año'
@@ -27,12 +28,13 @@ function MateriasFilterContent({
     orientaciones?: ItemData[]
     todasAnio: ItemData
   }[]
+  todosItemsData: ItemData[]
   filterValue?: string[]
 }) {
   const { updateSearchParams } = useStateInUrl()
 
   return (
-    <div className="text-xs lg:text-sm">
+    <>
       {aniosItemsData.map(
         ({
           anio,
@@ -76,10 +78,10 @@ function MateriasFilterContent({
                       </DropdownMenuLabel>
                       <DropdownMenuRadioGroup
                         value={
-                          (!todasAnio.isSelected &&
-                            orientaciones.find(({ isSelected }) => isSelected)
-                              ?.itemText) ||
-                          undefined
+                          !todasAnio.isSelected
+                            ? orientaciones.find(({ isSelected }) => isSelected)
+                                ?.itemText
+                            : undefined
                         }
                         onValueChange={(text) => {
                           const selectedItem = orientaciones.find(
@@ -146,7 +148,44 @@ function MateriasFilterContent({
           </DropdownMenuSub>
         ),
       )}
-    </div>
+
+      <DropdownMenuSeparator className="mx-1 bg-muted-foreground/15" />
+      <DropdownMenuLabel className="max-w-[var(--radix-dropdown-menu-trigger-width)] py-1 pl-3 font-medium text-foreground/80">
+        Orientación
+      </DropdownMenuLabel>
+      <DropdownMenuRadioGroup
+        value={
+          todosItemsData.find(({ isSelected }) => isSelected)?.itemText ||
+          undefined
+        }
+        onValueChange={(text) => {
+          const selectedItem = todosItemsData.find(
+            ({ itemText }) => itemText === text,
+          )
+          if (selectedItem) {
+            const values = selectedItem.value
+            const newFilterState = updateArrFilterState(values, filterValue)
+            updateSearchParams([
+              {
+                keyParam: 'materias',
+                newState: newFilterState,
+              },
+            ])
+          }
+        }}
+      >
+        {todosItemsData.map(({ itemText, quantity, isDisabled }) => (
+          <DropdownMenuRadioItem
+            key={itemText}
+            value={itemText}
+            className="cursor-pointer"
+            disabled={isDisabled}
+          >
+            <MenuItem value={itemText} quantity={quantity} />
+          </DropdownMenuRadioItem>
+        ))}
+      </DropdownMenuRadioGroup>
+    </>
   )
 }
 

@@ -13,7 +13,6 @@ export default async function Page({
 }) {
   const awaitedSearchParams = await searchParams
   const filtersValues = getFiltersValues(awaitedSearchParams)
-  console.log(filtersValues)
   return (
     <div className="grid w-full grid-rows-[auto_auto_auto] gap-x-6 gap-y-3 px-0 lg:grid-cols-[minmax(230px,1fr)_7fr] lg:px-4 xl:gap-x-8 xl:gap-y-4 2xl:px-8">
       <ToggleDB className="hidden lg:block" />

@@ -611,17 +611,18 @@ export const getGrupalItemData = (
   uniqueValues?: Map<string, number>,
 ) => {
   const arraysAreEquals =
-    JSON.stringify(valuesItem.sort()) ===
-    JSON.stringify((filterValue || []).sort())
+    JSON.stringify(valuesItem.toSorted()) ===
+    JSON.stringify((filterValue || []).toSorted())
   const isSelected = valuesItem.length ? arraysAreEquals : undefined
   const quantity = getQuantity(valuesItem, uniqueValues)
   return { isSelected, quantity }
 }
 
 export const getQuantity = (
-  value: string | string[],
+  value?: string | string[],
   uniqueValues?: Map<string, number>,
 ) => {
+  if (!value) return undefined
   if (typeof value === 'string')
     return uniqueValues && (uniqueValues.get(value) ?? 0)
   return (
