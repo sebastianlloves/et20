@@ -1,4 +1,5 @@
-import { FILTERS_FNS, SEARCH_PARAMS_KEYS } from './constants'
+import {  SEARCH_PARAMS_KEYS } from './constants'
+import { FILTERS_FNS } from './dataOperations'
 
 export type AllFiltersValues = {
   anio?: string

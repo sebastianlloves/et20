@@ -1,13 +1,17 @@
 import { Student } from '@/lib/definitions'
-import { columnsIds, FILTERS_FNS } from './constants'
-import { ANIO_ACTUAL, CARACTER_GRADO } from '@/lib/constants'
+import { ANIOS_REPETIBLES, columnsIds, CURSOS_ITEMS_DATA, MATERIAS_ANIOS_ITEMS_DATA, PROYECCION_DATA } from './constants'
+import {
+  ANIO_ACTUAL,
+  CARACTER_GRADO,
+} from '@/lib/constants'
 import {
   fetchCalificacionesActuales,
   fetchCalificacionesHistoricas,
 } from '@/lib/data'
 import { isValidInstancia } from '@/lib/utils'
 import { projectCalifActuales } from '@/lib/dataOperations'
-import { FiltersValues } from './definitions'
+import { FiltersValues, SearchParams } from './definitions'
+import { formatArrValues, formatCantValues } from './urlParamsOperations'
 
 export const getAllData = async (
   anioParam?: string | string[],
@@ -29,26 +33,276 @@ export const getAllData = async (
   )
 }
 
-/* export function getFilteredStudentData(
-  data: Student[],
-  filterParams: SearchParams = {},
-  omitedKey?: string,
-) {
-  const paramsWithValue = JSON.parse(JSON.stringify(filterParams))
-  const activeFiltersKeys = (
-    Object.keys(FILTERS_FNS) as Array<keyof typeof FILTERS_FNS>
-  ).filter(
-    (filterFnKey) =>
-      Object.keys(paramsWithValue).some((key) => key.includes(filterFnKey)) &&
-      filterFnKey !== omitedKey,
-  )
-  const filteredData = data.filter((student) => {
-    return activeFiltersKeys.every((filterFnKey) =>
-      FILTERS_FNS[filterFnKey].filterFn(student, filterParams),
-    )
-  })
-  return filteredData
-} */
+export const FILTERS_FNS = {
+  search: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.search
+      return param
+        ? param.split(' ').map((string) =>
+            string
+              .trim()
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, ''),
+          )
+        : undefined
+    },
+    filterFn: (student: Student, paramsValues: FiltersValues) => {
+      const filterValue = paramsValues.search
+      if (filterValue === undefined) return true
+      const { apellido, nombre, dni } = student
+      return filterValue.every(
+        (string: string) =>
+          apellido?.toLowerCase().includes(string) ||
+          nombre?.toLowerCase().includes(string) ||
+          `${dni}`.includes(string),
+      )
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => undefined,
+  },
+  cursos: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cursos
+      return param
+        ? formatArrValues(
+            param,
+            CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
+          )
+        : undefined
+    },
+    filterFn: (student: Student, paramsValues: FiltersValues) => {
+      const filterValue = paramsValues.cursos
+      const { anio, division } = student
+      if (anio === null || division === null || filterValue === undefined)
+        return true
+      return filterValue.includes(`${anio[0]}° ${division[0]}°`)
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const { anio, division } = student
+        if (anio !== null && division !== null) {
+          const value = `${anio?.[0]}° ${division?.[0]}°`
+          facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
+        }
+      })
+    },
+  },
+  materias: {
+    sortParam: (materiaA: string, materiaB: string) => {
+      const anioA = Number(materiaA.split('(')?.[1]?.[0])
+      const anioB = Number(materiaB.split('(')?.[1]?.[0])
+      if (anioA !== anioB) return anioA - anioB
+      return materiaA.localeCompare(materiaB)
+    },
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.materias
+      return param
+        ? formatArrValues(
+            param,
+            MATERIAS_ANIOS_ITEMS_DATA.flatMap(({ todas }) => todas),
+            FILTERS_FNS.materias.sortParam,
+          )
+        : undefined
+    },
+    filterFn: (student: Student, paramsValues: FiltersValues) => {
+      const filterValue = paramsValues.materias
+      if (filterValue === undefined) return true
+      const hideEnProceso2020 = paramsValues.enProceso2020 === 'false'
+      const studentMaterias = [
+        ...student.troncales.detalle,
+        ...student.generales.detalle,
+      ]
+      if (
+        !hideEnProceso2020 &&
+        student.enProceso2020.detalle !== 'No corresponde'
+      )
+        studentMaterias.push(...student.enProceso2020.detalle)
+
+      const inclusionEstrictaValue = paramsValues.inclusionEstricta === 'true'
+      return inclusionEstrictaValue
+        ? filterValue.every((materia) => studentMaterias.includes(materia))
+        : filterValue.some((materia) => studentMaterias.includes(materia))
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+      filtersValues: FiltersValues,
+    ) => {
+      filteredData.forEach((student) => {
+        const values = [
+          ...student.troncales.detalle,
+          ...student.generales.detalle,
+        ]
+        if (
+          filtersValues.enProceso2020 !== 'false' &&
+          student.enProceso2020.detalle !== 'No corresponde'
+        )
+          values.push(...student.enProceso2020.detalle)
+        values.forEach((value) =>
+          facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
+        )
+      })
+    },
+  },
+  cantidadesTroncales: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cantidadesTroncales
+      return param ? formatCantValues(param) : undefined
+    },
+    filterFn: (student: Student, paramsValues: FiltersValues) => {
+      const cantStudent = student.troncales.cantidad
+      const filterValue = paramsValues.cantidadesTroncales
+      if (cantStudent === null || filterValue === undefined) return true
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
+      return cantStudent >= minValue && cantStudent <= maxValue
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const cant = student.troncales.cantidad
+        facetedModel.set(`${cant}`, (facetedModel.get(`${cant}`) ?? 0) + 1)
+      })
+    },
+  },
+  cantidadesGenerales: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cantidadesGenerales
+      return param ? formatCantValues(param) : undefined
+    },
+    filterFn: (student: Student, paramsValues: FiltersValues) => {
+      const cantStudent = student.generales.cantidad
+      const filterValue = paramsValues.cantidadesGenerales
+      if (cantStudent === null || filterValue === undefined) return true
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
+      return cantStudent >= minValue && cantStudent <= maxValue
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const cant = student.generales.cantidad
+        facetedModel.set(`${cant}`, (facetedModel.get(`${cant}`) ?? 0) + 1)
+      })
+    },
+  },
+  cantidadesEnProceso2020: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.cantidadesEnProceso2020
+      return param ? formatCantValues(param) : undefined
+    },
+    filterFn: (student: Student, paramsValues: FiltersValues) => {
+      const cantStudent = student.enProceso2020.cantidad
+      const filterValue = paramsValues.cantidadesEnProceso2020
+      const hideEnProceso2020 = paramsValues.enProceso2020 === 'false'
+      if (
+        cantStudent === null ||
+        filterValue === undefined ||
+        hideEnProceso2020
+      )
+        return true
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
+      return cantStudent >= minValue && cantStudent <= maxValue
+    },
+    uniqueValuesFn: (
+      filteredData: Student[],
+      facetedModel: Map<string, number>,
+    ) => {
+      filteredData.forEach((student) => {
+        const cant = student.enProceso2020.cantidad
+        facetedModel.set(`${cant}`, (facetedModel.get(`${cant}`) ?? 0) + 1)
+      })
+    },
+  },
+  proyeccion: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.proyeccion
+      console.log(param)
+      if (param === undefined) return param
+      const califParcialesParam = searchParams.califParciales
+      const comparedData = califParcialesParam
+        ? PROYECCION_DATA.filter(({ value }) => value !== 'Egresa')
+        : PROYECCION_DATA.filter(
+            ({ value }) =>
+              value !== 'Egresa (titula)' && value !== 'Egresa (NO titula)',
+          )
+      console.log(comparedData)
+      return formatArrValues(
+        param,
+        comparedData.map(({ value }) => value),
+      )
+    },
+    filterFn(student: Student, paramsValues: FiltersValues) {
+      const filterValue = paramsValues.proyeccion
+      if (filterValue === undefined) return true
+      return filterValue.some((value) => student.proyeccion === value)
+    },
+    uniqueValuesFn(filteredData: Student[], facetedModel: Map<string, number>) {
+      filteredData.forEach((student) => {
+        const { proyeccion } = student
+        facetedModel.set(proyeccion, (facetedModel.get(proyeccion) ?? 0) + 1)
+      })
+    },
+  },
+  repitenciaAnios: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.repitenciaAnios
+      return param ? formatArrValues(param, ANIOS_REPETIBLES) : undefined
+    },
+    filterFn(student: Student, paramsValues: FiltersValues) {
+      const filterValue = paramsValues.repitenciaAnios
+      if (filterValue === undefined) return true
+      return student.repitencia.some((anioRepetido) =>
+        filterValue.includes(anioRepetido),
+      )
+    },
+    uniqueValuesFn(filteredData: Student[], facetedModel: Map<string, number>) {
+      filteredData.forEach(({ repitencia }) => {
+        const aniosRepetidos = [...new Set(repitencia)]
+        aniosRepetidos.forEach((anioRepetido) =>
+          facetedModel.set(
+            anioRepetido,
+            (facetedModel.get(anioRepetido) ?? 0) + 1,
+          ),
+        )
+      })
+    },
+  },
+  repitenciaCant: {
+    formatParam: (searchParams: SearchParams) => {
+      const param = searchParams.repitenciaCant
+      return param ? formatCantValues(param) : undefined
+    },
+    filterFn(student: Student, paramsValues: FiltersValues) {
+      const filterValue = paramsValues.repitenciaCant
+      if (filterValue === undefined) return true
+      const cantRep = student.repitencia.length
+      const minValue = Math.min(...filterValue)
+      const maxValue = Math.max(...filterValue)
+      return cantRep >= minValue && cantRep <= maxValue
+    },
+    uniqueValuesFn(filteredData: Student[], facetedModel: Map<string, number>) {
+      filteredData.forEach(({ repitencia }) => {
+        const catRepitencias = repitencia.length
+        facetedModel.set(
+          `${catRepitencias}`,
+          (facetedModel.get(`${catRepitencias}`) ?? 0) + 1,
+        )
+      })
+    },
+  },
+}
 
 export const getFilteredStudents = (
   data: Student[],
@@ -73,27 +327,6 @@ export const getFilteredStudents = (
   )
   return filteredStudents
 }
-
-/* export function getStudentsUniqueValues(
-  data: Student[],
-  filterParams: Omit<SearchParams, 'anio'>,
-  filterKey: keyof typeof FILTERS_FNS,
-  omitKeyInFiltering?: boolean,
-) {
-  const partialFilteredData = getFilteredStudentData(
-    data,
-    filterParams,
-    omitKeyInFiltering ? undefined : filterKey,
-  )
-  const facetedModel = new Map<any, number>()
-  FILTERS_FNS[filterKey].uniqueValuesFn(
-    partialFilteredData,
-    facetedModel,
-    filterParams,
-  )
-
-  return facetedModel
-} */
 
 export const getUniqueValuesModel = (
   filtersValues: FiltersValues = {},
@@ -236,296 +469,6 @@ export const getCantFilterData = (
     }
   }
 }
-
-/* export const FILTERS_FNS = {
-  search: {
-    formatParam: (param?: string) => {
-      const searchParam = param || ''
-      const filterValue = searchParam.split(' ').map((string) =>
-        string
-          .trim()
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''),
-      )
-      return filterValue
-    },
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const searchParam = searchParams.search || ''
-      const filterValue = searchParam.split(' ').map((string) =>
-        string
-          .trim()
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''),
-      )
-      const { apellido, nombre, dni } = student
-      return filterValue.every(
-        (string: string) =>
-          apellido?.toLowerCase().includes(string) ||
-          nombre?.toLowerCase().includes(string) ||
-          `${dni}`.includes(string),
-      )
-    },
-    uniqueValuesFn: (
-      _filteredData: Student[],
-      _facetedModel: Map<string, number>,
-    ) => undefined,
-  },
-  cursos: {
-    formatParam: (param?: string) =>
-      formatArrValuesParam(
-        param,
-        CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
-      ),
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      if (student.anio === null || student.division === null) return true
-      const filterValue = formatArrValuesParam(
-        searchParams.cursos,
-        CURSOS_ITEMS_DATA.flatMap(({ todos }) => todos),
-      )
-      return filterValue.includes(`${student.anio[0]}° ${student.division[0]}°`)
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const value = `${student.anio?.[0]}° ${student.division?.[0]}°`
-        facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1)
-      })
-    },
-  },
-  materias: {
-    sortParam: (materiaA: string, materiaB: string) => {
-      const anioA = Number(materiaA.split('(')?.[1]?.[0])
-      const anioB = Number(materiaB.split('(')?.[1]?.[0])
-      if (anioA !== anioB) return anioA - anioB
-      return materiaA.localeCompare(materiaB)
-    },
-    formatParam: (param?: string) =>
-      formatArrValuesParam(
-        param,
-        MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
-        FILTERS_FNS.materias.sortParam,
-      ),
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const enProceso2020Param = !(searchParams.enProceso2020 === 'false')
-      const inclusionEstrictaParam = searchParams.inclusionEstricta === 'true'
-      const filterValue = formatArrValuesParam(
-        searchParams.materias,
-        MATERIAS_ITEMS_DATA.flatMap(({ todas }) => todas),
-        FILTERS_FNS.materias.sortParam,
-      )
-      const studentMaterias = [
-        ...student.troncales.detalle,
-        ...student.generales.detalle,
-      ]
-      if (
-        enProceso2020Param &&
-        student.enProceso2020.detalle !== 'No corresponde'
-      )
-        studentMaterias.push(...student.enProceso2020.detalle)
-      return inclusionEstrictaParam
-        ? filterValue.every((materia) => studentMaterias.includes(materia))
-        : filterValue.some((materia) => studentMaterias.includes(materia))
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-      filterParams: Omit<SearchParams, 'anio'>,
-    ) => {
-      filteredData.forEach((student) => {
-        const values = [
-          ...student.troncales.detalle,
-          ...student.generales.detalle,
-        ]
-        if (
-          filterParams?.enProceso2020 !== 'false' &&
-          student.enProceso2020.detalle !== 'No corresponde'
-        )
-          values.push(...student.enProceso2020.detalle)
-        values.forEach((value) =>
-          facetedModel.set(value, (facetedModel.get(value) ?? 0) + 1),
-        )
-      })
-    },
-  },
-  cantidades: {
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const {
-        cantidadesTroncales,
-        cantidadesGenerales,
-        cantidadesEnProceso2020,
-        enProceso2020,
-      } = searchParams
-      const criterioOptativo = searchParams.cantOptativo === 'true'
-      const [troncalesValue, generalesValue, enProceso2020Value] = [
-        cantidadesTroncales,
-        cantidadesGenerales,
-        cantidadesEnProceso2020,
-      ].map((filterParam) => formatCantValuesParam(filterParam))
-
-      const isTroncalesValid =
-        troncalesValue && student.troncales.cantidad !== null
-          ? student.troncales.cantidad >= troncalesValue[0] &&
-            student.troncales.cantidad <= troncalesValue[1]
-          : true
-      const isGeneralesValid =
-        generalesValue && student.generales.cantidad !== null
-          ? student.generales.cantidad >= generalesValue[0] &&
-            student.generales.cantidad <= generalesValue[1]
-          : true
-      const isEnProceso2020Valid =
-        enProceso2020Value &&
-        enProceso2020 !== 'false' &&
-        student.enProceso2020.cantidad !== null
-          ? student.enProceso2020.cantidad >= enProceso2020Value[0] &&
-            student.enProceso2020.cantidad <= enProceso2020Value[1]
-          : true
-
-      return criterioOptativo
-        ? isTroncalesValid || isGeneralesValid || isEnProceso2020Valid
-        : isTroncalesValid && isGeneralesValid && isEnProceso2020Valid
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const {
-          troncales: { cantidad: cantTroncales },
-          generales: { cantidad: cantGenerales },
-          enProceso2020: { cantidad: cantEnProceso2020 },
-        } = student
-        facetedModel.set(
-          `troncales_${cantTroncales}`,
-          (facetedModel.get(`troncales_${cantTroncales}`) ?? 0) + 1,
-        )
-        facetedModel.set(
-          `generales_${cantGenerales}`,
-          (facetedModel.get(`generales_${cantGenerales}`) ?? 0) + 1,
-        )
-        facetedModel.set(
-          `enProceso2020_${cantEnProceso2020}`,
-          (facetedModel.get(`enProceso2020_${cantEnProceso2020}`) ?? 0) + 1,
-        )
-      })
-    },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getStudentsUniqueValues(data, {}, 'cantidades')
-      const troncalesUniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.split('_')[0] === 'troncales')
-        .map(([key]) => Number(key.split('_')[1]))
-      const generalesUniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.split('_')[0] === 'generales')
-        .map(([key]) => Number(key.split('_')[1]))
-      const enProceso2020UniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.split('_')[0] === 'enProceso2020')
-        .map(([key]) => Number(key.split('_')[1]))
-      const troncalesMinMax = [
-        Math.min(...troncalesUniqueValues),
-        Math.max(...troncalesUniqueValues),
-      ]
-      const generalesMinMax = [
-        Math.min(...generalesUniqueValues),
-        Math.max(...generalesUniqueValues),
-      ]
-      const enProceso2020MinMax = [
-        Math.min(...enProceso2020UniqueValues),
-        Math.max(...enProceso2020UniqueValues),
-      ]
-      return { troncalesMinMax, generalesMinMax, enProceso2020MinMax }
-    },
-  },
-  proyeccion: {
-    formatParam: (param?: string) =>
-      formatArrValuesParam(
-        param,
-        PROYECCION_DATA.map(({ value }) => value),
-      ),
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const proyeccionParam = searchParams.proyeccion
-      if (!proyeccionParam) return true
-      return proyeccionParam
-        .split('_')
-        .some((value) => student.proyeccion === value)
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach((student) => {
-        const { proyeccion } = student
-        facetedModel.set(proyeccion, (facetedModel.get(proyeccion) ?? 0) + 1)
-      })
-    },
-  },
-  repitencia: {
-    formatParam: (
-      paramAnios?: string,
-      paramCant?: string,
-      minMax?: number[],
-    ) => {
-      const aniosParamArr = paramAnios?.split('_') || []
-      const aniosValue = aniosParamArr
-        .filter((anioRepetido) => ANIOS_REPETIBLES.includes(anioRepetido))
-        .sort()
-
-      const cantValue = formatCantValuesParam(paramCant, minMax)
-      return { aniosValue, cantValue }
-    },
-    filterFn: (student: Student, searchParams: SearchParams) => {
-      const studentRepitencia = student.repitencia
-      const repitenciaAniosParam = searchParams.repitenciaAnios?.split('_')
-      const repitenciaCantParam = searchParams.repitenciaCant
-        ?.split('_')
-        .map((value) => Number(value))
-        .sort((a, b) => a - b)
-
-      const isAniosOk = repitenciaAniosParam
-        ? studentRepitencia.some((anioRepetido) =>
-            repitenciaAniosParam.includes(anioRepetido),
-          )
-        : true
-      const isCantOk = repitenciaCantParam
-        ? studentRepitencia.length >= repitenciaCantParam[0] &&
-          studentRepitencia.length <= repitenciaCantParam[1]
-        : true
-
-      return isAniosOk && isCantOk
-    },
-    uniqueValuesFn: (
-      filteredData: Student[],
-      facetedModel: Map<string, number>,
-    ) => {
-      filteredData.forEach(({ repitencia }) => {
-        const aniosRepetidos = Array.from(new Set(repitencia))
-        aniosRepetidos.forEach((anioRepetido) =>
-          facetedModel.set(
-            anioRepetido,
-            (facetedModel.get(anioRepetido) ?? 0) + 1,
-          ),
-        )
-        facetedModel.set(
-          `cant_${repitencia.length}`,
-          (facetedModel.get(`cant_${repitencia.length}`) ?? 0) + 1,
-        )
-      })
-    },
-    getMinMaxCant: (data: Student[]) => {
-      const uniqueValues = getStudentsUniqueValues(data, {}, 'repitencia')
-      const repitenciaCantUniqueValues = Array.from(uniqueValues.entries())
-        .filter(([key]) => key.includes('cant'))
-        .map(([key]) => Number(key.split('_')[1]))
-      const repitenciaCantMinMax = [
-        Math.min(...repitenciaCantUniqueValues),
-        Math.max(...repitenciaCantUniqueValues),
-      ]
-      return repitenciaCantMinMax
-    },
-  },
-} as const */
 
 export const SORTING_FNS = [
   {
