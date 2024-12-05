@@ -9,11 +9,11 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ListFilter } from 'lucide-react'
-import ToggleDB from './toggle-db'
-import SearchBar from './search/search-bar'
+import ToggleDB from './filters/toggle-db'
+import SearchBar from './filters/search/search-bar'
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import { FiltersValues } from '../../utils/definitions'
+import { FiltersValues } from '../utils/definitions'
 
 function FiltersResponsiveWrapper({
   children,

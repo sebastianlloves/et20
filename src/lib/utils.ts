@@ -34,7 +34,11 @@ export const getPagination = (
   const firstPage = 1
   const currentPageParam = Number(pageParam?.split('_')[0])
   const lastPageParam = Number(pageParam?.split('_')[1])
-  if (filteredData === undefined)
+  if (filteredData === undefined) {
+    const skeletonPageButtons =
+      currentPageParam && lastPageParam
+        ? getPagesButtons(currentPageParam, lastPageParam, maxCantButtons)
+        : Array(lastPageParam || maxCantButtons).fill(null)
     return {
       paginatedData: Array(rowsCount).fill({}),
       currentPage: currentPageParam || null,
@@ -42,9 +46,9 @@ export const getPagination = (
       indexFirstElement: null,
       indexLastElement: null,
       totalSize: null,
-      pagesButtons: Array(maxCantButtons).fill(null),
+      pagesButtons: skeletonPageButtons,
     }
-
+  }
   const lastPage =
     Math.ceil((filteredData.length || 1) / rowsCount) || lastPageParam
   const currentPage =

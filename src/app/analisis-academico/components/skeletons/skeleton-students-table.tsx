@@ -6,15 +6,16 @@ import {
 } from '@/app/analisis-academico/utils/constants'
 import skeletonColumns from './skeleton-columns'
 import { FiltersValues } from '../../utils/definitions'
-import FiltersResponsiveWrapper from '../filters/filters-responsive-wrapper'
-import FiltersPanel from '../filters/filters-panel'
+import FiltersResponsiveWrapper from '../filters-responsive-wrapper'
+import FiltersPanel from '../filters-panel'
+import TablePagination from '../table-pagination'
 
 function SkeletonStudentsTable({
   filtersValues,
 }: {
   filtersValues: FiltersValues
 }) {
-  const { paginatedData: paginatedSkeletonData /* , ...paginationUtils */ } =
+  const { paginatedData: paginatedSkeletonData , ...paginationUtils } =
     getPagination(ROWS_COUNT, MAX_BUTTONS_PAGINATION, filtersValues.page)
   return (
     <>
@@ -29,10 +30,10 @@ function SkeletonStudentsTable({
         className="hidden lg:block"
       />
       <DataTable columns={skeletonColumns} data={paginatedSkeletonData} />
-      {/* <TablePagination
+      <TablePagination
         paginationUtils={paginationUtils}
-        searchParams={searchParams}
-      /> */}
+        filtersValues={filtersValues}
+      />
     </>
   )
 }

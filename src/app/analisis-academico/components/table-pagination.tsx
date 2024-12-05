@@ -7,7 +7,9 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { SearchParams } from '../utils/definitions'
+import { FiltersValues } from '../utils/definitions'
+import PaginationButton from './pagination-button'
+import { ChevronLeft } from 'lucide-react'
 
 interface TablePaginationProps {
   paginationUtils: {
@@ -18,12 +20,12 @@ interface TablePaginationProps {
     totalSize: number | null
     pagesButtons: (string | number | null)[]
   }
-  searchParams: SearchParams
+  filtersValues: FiltersValues
 }
 
 function TablePagination({
   paginationUtils,
-  searchParams,
+  filtersValues,
 }: TablePaginationProps) {
   const {
     currentPage,
@@ -34,7 +36,7 @@ function TablePagination({
     pagesButtons,
   } = paginationUtils
   const getPageQuery = (pageNumber: number | string) => {
-    return { ...searchParams, page: [pageNumber, lastPage].join('_') }
+    return { ...filtersValues, page: [pageNumber, lastPage].join('_') }
   }
 
   return (
@@ -55,14 +57,16 @@ function TablePagination({
       </div>
       <Pagination className="mx-0 w-fit">
         <PaginationContent className="w-full">
-          <PaginationPrevious
-            href={{
-              pathname: '/analisis-academico',
-              query: currentPage ? getPageQuery(currentPage - 1) : '',
-            }}
+          <PaginationButton
+            newState={[currentPage - 1, lastPage].join('_')}
             isDisabled={currentPage === 1 || !totalSize}
-            className="mr-1 h-6 px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
-          />
+            className="mr-1 h-6 w-full px-2 py-0 text-xs sm:h-9 lg:mr-2 lg:px-3.5 xl:text-sm"
+          >
+            <div className="flex gap-1.5 pl-2.5">
+              <ChevronLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+              <span>Anterior</span>
+            </div>
+          </PaginationButton>
           {pagesButtons.map((buttonNumber, index) => {
             if (buttonNumber === null)
               return (

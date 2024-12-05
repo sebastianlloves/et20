@@ -1,26 +1,23 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ListFilter } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Student } from '@/lib/definitions'
-import { CursosFilter } from './cursos/cursos-filter'
-import { FiltersValues } from '../../utils/definitions'
-import { getUniqueValuesModel } from '../../utils/dataOperations'
-import ProyeccionFilter from './proyeccion/proyeccion-filter'
-import CalifParcialesFilter from './calif-parciales/calif-parciales-filter'
-import RepitenciaFilter from './repitencia/repitencia-filter'
-import CantidadesFilter from './cantidades/cantidades-filter'
-import MateriasFilter from './materias/materias-filter'
+import { CursosFilter } from './filters/cursos/cursos-filter'
+import { FiltersValues } from '../utils/definitions'
+import { getUniqueValuesModel } from '../utils/dataOperations'
+import ProyeccionFilter from './filters/proyeccion/proyeccion-filter'
+import CalifParcialesFilter from './filters/calif-parciales/calif-parciales-filter'
+import RepitenciaFilter from './filters/repitencia/repitencia-filter'
+import CantidadesFilter from './filters/cantidades/cantidades-filter'
+import MateriasFilter from './filters/materias/materias-filter'
 
 function FiltersPanel({
   allFiltersValues,
   uniqueValuesModel,
   className,
-  allData,
 }: {
   allFiltersValues: FiltersValues
   uniqueValuesModel?: ReturnType<typeof getUniqueValuesModel>
   className?: string
-  allData?: Student[]
 }) {
   return (
     <ScrollArea

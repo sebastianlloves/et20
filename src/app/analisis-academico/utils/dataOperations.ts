@@ -1,9 +1,12 @@
 import { Student } from '@/lib/definitions'
-import { ANIOS_REPETIBLES, columnsIds, CURSOS_ITEMS_DATA, MATERIAS_ANIOS_ITEMS_DATA, PROYECCION_DATA } from './constants'
 import {
-  ANIO_ACTUAL,
-  CARACTER_GRADO,
-} from '@/lib/constants'
+  ANIOS_REPETIBLES,
+  columnsIds,
+  CURSOS_ITEMS_DATA,
+  MATERIAS_ANIOS_ITEMS_DATA,
+  PROYECCION_DATA,
+} from './constants'
+import { ANIO_ACTUAL, CARACTER_GRADO } from '@/lib/constants'
 import {
   fetchCalificacionesActuales,
   fetchCalificacionesHistoricas,
@@ -14,15 +17,14 @@ import { FiltersValues, SearchParams } from './definitions'
 import { formatArrValues, formatCantValues } from './urlParamsOperations'
 
 export const getAllData = async (
-  anioParam?: string | string[],
-  califParcialesParam?: string | string[],
+  anioParam?: string,
+  califParcialesParam?: string,
 ) => {
-  const anio = (typeof anioParam === 'string' && anioParam) || `${ANIO_ACTUAL}`
+  const anio = anioParam || `${ANIO_ACTUAL}`
+  const isActiveCalifParciales =
+    califParcialesParam && isValidInstancia(califParcialesParam)
   const califHistoricas = await fetchCalificacionesHistoricas(anio)
 
-  const isActiveCalifParciales =
-    typeof califParcialesParam === 'string' &&
-    isValidInstancia(califParcialesParam)
   if (!isActiveCalifParciales) return califHistoricas
 
   const califActuales = await fetchCalificacionesActuales(anio)

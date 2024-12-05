@@ -28,7 +28,6 @@ export async function fetchCalificacionesActuales(
   // data: Student[],
   // cursosFilter?: string[],
 ) {
-  // console.time('depuracion')
   if (!(anio in DB_CALIFICACIONES))
     throw new Error(`No hay datos para el año ${anio}`)
   // Si hay aplicado filtro de cursos, una optimización posible es sólo fetchear las db de esos cursos
@@ -61,7 +60,6 @@ export async function fetchCalificacionesActuales(
       return { url, tags, anioCurso: anioKey[0] }
     },
   )
-  // console.timeEnd('depuracion')
 
   const califActuales = await Promise.all(
     fetchingData.map(async ({ url, tags, anioCurso }) => {

@@ -1,7 +1,7 @@
-import FiltersPanel from './filters/filters-panel'
-import FiltersResponsiveWrapper from './filters/filters-responsive-wrapper'
+import FiltersPanel from './filters-panel'
+import FiltersResponsiveWrapper from './filters-responsive-wrapper'
 import { getPagination } from '@/lib/utils'
-// import TablePagination from './table-pagination'
+import TablePagination from './table-pagination'
 import {
   getAllData,
   getFilteredStudents,
@@ -29,7 +29,7 @@ export default async function StudentsTable({
   const filteredData = getFilteredStudents(allData, filtersValues)
   const sortedData = getSortedData(filteredData, filtersValues.sort)
 
-  const { paginatedData /* , ...paginationUtils */ } = getPagination(
+  const { paginatedData , ...paginationUtils } = getPagination(
     ROWS_COUNT,
     MAX_BUTTONS_PAGINATION,
     filtersValues.page,
@@ -45,20 +45,18 @@ export default async function StudentsTable({
         <FiltersPanel
           allFiltersValues={filtersValues}
           uniqueValuesModel={uniqueValuesModel}
-          allData={allData}
         />
       </FiltersResponsiveWrapper>
       <FiltersPanel
         allFiltersValues={filtersValues}
         uniqueValuesModel={uniqueValuesModel}
         className="hidden lg:block"
-        allData={allData}
       />
       <DataTable columns={columns} data={paginatedData} />
-      {/* <TablePagination
+      <TablePagination
         paginationUtils={paginationUtils}
-        searchParams={searchParams}
-      /> */}
+        filtersValues={filtersValues}
+      />
     </>
   )
 }
